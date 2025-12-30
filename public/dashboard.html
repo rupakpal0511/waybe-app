@@ -3,315 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Waybe.in</title>
+    <title>My Dashboard | Waybe</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script> tailwind.config = { darkMode: 'class' } </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        body { font-family: 'Outfit', sans-serif; background-color: #f3f4f6; color: #1f2937; }
         
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            background-color: #050505;
-        }
-
-        /* --- Reuse Glassmorphism --- */
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        /* Glass Style matching your brand */
+        .glass { background: white; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
         
-        .glass-panel {
-            background: #0f1014;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .glass-sidebar {
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* --- Animations --- */
-        .fade-in {
-            animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
+        /* Sidebar Hover Animation */
+        .nav-item { transition: all 0.3s ease; border-left: 4px solid transparent; }
+        .nav-item:hover, .nav-item.active { background-color: #e0e7ff; color: #4f46e5; border-left: 4px solid #4f46e5; }
         
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
-
-        /* Toggle Switch */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #4f46e5;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #4f46e5;
-        }
-        
-        /* Status Indicators */
-        .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-        .active-dot { background-color: #10b981; box-shadow: 0 0 10px #10b981; }
-        .trial-dot { background-color: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
-        .expired-dot { background-color: #ef4444; }
-
+        /* Smooth Fade In */
+        .fade-in { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="text-gray-300 antialiased overflow-hidden h-screen flex">
+<body class="flex h-screen overflow-hidden bg-slate-50">
 
-    <div id="backdrop" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden glass" onclick="toggleSidebar()"></div>
-
-    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-64 glass-sidebar transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col h-full">
-        <div class="p-8 flex items-center justify-between">
-            <div class="text-2xl font-extrabold tracking-tighter text-white">
-                waybe<span class="text-indigo-500">.in</span>
-            </div>
-            <button class="md:hidden text-gray-400" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+    <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col h-full z-20">
+        <div class="p-8 flex items-center">
+            <i class="fa-brands fa-hive text-3xl text-indigo-600 mr-2"></i>
+            <span class="text-2xl font-extrabold tracking-tight">waybe</span>
         </div>
-
-        <nav class="flex-1 px-4 space-y-2">
-            <a href="#" class="flex items-center space-x-3 px-4 py-3 bg-indigo-600/10 text-indigo-400 border-r-2 border-indigo-500 rounded-l-lg transition">
-                <i class="fa-solid fa-grid-2 w-6"></i>
-                <span class="font-medium">Overview</span>
+        
+        <nav class="flex-1 px-4 space-y-2 mt-4">
+            <a href="#" class="nav-item active flex items-center px-6 py-4 font-bold text-slate-600">
+                <i class="fa-solid fa-layer-group w-6"></i> Overview
             </a>
-            <a href="#" class="flex items-center space-x-3 px-4 py-3 hover:bg-white/5 hover:text-white rounded-lg transition group">
-                <i class="fa-solid fa-globe w-6 group-hover:text-indigo-400"></i>
-                <span class="font-medium">My Domains</span>
+            <a href="#" class="nav-item flex items-center px-6 py-4 font-bold text-slate-600">
+                <i class="fa-solid fa-globe w-6"></i> My Domains
             </a>
-            <a href="#" class="flex items-center space-x-3 px-4 py-3 hover:bg-white/5 hover:text-white rounded-lg transition group">
-                <i class="fa-solid fa-layer-group w-6 group-hover:text-pink-400"></i>
-                <span class="font-medium">Designs & Assets</span>
+            <a href="#" class="nav-item flex items-center px-6 py-4 font-bold text-slate-600">
+                <i class="fa-solid fa-credit-card w-6"></i> Billing
             </a>
-            <a href="#" class="flex items-center space-x-3 px-4 py-3 hover:bg-white/5 hover:text-white rounded-lg transition group">
-                <i class="fa-solid fa-file-invoice-dollar w-6 group-hover:text-green-400"></i>
-                <span class="font-medium">Billing & Invoices</span>
-            </a>
-            <a href="#" class="flex items-center space-x-3 px-4 py-3 hover:bg-white/5 hover:text-white rounded-lg transition group">
-                <i class="fa-solid fa-sliders w-6 group-hover:text-blue-400"></i>
-                <span class="font-medium">DNS Manager</span>
+            <a href="#" class="nav-item flex items-center px-6 py-4 font-bold text-slate-600">
+                <i class="fa-solid fa-headset w-6"></i> Support
             </a>
         </nav>
 
-        <div class="p-4 border-t border-white/5">
-            <div class="flex items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition">
-                <img src="https://i.pravatar.cc/150?img=11" alt="User" class="w-10 h-10 rounded-full border border-indigo-500">
-                <div class="ml-3">
-                    <p class="text-sm font-bold text-white">Rahul Dev</p>
-                    <p class="text-xs text-gray-500">rahul@example.com</p>
-                </div>
-                <i class="fa-solid fa-chevron-right ml-auto text-xs text-gray-500"></i>
-            </div>
+        <div class="p-4 border-t border-slate-100">
+            <a href="/" class="flex items-center px-6 py-3 text-red-500 font-bold hover:bg-red-50 rounded-lg transition">
+                <i class="fa-solid fa-right-from-bracket w-6"></i> Log Out
+            </a>
         </div>
     </aside>
 
-    <main class="flex-1 overflow-y-auto relative bg-[#050505]">
-        <header class="flex justify-between items-center py-6 px-8 sticky top-0 bg-[#050505]/90 backdrop-blur-md z-30 border-b border-white/5">
-            <div class="flex items-center">
-                <button class="md:hidden mr-4 text-gray-400 text-xl" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-                <h2 class="text-xl font-bold text-white">Dashboard Overview</h2>
-            </div>
-            <div class="flex items-center space-x-6">
-                <button class="relative text-gray-400 hover:text-white transition">
-                    <i class="fa-regular fa-bell text-xl"></i>
-                    <span class="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-                </button>
-                <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-full text-sm font-bold transition shadow-lg shadow-indigo-500/20">
+    <main class="flex-1 overflow-y-auto relative">
+        <div class="md:hidden flex justify-between items-center p-6 bg-white border-b border-slate-200 sticky top-0 z-30">
+            <div class="flex items-center font-extrabold text-xl"><i class="fa-brands fa-hive text-indigo-600 mr-2"></i> waybe</div>
+            <a href="/" class="text-slate-500"><i class="fa-solid fa-right-from-bracket"></i></a>
+        </div>
+
+        <div class="p-6 md:p-12 max-w-6xl mx-auto fade-in">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2">Dashboard</h1>
+                    <p class="text-slate-500 font-medium">Welcome back, <span id="userName" class="text-indigo-600">User</span> 👋</p>
+                </div>
+                <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition transform hover:-translate-y-1">
                     <i class="fa-solid fa-plus mr-2"></i> New Domain
                 </button>
             </div>
-        </header>
 
-        <div class="p-8 max-w-7xl mx-auto pb-24">
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <div class="glass-panel p-6 rounded-2xl fade-in delay-1 relative overflow-hidden group">
-                    <div class="absolute right-0 top-0 p-6 opacity-10 group-hover:scale-110 transition duration-500">
-                        <i class="fa-solid fa-wallet text-6xl text-indigo-500"></i>
-                    </div>
-                    <p class="text-gray-500 text-sm font-medium uppercase tracking-wider">Next Month Bill</p>
-                    <h3 class="text-4xl font-extrabold text-white mt-2">₹1,498<span class="text-sm text-gray-500 font-normal">.00</span></h3>
-                    <p class="text-green-400 text-xs mt-2 flex items-center">
-                        <i class="fa-solid fa-calendar-days mr-1"></i> Due on 15 Jan, 2026
-                    </p>
-                </div>
-
-                <div class="glass-panel p-6 rounded-2xl fade-in delay-2 relative overflow-hidden group">
-                     <div class="absolute right-0 top-0 p-6 opacity-10 group-hover:scale-110 transition duration-500">
-                        <i class="fa-solid fa-globe text-6xl text-purple-500"></i>
-                    </div>
-                    <p class="text-gray-500 text-sm font-medium uppercase tracking-wider">Active Domains</p>
-                    <h3 class="text-4xl font-extrabold text-white mt-2">3</h3>
-                    <div class="flex mt-2 space-x-2">
-                        <span class="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-xs border border-green-500/20">2 Paid</span>
-                        <span class="px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-400 text-xs border border-yellow-500/20">1 Trial</span>
+                <div class="glass p-6 rounded-2xl bg-white relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-24 h-24 bg-indigo-50 rounded-bl-full -mr-4 -mt-4 transition group-hover:bg-indigo-100"></div>
+                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Primary Domain</div>
+                    <div class="text-2xl font-bold text-slate-800 break-all" id="userDomain">...</div>
+                    <div class="mt-4 flex items-center text-xs font-bold text-green-500">
+                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span> Active
                     </div>
                 </div>
 
-                <div class="glass-panel p-6 rounded-2xl fade-in delay-3 relative overflow-hidden border-yellow-500/20">
-                    <div class="absolute right-0 top-0 p-6 opacity-10">
-                        <i class="fa-solid fa-hourglass-half text-6xl text-yellow-500"></i>
+                <div class="glass p-6 rounded-2xl bg-white relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-24 h-24 bg-purple-50 rounded-bl-full -mr-4 -mt-4 transition group-hover:bg-purple-100"></div>
+                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Current Plan</div>
+                    <div class="text-2xl font-bold text-slate-800" id="userPlan">...</div>
+                    <div class="mt-4 text-xs font-bold text-purple-500">
+                        Auto-renews in 15 days
                     </div>
-                    <p class="text-yellow-500/80 text-sm font-medium uppercase tracking-wider">Trial Status</p>
-                    <h3 class="text-4xl font-extrabold text-white mt-2">4 <span class="text-lg font-normal text-gray-400">Days Left</span></h3>
-                    <p class="text-gray-400 text-xs mt-2">for <strong>random-shop.waybe.in</strong></p>
-                    
-                    <div class="w-full bg-gray-800 rounded-full h-1.5 mt-4">
-                        <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 70%"></div>
+                </div>
+
+                <div class="glass p-6 rounded-2xl bg-white relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 transition group-hover:bg-blue-100"></div>
+                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">System Status</div>
+                    <div class="text-2xl font-bold text-slate-800">Operational</div>
+                    <div class="mt-4 text-xs font-bold text-slate-400">
+                        Latency: <span class="text-slate-800">24ms</span>
                     </div>
                 </div>
             </div>
 
-            <div class="flex flex-col xl:flex-row gap-8">
-                
-                <div class="xl:w-2/3 fade-in delay-3">
-                    <h3 class="text-xl font-bold text-white mb-6 flex justify-between items-center">
-                        <span>Your Subscriptions</span>
-                        <span class="text-xs font-normal text-gray-500 bg-white/5 px-3 py-1 rounded-full">Monthly Cycle</span>
-                    </h3>
-
-                    <div class="glass-panel rounded-2xl overflow-hidden">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="text-xs text-gray-500 border-b border-white/5 bg-white/[0.02]">
-                                    <th class="p-5 font-medium uppercase">Domain</th>
-                                    <th class="p-5 font-medium uppercase">Plan</th>
-                                    <th class="p-5 font-medium uppercase">Status</th>
-                                    <th class="p-5 font-medium uppercase">Auto-Pay</th>
-                                    <th class="p-5 font-medium uppercase text-right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-sm">
-                                <tr class="border-b border-white/5 hover:bg-white/[0.02] transition">
-                                    <td class="p-5">
-                                        <div class="font-bold text-white text-base">mycooldesign.com</div>
-                                        <div class="text-gray-500 text-xs">Reg: 12 Jan 2025</div>
-                                    </td>
-                                    <td class="p-5"><span class="text-white">₹499/mo</span></td>
-                                    <td class="p-5">
-                                        <div class="flex items-center text-green-400">
-                                            <span class="status-dot active-dot"></span> Active
-                                        </div>
-                                    </td>
-                                    <td class="p-5">
-                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                            <input type="checkbox" name="toggle" id="toggle1" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer checked:right-0 checked:border-indigo-600"/>
-                                            <label for="toggle1" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
-                                        </div>
-                                    </td>
-                                    <td class="p-5 text-right">
-                                        <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-gear"></i></button>
-                                    </td>
-                                </tr>
-
-                                <tr class="border-b border-white/5 hover:bg-white/[0.02] transition">
-                                    <td class="p-5">
-                                        <div class="font-bold text-white text-base">tech-start.io</div>
-                                        <div class="text-gray-500 text-xs">Reg: 05 Dec 2025</div>
-                                    </td>
-                                    <td class="p-5"><span class="text-white">₹999/mo</span></td>
-                                    <td class="p-5">
-                                        <div class="flex items-center text-green-400">
-                                            <span class="status-dot active-dot"></span> Active
-                                        </div>
-                                    </td>
-                                    <td class="p-5">
-                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                            <input type="checkbox" name="toggle" id="toggle2" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer checked:right-0 checked:border-indigo-600" checked/>
-                                            <label for="toggle2" class="toggle-label block overflow-hidden h-5 rounded-full bg-indigo-600 cursor-pointer"></label>
-                                        </div>
-                                    </td>
-                                    <td class="p-5 text-right">
-                                        <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-gear"></i></button>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-yellow-500/5 hover:bg-yellow-500/10 transition">
-                                    <td class="p-5">
-                                        <div class="font-bold text-yellow-200 text-base">random-shop.waybe.in</div>
-                                        <div class="text-yellow-500/60 text-xs">Trial ends in 4 days</div>
-                                    </td>
-                                    <td class="p-5"><span class="px-2 py-1 bg-yellow-500/20 text-yellow-500 rounded text-xs font-bold">FREE</span></td>
-                                    <td class="p-5">
-                                        <div class="flex items-center text-yellow-500">
-                                            <span class="status-dot trial-dot"></span> Trial
-                                        </div>
-                                    </td>
-                                    <td class="p-5">
-                                        <button class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded transition">Upgrade to Keep</button>
-                                    </td>
-                                    <td class="p-5 text-right">
-                                        <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-gear"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="glass bg-white rounded-2xl overflow-hidden shadow-sm">
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                    <h3 class="font-bold text-lg text-slate-800">Recent Activity</h3>
+                    <button class="text-indigo-600 text-sm font-bold hover:underline">View All</button>
                 </div>
-
-                <div class="xl:w-1/3 fade-in delay-3">
-                    <h3 class="text-xl font-bold text-white mb-6">My Web Layouts</h3>
-                    <div class="space-y-4">
-                        
-                        <div class="glass-panel p-4 rounded-xl flex items-center space-x-4 hover:border-indigo-500/50 transition cursor-pointer">
-                            <div class="h-16 w-16 bg-gray-800 rounded-lg overflow-hidden flex-shrink-0">
-                                <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="h-full w-full object-cover">
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="text-white font-bold">Neon E-Commerce</h4>
-                                <p class="text-xs text-gray-500">Purchased 2 days ago</p>
-                            </div>
-                            <button class="h-10 w-10 rounded-full bg-white/5 hover:bg-indigo-600 hover:text-white text-gray-400 flex items-center justify-center transition">
-                                <i class="fa-solid fa-download"></i>
-                            </button>
-                        </div>
-
-                        <div class="glass-panel p-4 rounded-xl flex items-center space-x-4 hover:border-indigo-500/50 transition cursor-pointer">
-                            <div class="h-16 w-16 bg-gray-800 rounded-lg overflow-hidden flex-shrink-0">
-                                <img src="https://images.unsplash.com/photo-1467232031835-444db1556a72?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="h-full w-full object-cover">
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="text-white font-bold">Minimal Folio</h4>
-                                <p class="text-xs text-gray-500">Free License</p>
-                            </div>
-                            <button class="h-10 w-10 rounded-full bg-white/5 hover:bg-indigo-600 hover:text-white text-gray-400 flex items-center justify-center transition">
-                                <i class="fa-solid fa-download"></i>
-                            </button>
-                        </div>
-
-                        <div class="p-6 rounded-xl border border-dashed border-gray-700 text-center hover:bg-white/5 transition cursor-pointer">
-                            <div class="h-10 w-10 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-2 text-indigo-500">
-                                <i class="fa-solid fa-plus"></i>
-                            </div>
-                            <p class="text-sm font-bold text-gray-400">Browse Store</p>
-                        </div>
-                    </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-bold">
+                            <tr>
+                                <th class="p-5">Event</th>
+                                <th class="p-5">Status</th>
+                                <th class="p-5">Date</th>
+                                <th class="p-5 text-right">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="p-5 font-bold text-slate-700"><i class="fa-solid fa-file-signature text-slate-400 mr-2"></i> Account Created</td>
+                                <td class="p-5"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Success</span></td>
+                                <td class="p-5 text-slate-500" id="joinDate">...</td>
+                                <td class="p-5 text-right text-slate-400"><i class="fa-solid fa-chevron-right"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
         </div>
     </main>
 
     <script>
-        const sidebar = document.getElementById('sidebar');
-        const backdrop = document.getElementById('backdrop');
+        async function loadDashboard() {
+            try {
+                // Since we don't have a real Login/Password system yet, 
+                // we will simulate it by grabbing the MOST RECENT user from the database.
+                const res = await fetch('/api/users');
+                const users = await res.json();
 
-        function toggleSidebar() {
-            sidebar.classList.toggle('-translate-x-full');
-            backdrop.classList.toggle('hidden');
+                if (users.length > 0) {
+                    const currentUser = users[0]; // Gets the newest user
+                    
+                    // Update HTML with data
+                    document.getElementById('userName').innerText = currentUser.email.split('@')[0]; // Extract name from email
+                    document.getElementById('userDomain').innerText = currentUser.domain || "No Domain Selected";
+                    document.getElementById('userPlan').innerText = currentUser.plan || "Free Tier";
+                    
+                    const date = new Date(currentUser.date).toLocaleDateString();
+                    document.getElementById('joinDate').innerText = date;
+                }
+            } catch (err) {
+                console.error("Dashboard Error:", err);
+            }
         }
+
+        // Run on load
+        loadDashboard();
     </script>
 </body>
 </html>
