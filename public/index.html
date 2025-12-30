@@ -1,387 +1,186 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waybe.in | Future-Ready Domains & Design</title>
+    <title>Waybe.in | Future-Ready Domains</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script> tailwind.config = { darkMode: 'class' } </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-        
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            background-color: #0a0a0a;
-            overflow-x: hidden; /* Prevents horizontal scroll on mobile */
-        }
-        
-        /* --- Glassmorphism & Animations --- */
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .glass-strong { background: rgba(17, 24, 39, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #6366f1, #ec4899, #8b5cf6);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-size: 200% auto; animation: gradientShift 5s ease infinite;
-        }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        .bg-grid {
-            background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
-        }
-
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        .tilt-card { transition: transform 0.3s ease, box-shadow 0.3s ease; perspective: 1000px; }
-        .tilt-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -10px rgba(99, 102, 241, 0.3); border-color: rgba(99, 102, 241, 0.4); }
-
-        /* Mobile Menu Animation */
-        #mobileMenu { transition: transform 0.3s ease-in-out; transform-origin: top; }
-        .menu-hidden { transform: scaleY(0); opacity: 0; }
-        .menu-visible { transform: scaleY(1); opacity: 1; }
+        body { font-family: 'Outfit', sans-serif; transition: background-color 0.5s ease, color 0.5s ease; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(0, 0, 0, 0.05); }
+        .dark .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .gradient-text { background: linear-gradient(135deg, #4f46e5, #ec4899, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .bg-grid { background-image: linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: radial-gradient(circle at center, black 40%, transparent 100%); }
+        .dark .bg-grid { background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); }
+        .tilt-card { transition: transform 0.3s ease; perspective: 1000px; }
+        .tilt-card:hover { transform: translateY(-5px); }
     </style>
 </head>
-<body class="text-white relative">
+<body class="text-gray-900 bg-gray-50 dark:text-white dark:bg-[#0a0a0a] relative">
 
     <div class="fixed inset-0 pointer-events-none overflow-hidden">
         <div class="absolute inset-0 bg-grid opacity-60"></div>
-        <div class="absolute top-0 left-0 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
-        <div class="absolute bottom-0 right-0 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2"></div>
+        <div class="absolute top-0 left-0 w-96 h-96 bg-purple-600/10 dark:bg-purple-600/20 rounded-full blur-[100px]"></div>
     </div>
 
-    <nav id="navbar" class="w-full fixed top-0 z-50 transition-all duration-500 py-4 border-b border-transparent">
+    <nav class="w-full fixed top-0 z-50 py-4 backdrop-blur-md border-b border-transparent dark:border-white/5">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            
-            <div class="text-2xl md:text-3xl font-extrabold tracking-tighter flex items-center z-50">
-                <i class="fa-brands fa-hive text-indigo-500 mr-2"></i>
-                waybe<span class="text-indigo-500">.in</span>
+            <div class="text-2xl font-extrabold flex items-center">
+                <i class="fa-brands fa-hive text-indigo-600 dark:text-indigo-500 mr-2"></i> waybe.in
             </div>
-
-            <div class="hidden md:flex space-x-8 text-sm font-semibold text-gray-300 items-center">
-                <a href="#domains" class="hover:text-white hover:scale-105 transition">Domains</a>
-                <a href="#designs" class="hover:text-white hover:scale-105 transition">Web Designs</a>
-                <a href="#pricing" class="hover:text-white hover:scale-105 transition">Pricing</a>
-                <a href="/dashboard" class="bg-white/10 hover:bg-indigo-600 px-6 py-2 rounded-full font-bold transition-all border border-white/10 hover:border-indigo-500 backdrop-blur-md shadow-lg">
-                    Sign In
-                </a>
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition">
+                    <i id="themeIcon" class="fa-solid fa-sun text-yellow-500"></i>
+                </button>
             </div>
-
-            <button class="md:hidden text-2xl text-white focus:outline-none z-50" onclick="toggleMobileMenu()">
-                <i class="fa-solid fa-bars" id="menuIcon"></i>
-            </button>
-        </div>
-
-        <div id="mobileMenu" class="menu-hidden absolute top-full left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 flex flex-col p-6 space-y-6 shadow-2xl md:hidden">
-            <a href="#domains" class="text-xl font-medium text-gray-300" onclick="toggleMobileMenu()">Domains</a>
-            <a href="#designs" class="text-xl font-medium text-gray-300" onclick="toggleMobileMenu()">Web Designs</a>
-            <a href="#pricing" class="text-xl font-medium text-gray-300" onclick="toggleMobileMenu()">Pricing</a>
-            <hr class="border-gray-800">
-            <a href="/dashboard" class="bg-indigo-600 text-white py-4 rounded-xl text-center font-bold text-lg shadow-lg">
-                Login to Dashboard
-            </a>
         </div>
     </nav>
 
-    <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-24">
-        
-        <div class="reveal inline-flex items-center px-4 py-2 mb-8 rounded-full border border-purple-500/30 bg-purple-900/20 text-purple-300 text-xs md:text-sm font-bold tracking-wide">
-            <span class="flex h-2 w-2 relative mr-3">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-            </span>
-            NEW: 15-DAY RANDOM DOMAIN TRIAL
-        </div>
-        
-        <h1 class="reveal text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 leading-tight tracking-tight">
-            Define Your <br> 
-            <span class="gradient-text" id="dynamic-headline">Digital Identity</span>
+    <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-24 relative">
+        <span class="inline-flex items-center px-4 py-2 mb-8 rounded-full border border-purple-500/30 bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300 text-xs font-bold tracking-wide">
+            NEW: 15-DAY TRIAL ACTIVE
+        </span>
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 text-gray-900 dark:text-white">
+            Define Your <span class="gradient-text">Digital Identity</span>
         </h1>
         
-        <p class="reveal text-gray-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed px-4">
-            Instant domains, premium layouts, and flexible monthly subscriptions.
-        </p>
+        <div class="w-full max-w-2xl mt-8 relative z-20">
+            <div class="glass p-2 rounded-full flex items-center shadow-xl">
+                <div class="pl-6 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <input type="text" id="domainInput" placeholder="Search domain..." class="flex-grow bg-transparent text-gray-800 dark:text-white px-4 py-4 outline-none font-medium">
+                <button onclick="searchDomain()" class="bg-indigo-600 px-8 py-4 rounded-full text-white font-bold hover:bg-indigo-500 transition">Search</button>
+            </div>
+            <div id="searchResult" class="w-full mt-4 hidden"></div>
+        </div>
+    </section>
 
-        <div class="reveal w-full max-w-3xl flex flex-col items-center z-20 px-4">
-            <div class="w-full glass p-2 rounded-full flex items-center shadow-2xl focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
-                <div class="pl-4 md:pl-6 text-gray-500"><i class="fa-solid fa-magnifying-glass text-lg md:text-xl"></i></div>
-                <input type="text" id="domainInput" placeholder="Search domain (e.g. google.com)" 
-                       class="flex-grow bg-transparent text-white px-3 md:px-6 py-3 md:py-4 outline-none placeholder-gray-500 text-base md:text-lg font-medium w-full">
-                <button onclick="searchDomain()" id="searchBtn" class="bg-indigo-600 px-6 md:px-10 py-3 md:py-4 rounded-full font-bold text-sm md:text-lg hover:bg-indigo-500 transition shadow-lg whitespace-nowrap">
-                    Search
-                </button>
+    <section class="py-20 px-6">
+        <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="tilt-card glass p-8 rounded-[2rem]">
+                <h3 class="text-2xl font-bold mb-2">Starter</h3>
+                <p class="text-gray-500 text-sm mb-6">Standard domains.</p>
+                <button onclick="openModal('Starter')" class="w-full py-3 rounded-xl border border-gray-300 dark:border-gray-700 font-bold hover:bg-gray-100 dark:hover:bg-white/5 transition">Select</button>
             </div>
             
-            <div id="searchResult" class="w-full mt-4 hidden transition-all duration-500">
-                </div>
-        </div>
-        
-        <div class="reveal mt-12 flex flex-wrap justify-center gap-6 md:gap-12 text-gray-500 text-xs md:text-sm font-semibold">
-             <div class="flex items-center"><i class="fa-solid fa-bolt text-yellow-500 mr-2"></i> Instant Setup</div>
-             <div class="flex items-center"><i class="fa-solid fa-shield-halved text-green-500 mr-2"></i> Secure Lock</div>
-             <div class="flex items-center"><i class="fa-solid fa-credit-card text-blue-500 mr-2"></i> Cancel Anytime</div>
-        </div>
-    </section>
-
-    <section id="domains" class="py-20 px-6 relative z-10">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16 reveal">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4">Domain Solutions</h2>
-                <p class="text-lg text-gray-400">Choose how you want to start.</p>
+            <div class="tilt-card glass p-8 rounded-[2rem] border-purple-500/50 bg-purple-50 dark:bg-purple-900/10 relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">FREE TRIAL</div>
+                <h3 class="text-2xl font-bold mb-2">15-Day Trial</h3>
+                <p class="text-purple-600 dark:text-purple-300 text-sm mb-6">Random domain for 15 days.</p>
+                <button onclick="openModal('Free Trial')" class="w-full py-3 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-500 transition shadow-lg shadow-purple-500/30">Start Free Trial</button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="reveal tilt-card glass p-8 rounded-[2rem]">
-                    <div class="h-14 w-14 bg-indigo-600/20 text-indigo-400 rounded-2xl flex items-center justify-center mb-6 text-2xl"><i class="fa-solid fa-earth-americas"></i></div>
-                    <h3 class="text-2xl font-bold mb-3">Worldwide</h3>
-                    <p class="text-gray-400 mb-6 text-sm">Global extensions like .com, .net, and .org for maximum reach.</p>
-                    <a href="#" class="text-indigo-400 font-bold text-sm">Explore &rarr;</a>
-                </div>
-
-                <div class="reveal tilt-card glass p-8 rounded-[2rem] border-purple-500/30 relative overflow-hidden bg-purple-900/5">
-                    <div class="absolute top-0 right-0 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">POPULAR</div>
-                    <div class="h-14 w-14 bg-purple-600/20 text-purple-400 rounded-2xl flex items-center justify-center mb-6 text-2xl"><i class="fa-solid fa-clock"></i></div>
-                    <h3 class="text-2xl font-bold mb-3">15-Day Free Trial</h3>
-                    <p class="text-gray-400 mb-6 text-sm">Get a random domain for 15 days. Build, test, and decide later.</p>
-                    <button class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 font-bold text-sm transition">Start Trial</button>
-                </div>
-
-                <div class="reveal tilt-card glass p-8 rounded-[2rem]">
-                    <div class="h-14 w-14 bg-pink-600/20 text-pink-400 rounded-2xl flex items-center justify-center mb-6 text-2xl"><i class="fa-solid fa-briefcase"></i></div>
-                    <h3 class="text-2xl font-bold mb-3">Business Pro</h3>
-                    <p class="text-gray-400 mb-6 text-sm">Premium keywords and specific business extensions.</p>
-                    <a href="#" class="text-pink-400 font-bold text-sm">Browse Premium &rarr;</a>
-                </div>
+            <div class="tilt-card glass p-8 rounded-[2rem]">
+                <h3 class="text-2xl font-bold mb-2">Pro</h3>
+                <p class="text-gray-500 text-sm mb-6">Premium extensions.</p>
+                <button onclick="openModal('Pro')" class="w-full py-3 rounded-xl border border-gray-300 dark:border-gray-700 font-bold hover:bg-gray-100 dark:hover:bg-white/5 transition">Select</button>
             </div>
         </div>
     </section>
 
-    <section id="designs" class="py-20 bg-black/30">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 reveal">
-                <div class="mb-6 md:mb-0">
-                    <h2 class="text-4xl font-bold mb-2">Design Store</h2>
-                    <p class="text-gray-400">Premium layouts. Ready to deploy.</p>
-                </div>
-                <div class="flex space-x-2 bg-white/5 p-1 rounded-full">
-                    <button class="px-4 py-2 bg-indigo-600 rounded-full text-xs font-bold">All</button>
-                    <button class="px-4 py-2 hover:bg-white/10 rounded-full text-xs font-bold">Free</button>
-                    <button class="px-4 py-2 hover:bg-white/10 rounded-full text-xs font-bold">Premium</button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="reveal group cursor-pointer relative rounded-2xl overflow-hidden h-64 md:h-80">
-                    <img src="https://images.unsplash.com/photo-1487014679447-9f8336841d58?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                    <div class="absolute bottom-0 p-6 w-full">
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <span class="text-green-400 text-xs font-bold uppercase">Free License</span>
-                                <h4 class="font-bold text-xl">Minimal Folio</h4>
-                            </div>
-                            <button class="bg-white text-black h-10 w-10 rounded-full flex items-center justify-center hover:bg-gray-200"><i class="fa-solid fa-download"></i></button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="reveal group cursor-pointer relative rounded-2xl overflow-hidden h-64 md:h-80">
-                    <img src="https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                    <div class="absolute bottom-0 p-6 w-full">
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <span class="text-indigo-400 text-xs font-bold uppercase">₹2,500</span>
-                                <h4 class="font-bold text-xl">Neon Commerce</h4>
-                            </div>
-                            <button class="bg-indigo-600 text-white h-10 w-10 rounded-full flex items-center justify-center hover:bg-indigo-500"><i class="fa-solid fa-cart-shopping"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="reveal group cursor-pointer relative rounded-2xl overflow-hidden h-64 md:h-80">
-                    <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                    <div class="absolute bottom-0 p-6 w-full">
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <span class="text-indigo-400 text-xs font-bold uppercase">₹4,000</span>
-                                <h4 class="font-bold text-xl">Corp Elite</h4>
-                            </div>
-                            <button class="bg-indigo-600 text-white h-10 w-10 rounded-full flex items-center justify-center hover:bg-indigo-500"><i class="fa-solid fa-cart-shopping"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div id="signupModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+        <div class="bg-white dark:bg-gray-900 p-8 rounded-3xl w-full max-w-md relative border border-white/10 shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <h2 class="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Claim Your Domain</h2>
+            <p class="text-sm text-gray-500 mb-6">Enter your email to activate the <span id="planName" class="text-purple-500 font-bold"></span>.</p>
+            
+            <input type="email" id="userEmail" placeholder="Enter your email" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 mb-4 text-gray-900 dark:text-white outline-none focus:border-indigo-500 transition">
+            
+            <button onclick="registerUser()" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition shadow-lg">
+                Activate Now
+            </button>
+            <p id="msg" class="text-center mt-4 text-sm font-medium"></p>
         </div>
-    </section>
-
-    <section id="pricing" class="py-20 px-6">
-        <div class="max-w-7xl mx-auto text-center mb-16 reveal">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4">Flexible Subscriptions</h2>
-            <p class="text-lg text-gray-400">Cancel anytime. No hidden fees.</p>
-        </div>
-        
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="reveal glass p-8 rounded-[2rem] hover:border-gray-500 transition">
-                <h3 class="text-xl font-bold text-gray-300">Starter</h3>
-                <div class="text-5xl font-extrabold my-4">₹499<span class="text-sm font-normal text-gray-500">/mo</span></div>
-                <ul class="text-left space-y-3 text-gray-400 mb-8 text-sm">
-                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> 1 Custom Domain</li>
-                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Free Layouts</li>
-                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Basic DNS</li>
-                </ul>
-                <button class="w-full py-3 rounded-xl border border-gray-600 hover:bg-white hover:text-black font-bold transition">Select Plan</button>
-            </div>
-
-            <div class="reveal glass p-8 rounded-[2rem] border-indigo-500 bg-indigo-900/10 transform md:-translate-y-4 shadow-2xl relative">
-                <div class="absolute top-0 inset-x-0 -mt-3 flex justify-center"><span class="bg-indigo-600 text-xs font-bold px-3 py-1 rounded-full uppercase">Most Popular</span></div>
-                <h3 class="text-2xl font-bold text-white mt-2">Business</h3>
-                <div class="text-5xl font-extrabold my-4">₹999<span class="text-sm font-normal text-gray-500">/mo</span></div>
-                <ul class="text-left space-y-3 text-white mb-8 text-sm font-medium">
-                    <li><i class="fa-solid fa-check-circle text-indigo-400 mr-2"></i> 3 Custom Domains</li>
-                    <li><i class="fa-solid fa-check-circle text-indigo-400 mr-2"></i> 1 Premium Layout</li>
-                    <li><i class="fa-solid fa-check-circle text-indigo-400 mr-2"></i> Priority Support</li>
-                </ul>
-                <button class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 font-bold transition hover:scale-105">Get Business</button>
-            </div>
-
-            <div class="reveal glass p-8 rounded-[2rem] hover:border-gray-500 transition">
-                <h3 class="text-xl font-bold text-gray-300">Agency</h3>
-                <div class="text-5xl font-extrabold my-4">₹2999<span class="text-sm font-normal text-gray-500">/mo</span></div>
-                <ul class="text-left space-y-3 text-gray-400 mb-8 text-sm">
-                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> 10 Domains</li>
-                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> White Label</li>
-                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> API Access</li>
-                </ul>
-                <button class="w-full py-3 rounded-xl border border-gray-600 hover:bg-white hover:text-black font-bold transition">Contact Sales</button>
-            </div>
-        </div>
-    </section>
-
-    <footer class="border-t border-white/10 mt-20 bg-black/80 backdrop-blur-lg py-12 px-6">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-            <div class="mb-4 md:mb-0">
-                <div class="text-2xl font-bold">waybe<span class="text-indigo-500">.in</span></div>
-                <p class="text-gray-500 text-sm mt-2">The future of digital ownership.</p>
-            </div>
-            <div class="text-gray-500 text-sm">
-                &copy; 2025 Waybe.in. All rights reserved.
-            </div>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        // 1. Mobile Menu Toggle
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            const icon = document.getElementById('menuIcon');
+        // 1. Theme Logic
+        const html = document.documentElement;
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) html.classList.add('dark');
+        function toggleTheme() {
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        }
+
+        // 2. Modal Logic
+        let selectedPlan = "";
+        function openModal(plan) {
+            selectedPlan = plan;
+            document.getElementById('planName').innerText = plan;
+            document.getElementById('signupModal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('signupModal').classList.add('hidden');
+            document.getElementById('msg').innerText = "";
+        }
+
+        // 3. DATABASE CONNECTION (The Magic)
+        async function registerUser() {
+            const email = document.getElementById('userEmail').value;
+            const btn = document.getElementById('submitBtn');
+            const msg = document.getElementById('msg');
             
-            if (menu.classList.contains('menu-hidden')) {
-                menu.classList.remove('menu-hidden');
-                menu.classList.add('menu-visible');
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-xmark');
-            } else {
-                menu.classList.add('menu-hidden');
-                menu.classList.remove('menu-visible');
-                icon.classList.remove('fa-xmark');
-                icon.classList.add('fa-bars');
-            }
-        }
+            if (!email.includes('@')) { msg.innerText = "Please enter a valid email."; msg.className="text-red-500 text-center mt-4 text-sm"; return; }
 
-        // 2. Scroll Animations & Navbar Glass
-        function reveal() {
-            const reveals = document.querySelectorAll(".reveal");
-            for (let i = 0; i < reveals.length; i++) {
-                if (reveals[i].getBoundingClientRect().top < window.innerHeight - 100) {
-                    reveals[i].classList.add("active");
-                }
-            }
-        }
-        window.addEventListener("scroll", () => {
-            reveal();
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) nav.classList.add('glass-strong');
-            else nav.classList.remove('glass-strong');
-        });
-        reveal(); // Trigger on load
-
-        // 3. Dynamic Headline
-        const headlines = ["Digital Identity", "Online Empire", "Next Big Idea"];
-        let hIdx = 0;
-        const hEl = document.getElementById('dynamic-headline');
-        setInterval(() => {
-            hEl.style.opacity = 0;
-            setTimeout(() => {
-                hIdx = (hIdx + 1) % headlines.length;
-                hEl.textContent = headlines[hIdx];
-                hEl.style.opacity = 1;
-            }, 500);
-        }, 3000);
-
-        // 4. REAL SERVER SEARCH LOGIC
-        async function searchDomain() {
-            const input = document.getElementById('domainInput');
-            const btn = document.getElementById('searchBtn');
-            const result = document.getElementById('searchResult');
-            const domain = input.value.trim();
-
-            if (domain.length < 3) return;
-
-            // Loading State
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
-            btn.classList.add('opacity-70');
-            result.classList.add('hidden');
-
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+            
             try {
-                // Fetch from your Node.js Server
-                const response = await fetch('/api/search-domain', {
+                // Send data to YOUR server (server.js)
+                const response = await fetch('/api/signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ domain: domain })
+                    body: JSON.stringify({ 
+                        email: email, 
+                        plan: selectedPlan,
+                        domain: "Random-Trial-" + Math.floor(Math.random()*1000) 
+                    })
                 });
+                
                 const data = await response.json();
-
-                // Display Result
-                if (data.available) {
-                    result.innerHTML = `
-                        <div class="bg-green-500/10 border border-green-500/50 p-4 rounded-xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-                            <div class="mb-3 md:mb-0">
-                                <div class="font-bold text-xl text-white flex items-center justify-center md:justify-start">
-                                    <i class="fa-solid fa-check-circle text-green-500 mr-2"></i> ${data.domain}
-                                </div>
-                                <div class="text-green-400 text-sm">Available for ₹${data.price}/mo</div>
-                            </div>
-                            <button class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition">Add to Cart</button>
-                        </div>
-                    `;
+                
+                if (data.success) {
+                    msg.innerText = "🎉 Success! Check your inbox.";
+                    msg.className = "text-green-500 text-center mt-4 text-sm";
+                    btn.innerText = "Registered!";
+                    setTimeout(closeModal, 2000);
                 } else {
-                    result.innerHTML = `
-                        <div class="bg-red-500/10 border border-red-500/50 p-4 rounded-xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-                            <div class="mb-3 md:mb-0">
-                                <div class="font-bold text-xl text-white line-through decoration-red-500 flex items-center justify-center md:justify-start">
-                                    <i class="fa-solid fa-xmark-circle text-red-500 mr-2"></i> ${data.domain}
-                                </div>
-                                <div class="text-red-400 text-sm">Taken / Unavailable</div>
-                            </div>
-                            <button class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-bold transition">Check Whois</button>
-                        </div>
-                    `;
+                    msg.innerText = "Error: " + data.message;
+                    msg.className = "text-red-500 text-center mt-4 text-sm";
+                    btn.innerText = "Try Again";
                 }
-                result.classList.remove('hidden');
-
-            } catch (error) {
-                console.error(error);
-                alert("Server Connection Failed. Please try again.");
+            } catch (err) {
+                console.error(err);
+                msg.innerText = "Server Error. Try again later.";
+                btn.innerText = "Try Again";
             }
+        }
 
-            btn.innerHTML = originalText;
-            btn.classList.remove('opacity-70');
+        // 4. Search Logic
+        async function searchDomain() {
+            const domain = document.getElementById('domainInput').value;
+            const result = document.getElementById('searchResult');
+            if(domain.length < 3) return;
+            
+            result.innerHTML = '<div class="text-center text-gray-500"><i class="fa-solid fa-circle-notch fa-spin"></i> Checking availability...</div>';
+            result.classList.remove('hidden');
+
+            try {
+                const res = await fetch('/api/search-domain', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ domain })
+                });
+                const data = await res.json();
+                
+                if (data.available) {
+                    result.innerHTML = `<div class="bg-green-500/10 border border-green-500/50 p-4 rounded-xl flex justify-between items-center"><span class="text-green-600 font-bold">${data.domain} is available!</span> <button class="bg-green-600 text-white px-4 py-1 rounded-lg text-sm" onclick="openModal('Buy ${data.domain}')">Buy</button></div>`;
+                } else {
+                    result.innerHTML = `<div class="bg-red-500/10 border border-red-500/50 p-4 rounded-xl text-red-600 font-bold">${data.domain} is taken.</div>`;
+                }
+            } catch (e) { result.innerHTML = "Error connecting to server."; }
         }
     </script>
 </body>
