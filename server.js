@@ -7,18 +7,17 @@ const app = express();
 app.use(express.static('public'));
 app.use(express.json());
 
-// 2. Connect to MongoDB (Matches your Render Key 'MONGO_URI')
-const mongoUri = process.env.MONGO_URI; 
-
+// 2. Database Connection
+const mongoUri = process.env.MONGO_URI || process.env.MONGO_URL;
 if (!mongoUri) {
-    console.log("⚠️ No Database Key found! Check Render Environment Variables.");
+    console.log("⚠️ No Database Key found!");
 } else {
     mongoose.connect(mongoUri)
         .then(() => console.log("✅ MongoDB Connected: Brain is Active!"))
         .catch(err => console.error("❌ MongoDB Error:", err));
 }
 
-// 3. Define the User Model
+// 3. User Model
 const UserSchema = new mongoose.Schema({
     email: String,
     domain: String,
@@ -27,42 +26,39 @@ const UserSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', UserSchema);
 
-// 4. API: Search Domain
+// --- APIs ---
+
+// SEARCH DOMAIN
 app.post('/api/search-domain', async (req, res) => {
     const { domain } = req.body;
-    const isTaken = domain.toLowerCase().includes('google') || 
-                    domain.toLowerCase().includes('facebook');
+    const isTaken = domain.toLowerCase().includes('google');
     const price = Math.floor(Math.random() * 500) + 199;
-
-    if (isTaken) {
-        res.json({ available: false, domain: domain });
-    } else {
-        res.json({ available: true, domain: domain, price: price });
-    }
+    res.json({ available: !isTaken, domain, price });
 });
 
-// 5. API: Signup (Save to Database)
+// SIGNUP (SAVE DATA)
 app.post('/api/signup', async (req, res) => {
     try {
-        console.log("Received signup data:", req.body);
         const { email, domain, plan } = req.body;
-        
-        const newUser = new User({
-            email: email,
-            domain: domain,
-            plan: plan
-        });
-
+        const newUser = new User({ email, domain, plan });
         await newUser.save();
-        console.log("🎉 New User Saved:", email);
-        res.json({ success: true, message: "Account created successfully!" });
+        res.json({ success: true });
     } catch (error) {
-        console.error("Signup Error:", error);
-        res.status(500).json({ success: false, message: "Server Error" });
+        res.status(500).json({ success: false });
     }
 });
 
-// 6. Start Server
+// *** NEW: GET USERS (READ DATA) ***
+app.get('/api/users', async (req, res) => {
+    try {
+        const users = await User.find().sort({ date: -1 }); // Get all users, newest first
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: "Could not fetch data" });
+    }
+});
+
+// Start Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
