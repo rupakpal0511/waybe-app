@@ -12,139 +12,83 @@
         body { 
             font-family: 'Outfit', sans-serif; 
             background-color: #0a0a0a;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevents horizontal scroll on mobile */
         }
         
-        /* Glassmorphism Base */
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        /* --- Glassmorphism & Animations --- */
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-strong { background: rgba(17, 24, 39, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         
-        .glass-strong {
-             background: rgba(17, 24, 39, 0.7);
-             backdrop-filter: blur(20px);
-             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Standard Gradient Text */
         .gradient-text {
             background: linear-gradient(135deg, #6366f1, #ec4899, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% auto;
-            animation: gradientShift 5s ease infinite;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% auto; animation: gradientShift 5s ease infinite;
         }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* --- Background Animations --- */
         .bg-grid {
             background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background-size: 40px 40px;
             mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
         }
 
-        .animated-blob {
-            position: absolute;
-            filter: blur(100px);
-            z-index: -2;
-            opacity: 0.5;
-            mix-blend-mode: screen;
-            animation: moveBlob 20s infinite alternate ease-in-out;
-        }
-        .blob-1 { top: -10%; left: -10%; background: #4f46e5; animation-delay: 0s; }
-        .blob-2 { bottom: -10%; right: -10%; background: #db2777; animation-delay: -5s; }
-        .blob-3 { bottom: 30%; left: 20%; background: #7c3aed; width: 300px; height: 300px; animation-delay: -10s; opacity: 0.3;}
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
+        .tilt-card { transition: transform 0.3s ease, box-shadow 0.3s ease; perspective: 1000px; }
+        .tilt-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -10px rgba(99, 102, 241, 0.3); border-color: rgba(99, 102, 241, 0.4); }
 
-        @keyframes moveBlob {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(10%, 20%) scale(1.1); }
-            100% { transform: translate(-10%, 10%) scale(0.9); }
-        }
-
-        /* 3D Tilt Card Effect on Hover */
-        .tilt-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-        .tilt-card:hover {
-            transform: translateY(-10px) rotateX(5deg) rotateY(-5deg);
-            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25);
-            border-color: rgba(99, 102, 241, 0.4);
-        }
-
-        /* Subtle Pulse for Calls to Action */
-        .pulse-animation {
-            animation: subtlePulse 2s infinite ease-in-out;
-        }
-        @keyframes subtlePulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.9; transform: scale(1.05); }
-        }
-
-        /* Scroll Reveal Classes */
-        .reveal {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .animate-pulse-once {
-            animation: pulseOnce 0.5s ease-out;
-        }
-        @keyframes pulseOnce {
-            0% { transform: scale(0.98); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .delay-1 { transition-delay: 0.1s; }
-        .delay-2 { transition-delay: 0.2s; }
-        .delay-3 { transition-delay: 0.3s; }
+        /* Mobile Menu Animation */
+        #mobileMenu { transition: transform 0.3s ease-in-out; transform-origin: top; }
+        .menu-hidden { transform: scaleY(0); opacity: 0; }
+        .menu-visible { transform: scaleY(1); opacity: 1; }
     </style>
 </head>
 <body class="text-white relative">
 
     <div class="fixed inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute inset-0 bg-grid opacity-70"></div>
-        <div class="animated-blob blob-1 w-[500px] h-[500px] rounded-full"></div>
-        <div class="animated-blob blob-2 w-[500px] h-[500px] rounded-full"></div>
-        <div class="animated-blob blob-3 rounded-full"></div>
+        <div class="absolute inset-0 bg-grid opacity-60"></div>
+        <div class="absolute top-0 left-0 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2"></div>
     </div>
 
     <nav id="navbar" class="w-full fixed top-0 z-50 transition-all duration-500 py-4 border-b border-transparent">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <div class="text-3xl font-extrabold tracking-tighter flex items-center group cursor-pointer">
-                <i class="fa-brands fa-hive text-indigo-500 mr-2 group-hover:rotate-12 transition-transform"></i>
+            
+            <div class="text-2xl md:text-3xl font-extrabold tracking-tighter flex items-center z-50">
+                <i class="fa-brands fa-hive text-indigo-500 mr-2"></i>
                 waybe<span class="text-indigo-500">.in</span>
             </div>
+
             <div class="hidden md:flex space-x-8 text-sm font-semibold text-gray-300 items-center">
                 <a href="#domains" class="hover:text-white hover:scale-105 transition">Domains</a>
                 <a href="#designs" class="hover:text-white hover:scale-105 transition">Web Designs</a>
                 <a href="#pricing" class="hover:text-white hover:scale-105 transition">Pricing</a>
-                 <a href="/dashboard" class="bg-white/10 hover:bg-indigo-600 px-5 py-2 rounded-full font-semibold transition-all duration-300 border border-white/20 hover:border-indigo-500 backdrop-blur-md">
+                <a href="/dashboard" class="bg-white/10 hover:bg-indigo-600 px-6 py-2 rounded-full font-bold transition-all border border-white/10 hover:border-indigo-500 backdrop-blur-md shadow-lg">
                     Sign In
                 </a>
             </div>
+
+            <button class="md:hidden text-2xl text-white focus:outline-none z-50" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars" id="menuIcon"></i>
+            </button>
+        </div>
+
+        <div id="mobileMenu" class="menu-hidden absolute top-full left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 flex flex-col p-6 space-y-6 shadow-2xl md:hidden">
+            <a href="#domains" class="text-xl font-medium text-gray-300" onclick="toggleMobileMenu()">Domains</a>
+            <a href="#designs" class="text-xl font-medium text-gray-300" onclick="toggleMobileMenu()">Web Designs</a>
+            <a href="#pricing" class="text-xl font-medium text-gray-300" onclick="toggleMobileMenu()">Pricing</a>
+            <hr class="border-gray-800">
+            <a href="/dashboard" class="bg-indigo-600 text-white py-4 rounded-xl text-center font-bold text-lg shadow-lg">
+                Login to Dashboard
+            </a>
         </div>
     </nav>
 
-    <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-20">
+    <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-24">
         
-        <div class="reveal inline-flex items-center px-4 py-2 mb-8 rounded-full border border-purple-500/30 bg-purple-900/20 text-purple-300 text-sm font-bold tracking-wide pulse-animation">
+        <div class="reveal inline-flex items-center px-4 py-2 mb-8 rounded-full border border-purple-500/30 bg-purple-900/20 text-purple-300 text-xs md:text-sm font-bold tracking-wide">
             <span class="flex h-2 w-2 relative mr-3">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
@@ -152,127 +96,122 @@
             NEW: 15-DAY RANDOM DOMAIN TRIAL
         </div>
         
-        <h1 class="reveal text-6xl md:text-8xl font-extrabold mb-8 leading-none tracking-tight">
+        <h1 class="reveal text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 leading-tight tracking-tight">
             Define Your <br> 
             <span class="gradient-text" id="dynamic-headline">Digital Identity</span>
         </h1>
         
-        <p class="reveal text-gray-400 text-lg md:text-xl max-w-2xl mb-12 leading-relaxed delay-1">
-            The future of web ownership is monthly. Instant domains, stunning layouts, and flexible subscription plans tailored for growth.
+        <p class="reveal text-gray-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed px-4">
+            Instant domains, premium layouts, and flexible monthly subscriptions.
         </p>
 
-        <div class="reveal w-full max-w-3xl flex flex-col items-center z-20 delay-2">
-            
-            <div class="w-full glass p-2 rounded-full flex items-center shadow-2xl shadow-indigo-900/20 focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
-                <div class="pl-6 text-gray-500"><i class="fa-solid fa-magnifying-glass text-xl"></i></div>
-                <input type="text" id="domainInput" placeholder="Type your dream domain name (e.g. google.com)" 
-                       class="flex-grow bg-transparent text-white px-4 py-4 outline-none placeholder-gray-500 text-lg font-medium">
-                <button onclick="searchDomain()" id="searchBtn" class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 md:px-12 py-4 rounded-full font-bold text-lg hover:scale-105 active:scale-95 transition-transform shadow-lg min-w-[150px]">
+        <div class="reveal w-full max-w-3xl flex flex-col items-center z-20 px-4">
+            <div class="w-full glass p-2 rounded-full flex items-center shadow-2xl focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
+                <div class="pl-4 md:pl-6 text-gray-500"><i class="fa-solid fa-magnifying-glass text-lg md:text-xl"></i></div>
+                <input type="text" id="domainInput" placeholder="Search domain (e.g. google.com)" 
+                       class="flex-grow bg-transparent text-white px-3 md:px-6 py-3 md:py-4 outline-none placeholder-gray-500 text-base md:text-lg font-medium w-full">
+                <button onclick="searchDomain()" id="searchBtn" class="bg-indigo-600 px-6 md:px-10 py-3 md:py-4 rounded-full font-bold text-sm md:text-lg hover:bg-indigo-500 transition shadow-lg whitespace-nowrap">
                     Search
                 </button>
             </div>
-
-            <div id="searchResult" class="w-full mt-6 hidden transition-all duration-500 ease-out transform scale-95 opacity-0">
+            
+            <div id="searchResult" class="w-full mt-4 hidden transition-all duration-500">
                 </div>
-
         </div>
         
-        <div class="reveal mt-16 flex space-x-12 text-gray-400 text-sm font-semibold delay-3">
+        <div class="reveal mt-12 flex flex-wrap justify-center gap-6 md:gap-12 text-gray-500 text-xs md:text-sm font-semibold">
              <div class="flex items-center"><i class="fa-solid fa-bolt text-yellow-500 mr-2"></i> Instant Setup</div>
              <div class="flex items-center"><i class="fa-solid fa-shield-halved text-green-500 mr-2"></i> Secure Lock</div>
              <div class="flex items-center"><i class="fa-solid fa-credit-card text-blue-500 mr-2"></i> Cancel Anytime</div>
         </div>
     </section>
 
-    <section id="domains" class="py-24 px-6 relative z-10">
+    <section id="domains" class="py-20 px-6 relative z-10">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-5xl font-bold mb-4">Domain Solutions</h2>
-                <p class="text-xl text-gray-400">Choose how you want to start your journey.</p>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Domain Solutions</h2>
+                <p class="text-lg text-gray-400">Choose how you want to start.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div class="reveal tilt-card glass p-10 rounded-[2rem] group delay-1 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div class="h-16 w-16 bg-indigo-600/20 text-indigo-400 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-earth-americas text-3xl"></i>
-                    </div>
-                    <h3 class="text-3xl font-bold mb-4">Worldwide Domains</h3>
-                    <p class="text-gray-400 mb-8 text-lg leading-relaxed">Secure globally recognized extensions like .com, .net, and .org for maximum reach.</p>
-                    <a href="#" class="flex items-center text-indigo-400 font-bold group-hover:translate-x-2 transition-transform">
-                        Explore Extensions <i class="fa-solid fa-arrow-right ml-2"></i>
-                    </a>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="reveal tilt-card glass p-8 rounded-[2rem]">
+                    <div class="h-14 w-14 bg-indigo-600/20 text-indigo-400 rounded-2xl flex items-center justify-center mb-6 text-2xl"><i class="fa-solid fa-earth-americas"></i></div>
+                    <h3 class="text-2xl font-bold mb-3">Worldwide</h3>
+                    <p class="text-gray-400 mb-6 text-sm">Global extensions like .com, .net, and .org for maximum reach.</p>
+                    <a href="#" class="text-indigo-400 font-bold text-sm">Explore &rarr;</a>
                 </div>
 
-                <div class="reveal tilt-card glass p-10 rounded-[2rem] border-purple-500/30 group delay-2 relative overflow-hidden ring-1 ring-purple-500/50">
-                    <div class="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-pink-600 text-white text-xs font-bold px-4 py-2 rounded-bl-2xl shadow-lg">POPULAR</div>
-                     <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    
-                    <div class="h-16 w-16 bg-purple-600/20 text-purple-400 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-dice text-3xl"></i>
-                    </div>
-                    <h3 class="text-3xl font-bold mb-4">15-Day Free Trial</h3>
-                    <p class="text-gray-400 mb-8 text-lg leading-relaxed">Get a randomly generated, unique domain name free for 15 days. Test your idea risk-free.</p>
-                    <button class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 font-bold text-lg hover:shadow-lg hover:shadow-purple-600/30 hover:scale-[1.02] transition-all">
-                        Start Free Trial
-                    </button>
+                <div class="reveal tilt-card glass p-8 rounded-[2rem] border-purple-500/30 relative overflow-hidden bg-purple-900/5">
+                    <div class="absolute top-0 right-0 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">POPULAR</div>
+                    <div class="h-14 w-14 bg-purple-600/20 text-purple-400 rounded-2xl flex items-center justify-center mb-6 text-2xl"><i class="fa-solid fa-clock"></i></div>
+                    <h3 class="text-2xl font-bold mb-3">15-Day Free Trial</h3>
+                    <p class="text-gray-400 mb-6 text-sm">Get a random domain for 15 days. Build, test, and decide later.</p>
+                    <button class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 font-bold text-sm transition">Start Trial</button>
                 </div>
 
-                <div class="reveal tilt-card glass p-10 rounded-[2rem] group delay-3 relative overflow-hidden">
-                     <div class="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div class="h-16 w-16 bg-pink-600/20 text-pink-400 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-briefcase text-3xl"></i>
-                    </div>
-                    <h3 class="text-3xl font-bold mb-4">Business & Custom</h3>
-                    <p class="text-gray-400 mb-8 text-lg leading-relaxed">Premium, short keywords and specific business domain extensions for established brands.</p>
-                     <a href="#" class="flex items-center text-pink-400 font-bold group-hover:translate-x-2 transition-transform">
-                        Browse Premium <i class="fa-solid fa-arrow-right ml-2"></i>
-                    </a>
+                <div class="reveal tilt-card glass p-8 rounded-[2rem]">
+                    <div class="h-14 w-14 bg-pink-600/20 text-pink-400 rounded-2xl flex items-center justify-center mb-6 text-2xl"><i class="fa-solid fa-briefcase"></i></div>
+                    <h3 class="text-2xl font-bold mb-3">Business Pro</h3>
+                    <p class="text-gray-400 mb-6 text-sm">Premium keywords and specific business extensions.</p>
+                    <a href="#" class="text-pink-400 font-bold text-sm">Browse Premium &rarr;</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="designs" class="py-24 bg-black/30 relative">
-        <div class="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block h-[60px] w-full fill-current text-[#0a0a0a]">
-                <path d="M1200 120L0 16.48 0 0 1200 0 1200 120z"></path>
-            </svg>
-        </div>
-
-        <div class="max-w-7xl mx-auto px-6 mt-16">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal">
-                <div>
-                    <h2 class="text-5xl font-bold mb-4">Design Marketplace</h2>
-                    <p class="text-xl text-gray-400">Instant layouts. Just add content.</p>
+    <section id="designs" class="py-20 bg-black/30">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 reveal">
+                <div class="mb-6 md:mb-0">
+                    <h2 class="text-4xl font-bold mb-2">Design Store</h2>
+                    <p class="text-gray-400">Premium layouts. Ready to deploy.</p>
                 </div>
-                <div class="flex space-x-3 mt-8 md:mt-0 bg-white/5 p-2 rounded-full backdrop-blur-sm">
-                    <button class="filter-btn active px-6 py-3 bg-indigo-600 rounded-full text-sm font-bold transition-all shadow-lg" data-filter="all">All</button>
-                    <button class="filter-btn px-6 py-3 hover:bg-white/10 rounded-full text-sm font-bold transition-all" data-filter="free">Free</button>
-                    <button class="filter-btn px-6 py-3 hover:bg-white/10 rounded-full text-sm font-bold transition-all" data-filter="premium">Premium</button>
+                <div class="flex space-x-2 bg-white/5 p-1 rounded-full">
+                    <button class="px-4 py-2 bg-indigo-600 rounded-full text-xs font-bold">All</button>
+                    <button class="px-4 py-2 hover:bg-white/10 rounded-full text-xs font-bold">Free</button>
+                    <button class="px-4 py-2 hover:bg-white/10 rounded-full text-xs font-bold">Premium</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="design-grid">
-                <div class="reveal design-item free group cursor-pointer relative rounded-3xl overflow-hidden delay-1">
-                    <img src="https://images.unsplash.com/photo-1487014679447-9f8336841d58?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-[400px] object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="absolute top-4 left-4"><span class="bg-green-500/80 backdrop-blur-md text-white text-xs font-extrabold px-4 py-2 rounded-full uppercase tracking-wider">Free License</span></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
-                        <h4 class="font-bold text-2xl mb-2">Minimal Folio</h4>
-                        <div class="flex space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                            <button class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition">Get</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="reveal group cursor-pointer relative rounded-2xl overflow-hidden h-64 md:h-80">
+                    <img src="https://images.unsplash.com/photo-1487014679447-9f8336841d58?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-0 p-6 w-full">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <span class="text-green-400 text-xs font-bold uppercase">Free License</span>
+                                <h4 class="font-bold text-xl">Minimal Folio</h4>
+                            </div>
+                            <button class="bg-white text-black h-10 w-10 rounded-full flex items-center justify-center hover:bg-gray-200"><i class="fa-solid fa-download"></i></button>
                         </div>
                     </div>
                 </div>
-                <div class="reveal design-item premium group cursor-pointer relative rounded-3xl overflow-hidden delay-2">
-                    <img src="https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="w-full h-[400px] object-cover group-hover:scale-110 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="absolute top-4 left-4"><span class="bg-indigo-500/80 backdrop-blur-md text-white text-xs font-extrabold px-4 py-2 rounded-full uppercase tracking-wider">₹2,500</span></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
-                        <h4 class="font-bold text-2xl mb-2">Neon Commerce</h4>
-                        <div class="flex space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                            <button class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition">Buy</button>
+                
+                <div class="reveal group cursor-pointer relative rounded-2xl overflow-hidden h-64 md:h-80">
+                    <img src="https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-0 p-6 w-full">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <span class="text-indigo-400 text-xs font-bold uppercase">₹2,500</span>
+                                <h4 class="font-bold text-xl">Neon Commerce</h4>
+                            </div>
+                            <button class="bg-indigo-600 text-white h-10 w-10 rounded-full flex items-center justify-center hover:bg-indigo-500"><i class="fa-solid fa-cart-shopping"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal group cursor-pointer relative rounded-2xl overflow-hidden h-64 md:h-80">
+                    <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-0 p-6 w-full">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <span class="text-indigo-400 text-xs font-bold uppercase">₹4,000</span>
+                                <h4 class="font-bold text-xl">Corp Elite</h4>
+                            </div>
+                            <button class="bg-indigo-600 text-white h-10 w-10 rounded-full flex items-center justify-center hover:bg-indigo-500"><i class="fa-solid fa-cart-shopping"></i></button>
                         </div>
                     </div>
                 </div>
@@ -280,155 +219,170 @@
         </div>
     </section>
 
-    <footer class="border-t border-white/10 mt-32 bg-black/80 backdrop-blur-lg relative z-10">
-        <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12 mb-8">
-             <div class="col-span-1 md:col-span-2">
-                <div class="text-3xl font-extrabold tracking-tighter mb-6">waybe<span class="text-indigo-500">.in</span></div>
-                <p class="text-gray-400 max-w-sm leading-relaxed">Redefining digital ownership through flexible subscriptions.</p>
-             </div>
+    <section id="pricing" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto text-center mb-16 reveal">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Flexible Subscriptions</h2>
+            <p class="text-lg text-gray-400">Cancel anytime. No hidden fees.</p>
         </div>
-        <div class="max-w-7xl mx-auto px-6 py-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm font-medium">
-            <div>&copy; 2025 Waybe.in. All rights reserved.</div>
+        
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="reveal glass p-8 rounded-[2rem] hover:border-gray-500 transition">
+                <h3 class="text-xl font-bold text-gray-300">Starter</h3>
+                <div class="text-5xl font-extrabold my-4">₹499<span class="text-sm font-normal text-gray-500">/mo</span></div>
+                <ul class="text-left space-y-3 text-gray-400 mb-8 text-sm">
+                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> 1 Custom Domain</li>
+                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Free Layouts</li>
+                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Basic DNS</li>
+                </ul>
+                <button class="w-full py-3 rounded-xl border border-gray-600 hover:bg-white hover:text-black font-bold transition">Select Plan</button>
+            </div>
+
+            <div class="reveal glass p-8 rounded-[2rem] border-indigo-500 bg-indigo-900/10 transform md:-translate-y-4 shadow-2xl relative">
+                <div class="absolute top-0 inset-x-0 -mt-3 flex justify-center"><span class="bg-indigo-600 text-xs font-bold px-3 py-1 rounded-full uppercase">Most Popular</span></div>
+                <h3 class="text-2xl font-bold text-white mt-2">Business</h3>
+                <div class="text-5xl font-extrabold my-4">₹999<span class="text-sm font-normal text-gray-500">/mo</span></div>
+                <ul class="text-left space-y-3 text-white mb-8 text-sm font-medium">
+                    <li><i class="fa-solid fa-check-circle text-indigo-400 mr-2"></i> 3 Custom Domains</li>
+                    <li><i class="fa-solid fa-check-circle text-indigo-400 mr-2"></i> 1 Premium Layout</li>
+                    <li><i class="fa-solid fa-check-circle text-indigo-400 mr-2"></i> Priority Support</li>
+                </ul>
+                <button class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 font-bold transition hover:scale-105">Get Business</button>
+            </div>
+
+            <div class="reveal glass p-8 rounded-[2rem] hover:border-gray-500 transition">
+                <h3 class="text-xl font-bold text-gray-300">Agency</h3>
+                <div class="text-5xl font-extrabold my-4">₹2999<span class="text-sm font-normal text-gray-500">/mo</span></div>
+                <ul class="text-left space-y-3 text-gray-400 mb-8 text-sm">
+                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> 10 Domains</li>
+                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> White Label</li>
+                    <li><i class="fa-solid fa-check text-green-500 mr-2"></i> API Access</li>
+                </ul>
+                <button class="w-full py-3 rounded-xl border border-gray-600 hover:bg-white hover:text-black font-bold transition">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/10 mt-20 bg-black/80 backdrop-blur-lg py-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <div class="mb-4 md:mb-0">
+                <div class="text-2xl font-bold">waybe<span class="text-indigo-500">.in</span></div>
+                <p class="text-gray-500 text-sm mt-2">The future of digital ownership.</p>
+            </div>
+            <div class="text-gray-500 text-sm">
+                &copy; 2025 Waybe.in. All rights reserved.
+            </div>
         </div>
     </footer>
 
     <script>
-        // 1. Dynamic Headline Text Changer
-        const headlines = ["Digital Identity", "Online Empire", "Creative Future", "Next Big Idea"];
-        let headlineIndex = 0;
-        const headlineElement = document.getElementById('dynamic-headline');
-        function changeHeadline() {
-            headlineElement.style.opacity = 0;
-            setTimeout(() => {
-                headlineIndex = (headlineIndex + 1) % headlines.length;
-                headlineElement.textContent = headlines[headlineIndex];
-                headlineElement.style.opacity = 1;
-            }, 500);
+        // 1. Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('menuIcon');
+            
+            if (menu.classList.contains('menu-hidden')) {
+                menu.classList.remove('menu-hidden');
+                menu.classList.add('menu-visible');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                menu.classList.add('menu-hidden');
+                menu.classList.remove('menu-visible');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
         }
-        headlineElement.style.transition = "opacity 0.5s ease-in-out";
-        setInterval(changeHeadline, 3000);
 
-        // 2. Scroll Reveal Animation
+        // 2. Scroll Animations & Navbar Glass
         function reveal() {
             const reveals = document.querySelectorAll(".reveal");
             for (let i = 0; i < reveals.length; i++) {
-                const windowHeight = window.innerHeight;
-                const elementTop = reveals[i].getBoundingClientRect().top;
-                const elementVisible = 150;
-                if (elementTop < windowHeight - elementVisible) {
+                if (reveals[i].getBoundingClientRect().top < window.innerHeight - 100) {
                     reveals[i].classList.add("active");
                 }
             }
         }
-        window.addEventListener("scroll", reveal);
-        reveal();
-
-        // 3. Navbar Frosted Glass
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('glass-strong', 'shadow-lg', 'border-white/10', 'py-3');
-                navbar.classList.remove('border-transparent', 'py-4');
-            } else {
-                navbar.classList.remove('glass-strong', 'shadow-lg', 'border-white/10', 'py-3');
-                navbar.classList.add('border-transparent', 'py-4');
-            }
+        window.addEventListener("scroll", () => {
+            reveal();
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) nav.classList.add('glass-strong');
+            else nav.classList.remove('glass-strong');
         });
+        reveal(); // Trigger on load
 
-        // 4. Design Section Filters
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const designItems = document.querySelectorAll('.design-item');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => { b.classList.remove('active', 'bg-indigo-600'); b.classList.add('hover:bg-white/10'); });
-                btn.classList.add('active', 'bg-indigo-600'); btn.classList.remove('hover:bg-white/10');
-                const filterValue = btn.getAttribute('data-filter');
-                designItems.forEach(item => {
-                    if (filterValue === 'all' || item.classList.contains(filterValue)) {
-                        item.style.display = 'block'; setTimeout(() => item.classList.add('active'), 50);
-                    } else { item.style.display = 'none'; item.classList.remove('active'); }
-                });
-            });
-        });
+        // 3. Dynamic Headline
+        const headlines = ["Digital Identity", "Online Empire", "Next Big Idea"];
+        let hIdx = 0;
+        const hEl = document.getElementById('dynamic-headline');
+        setInterval(() => {
+            hEl.style.opacity = 0;
+            setTimeout(() => {
+                hIdx = (hIdx + 1) % headlines.length;
+                hEl.textContent = headlines[hIdx];
+                hEl.style.opacity = 1;
+            }, 500);
+        }, 3000);
 
-        // 5. REAL SERVER SEARCH LOGIC
+        // 4. REAL SERVER SEARCH LOGIC
         async function searchDomain() {
             const input = document.getElementById('domainInput');
             const btn = document.getElementById('searchBtn');
-            const resultContainer = document.getElementById('searchResult');
-            const domainName = input.value.trim();
+            const result = document.getElementById('searchResult');
+            const domain = input.value.trim();
 
-            if (domainName.length < 3) {
-                input.classList.add('animate-pulse', 'border-red-500', 'border');
-                setTimeout(() => input.classList.remove('animate-pulse', 'border-red-500', 'border'), 500);
-                return;
-            }
+            if (domain.length < 3) return;
 
-            // UI: Loading State
-            const originalBtnText = btn.innerHTML;
+            // Loading State
+            const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
-            btn.classList.add('opacity-80', 'cursor-not-allowed');
-            resultContainer.classList.add('hidden');
-            resultContainer.classList.remove('scale-100', 'opacity-100');
+            btn.classList.add('opacity-70');
+            result.classList.add('hidden');
 
             try {
-                // CALL THE SERVER
+                // Fetch from your Node.js Server
                 const response = await fetch('/api/search-domain', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ domain: domainName })
+                    body: JSON.stringify({ domain: domain })
                 });
-                
                 const data = await response.json();
 
-                // RENDER RESULT
-                let htmlContent = '';
+                // Display Result
                 if (data.available) {
-                    htmlContent = `
-                        <div class="glass-strong border-green-500/50 border p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center animate-pulse-once">
-                            <div class="text-left mb-4 md:mb-0">
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-check-circle text-green-500 text-2xl mr-3"></i>
-                                    <h3 class="text-2xl font-bold text-white">${data.domain} <span class="text-green-400 text-sm font-normal ml-2">is available!</span></h3>
+                    result.innerHTML = `
+                        <div class="bg-green-500/10 border border-green-500/50 p-4 rounded-xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+                            <div class="mb-3 md:mb-0">
+                                <div class="font-bold text-xl text-white flex items-center justify-center md:justify-start">
+                                    <i class="fa-solid fa-check-circle text-green-500 mr-2"></i> ${data.domain}
                                 </div>
-                                <p class="text-gray-400 mt-1 text-sm pl-9">Includes 15-Day Trial Eligibility.</p>
+                                <div class="text-green-400 text-sm">Available for ₹${data.price}/mo</div>
                             </div>
-                            <div class="flex items-center space-x-4">
-                                <div class="text-right mr-4">
-                                    <div class="text-2xl font-bold text-white">₹${data.price}</div>
-                                    <div class="text-xs text-gray-500">per month</div>
-                                </div>
-                                <button class="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg shadow-green-900/20">Add to Cart</button>
-                            </div>
-                        </div>`;
+                            <button class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition">Add to Cart</button>
+                        </div>
+                    `;
                 } else {
-                    htmlContent = `
-                        <div class="glass-strong border-red-500/30 border p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center">
-                            <div class="text-left mb-4 md:mb-0">
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-circle-xmark text-red-500 text-2xl mr-3"></i>
-                                    <h3 class="text-2xl font-bold text-white line-through decoration-red-500">${data.domain}</h3>
-                                    <span class="text-red-400 text-sm font-bold ml-3">TAKEN</span>
+                    result.innerHTML = `
+                        <div class="bg-red-500/10 border border-red-500/50 p-4 rounded-xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+                            <div class="mb-3 md:mb-0">
+                                <div class="font-bold text-xl text-white line-through decoration-red-500 flex items-center justify-center md:justify-start">
+                                    <i class="fa-solid fa-xmark-circle text-red-500 mr-2"></i> ${data.domain}
                                 </div>
-                                <p class="text-gray-400 mt-1 text-sm pl-9">Owned by another entity.</p>
+                                <div class="text-red-400 text-sm">Taken / Unavailable</div>
                             </div>
-                            <button class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-bold transition">Whois Lookup</button>
-                        </div>`;
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-bold transition">Check Whois</button>
+                        </div>
+                    `;
                 }
-                resultContainer.innerHTML = htmlContent;
-                resultContainer.classList.remove('hidden');
-                setTimeout(() => resultContainer.classList.add('scale-100', 'opacity-100'), 10);
-            } catch (error) {
-                alert('Server connection failed. Is "node server.js" running?');
-            }
-            btn.innerHTML = 'Search';
-            btn.classList.remove('opacity-80', 'cursor-not-allowed');
-        }
+                result.classList.remove('hidden');
 
-        // Enter key support
-        document.getElementById('domainInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') searchDomain();
-        });
+            } catch (error) {
+                console.error(error);
+                alert("Server Connection Failed. Please try again.");
+            }
+
+            btn.innerHTML = originalText;
+            btn.classList.remove('opacity-70');
+        }
     </script>
 </body>
 </html>
