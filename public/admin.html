@@ -198,7 +198,44 @@
             }
         }
 
-        function exportCSV() { alert("Exporting..."); }
+                function exportCSV() {
+            // 1. Check if there is data
+            if (!allUsers || allUsers.length === 0) {
+                alert("No data to export!");
+                return;
+            }
+
+            // 2. Define the Headers (Top row of Excel)
+            let csvContent = "Email,Domain,Plan,Status,Date,Revenue\n";
+
+            // 3. Loop through every user and add a row
+            allUsers.forEach(user => {
+                // Fix the date format
+                const date = new Date(user.date).toLocaleDateString();
+                // Handle empty data fields
+                const domain = user.domain || "N/A";
+                const rev = user.revenue || 0;
+                
+                // Add the row
+                csvContent += `${user.email},${domain},${user.plan},${user.status || 'Active'},${date},${rev}\n`;
+            });
+
+            // 4. Create the File (Blob)
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            
+            // 5. Create a fake link and click it automatically
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'waybe_customers.csv'; // <--- The file name
+            document.body.appendChild(a);
+            a.click();
+            
+            // 6. Cleanup
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
     </script>
 </body>
 </html>
