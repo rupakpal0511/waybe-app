@@ -10,82 +10,112 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
         body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        /* Glass effect that looks good on both mobile and desktop */
         .glass { background: white; border: 1px solid #e2e8f0; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
     </style>
 </head>
-<body class="p-4 md:p-8 min-h-screen">
+<body class="p-4 md:p-8 min-h-screen relative">
 
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <div class="text-center md:text-left">
-            <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Waybe<span class="text-indigo-600">Admin</span></h1>
-            <p class="text-slate-500 text-sm font-medium">Control Center</p>
-        </div>
-        <div class="flex space-x-3">
-            <button onclick="exportCSV()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg shadow-sm hover:bg-slate-50 transition text-sm">
-                <i class="fa-solid fa-download mr-2"></i> CSV
-            </button>
-            <a href="/" class="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-500 transition text-sm">
-                Go to Site
-            </a>
+    <div id="lockScreen" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
+            <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-2">Admin Access</h2>
+            <p class="text-slate-500 text-sm mb-6">Enter your security PIN to continue.</p>
+            <input type="password" id="pinInput" placeholder="Enter PIN" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-4 text-center text-lg font-bold tracking-widest outline-none focus:ring-2 focus:ring-indigo-500">
+            <button onclick="checkPin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition">Unlock</button>
+            <p id="errorMsg" class="text-red-500 text-sm mt-4 hidden">Access Denied</p>
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div id="dashboardContent" class="hidden">
         
-        <div class="glass p-6">
-            <h3 class="text-slate-500 text-xs font-bold uppercase mb-4">Plan Distribution</h3>
-            <div class="relative h-64 w-full">
-                <canvas id="planChart"></canvas>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <div class="text-center md:text-left">
+                <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Waybe<span class="text-indigo-600">Admin</span></h1>
+                <p class="text-slate-500 text-sm font-medium">Control Center</p>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="exportCSV()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg shadow-sm hover:bg-slate-50 transition text-sm">
+                    <i class="fa-solid fa-download mr-2"></i> CSV
+                </button>
+                <a href="/" class="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-500 transition text-sm">
+                    Go to Site
+                </a>
             </div>
         </div>
 
-        <div class="glass p-6 flex flex-col justify-center items-center md:items-start text-center md:text-left">
-            <div class="p-3 bg-green-100 text-green-600 rounded-full mb-3 shadow-sm"><i class="fa-solid fa-indian-rupee-sign text-xl"></i></div>
-            <div class="text-slate-400 text-xs font-bold uppercase">Total Revenue (Est)</div>
-            <div class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2" id="totalRev">₹0</div>
-        </div>
-
-        <div class="glass p-6 flex flex-col justify-center items-center md:items-start text-center md:text-left">
-            <div class="p-3 bg-indigo-100 text-indigo-600 rounded-full mb-3 shadow-sm"><i class="fa-solid fa-users text-xl"></i></div>
-            <div class="text-slate-400 text-xs font-bold uppercase">Total Users</div>
-            <div class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2" id="totalUsers">0</div>
-            <div class="text-xs text-green-500 font-bold mt-2"><i class="fa-solid fa-circle text-[8px] mr-1"></i> System Online</div>
-        </div>
-    </div>
-
-    <div class="max-w-7xl mx-auto glass overflow-hidden">
-        <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between items-center gap-4">
-            <h2 class="font-bold text-slate-800 text-lg">Customer Database</h2>
-            <div class="relative w-full md:w-64">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
-                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search..." 
-                       class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="glass p-6">
+                <h3 class="text-slate-500 text-xs font-bold uppercase mb-4">Plan Distribution</h3>
+                <div class="relative h-64 w-full">
+                    <canvas id="planChart"></canvas>
+                </div>
+            </div>
+            <div class="glass p-6 flex flex-col justify-center items-center md:items-start text-center md:text-left">
+                <div class="p-3 bg-green-100 text-green-600 rounded-full mb-3 shadow-sm"><i class="fa-solid fa-indian-rupee-sign text-xl"></i></div>
+                <div class="text-slate-400 text-xs font-bold uppercase">Total Revenue (Est)</div>
+                <div class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2" id="totalRev">₹0</div>
+            </div>
+            <div class="glass p-6 flex flex-col justify-center items-center md:items-start text-center md:text-left">
+                <div class="p-3 bg-indigo-100 text-indigo-600 rounded-full mb-3 shadow-sm"><i class="fa-solid fa-users text-xl"></i></div>
+                <div class="text-slate-400 text-xs font-bold uppercase">Total Users</div>
+                <div class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2" id="totalUsers">0</div>
+                <div class="text-xs text-green-500 font-bold mt-2"><i class="fa-solid fa-circle text-[8px] mr-1"></i> System Online</div>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm whitespace-nowrap">
-                <thead class="bg-slate-50 text-slate-500 font-bold text-xs uppercase">
-                    <tr>
-                        <th class="p-4">User Details</th>
-                        <th class="p-4">Plan</th>
-                        <th class="p-4">Status</th>
-                        <th class="p-4">Date</th>
-                        <th class="p-4 text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody" class="divide-y divide-slate-100">
-                    <tr><td colspan="5" class="p-8 text-center text-slate-400">Loading data...</td></tr>
-                </tbody>
-            </table>
+        <div class="max-w-7xl mx-auto glass overflow-hidden">
+            <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between items-center gap-4">
+                <h2 class="font-bold text-slate-800 text-lg">Customer Database</h2>
+                <div class="relative w-full md:w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search..." 
+                           class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="bg-slate-50 text-slate-500 font-bold text-xs uppercase">
+                        <tr>
+                            <th class="p-4">User Details</th>
+                            <th class="p-4">Plan</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4">Date</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100">
+                        <tr><td colspan="5" class="p-8 text-center text-slate-400">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
+        // SECURITY CONFIG
+        const ADMIN_PIN = "051120"; // <--- CHANGE THIS IF YOU WANT
+
+        function checkPin() {
+            const input = document.getElementById('pinInput').value;
+            if (input === ADMIN_PIN) {
+                document.getElementById('lockScreen').classList.add('hidden');
+                document.getElementById('dashboardContent').classList.remove('hidden');
+                loadData(); // Only load data AFTER unlock
+            } else {
+                document.getElementById('errorMsg').classList.remove('hidden');
+            }
+        }
+
+        // Allow "Enter" key to unlock
+        document.getElementById('pinInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') checkPin();
+        });
+
+        // --- DASHBOARD LOGIC BELOW ---
         let allUsers = [];
 
-        // 1. Load Data
         async function loadData() {
             try {
                 const res = await fetch('/api/users');
@@ -96,7 +126,6 @@
             } catch (err) { console.error(err); }
         }
 
-        // 2. Render Table
         function renderTable(users) {
             const tbody = document.getElementById('tableBody');
             if (users.length === 0) {
@@ -125,21 +154,18 @@
             tbody.innerHTML = html;
         }
 
-        // 3. Search
         function filterTable() {
             const term = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allUsers.filter(u => u.email.toLowerCase().includes(term));
             renderTable(filtered);
         }
 
-        // 4. Update Stats
         function updateStats(users) {
             document.getElementById('totalUsers').innerText = users.length;
             const rev = users.reduce((sum, u) => sum + (u.revenue || 0), 0);
             document.getElementById('totalRev').innerText = '₹' + rev.toLocaleString();
         }
 
-        // 5. Render Chart
         function renderChart(users) {
             const trials = users.filter(u => u.plan && u.plan.includes('Trial')).length;
             const paid = users.length - trials;
@@ -173,8 +199,6 @@
         }
 
         function exportCSV() { alert("Exporting..."); }
-
-        loadData();
     </script>
 </body>
 </html>
