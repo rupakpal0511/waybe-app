@@ -1,18 +1,13 @@
 {
   "name": "waybe-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "Waybe Domain App",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "express": "^5.2.1",
-    "whois": "^2.16.1"
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0"
   }
 }
