@@ -1,125 +1,139 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waybe Admin | God Mode</title>
+    <title>Waybe Admin | Master Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script> tailwind.config = { darkMode: 'class' } </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&display=swap');
-        body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #00ff41; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; }
+        .dark body { background-color: #0f172a; color: white; }
         
-        /* Matrix Grid Animation */
-        .scanline {
-            width: 100%; height: 100px; z-index: 10;
-            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0, 255, 65, 0.1) 50%, rgba(0,0,0,0) 100%);
-            opacity: 0.1; position: absolute; bottom: 100%;
-            animation: scanline 10s linear infinite;
-            pointer-events: none;
-        }
-        @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: -100%; } }
-
-        .glass-panel {
-            background: rgba(0, 20, 0, 0.7);
-            border: 1px solid #00ff41;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
-            backdrop-filter: blur(10px);
-        }
-        
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 16px; color: #fff; border-bottom: 1px solid #00ff41; }
-        td { padding: 16px; border-bottom: 1px solid rgba(0, 255, 65, 0.3); }
-        tr:hover { background: rgba(0, 255, 65, 0.1); cursor: pointer; transition: 0.3s; }
+        /* Professional Glass Effect */
+        .glass { background: white; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .dark .glass { background: #1e293b; border: 1px solid #334155; }
     </style>
 </head>
-<body class="min-h-screen relative overflow-x-hidden p-8">
-    <div class="scanline"></div>
+<body class="min-h-screen p-6 md:p-10">
 
-    <div class="flex justify-between items-center mb-10">
+    <div class="max-w-7xl mx-auto flex justify-between items-center mb-10">
         <div>
-            <h1 class="text-4xl font-bold tracking-widest">WAYBE_ADMIN_V1</h1>
-            <p class="text-sm opacity-70">SYSTEM STATUS: <span class="text-green-400 animate-pulse">ONLINE</span></p>
+            <h1 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">Admin Control</h1>
+            <p class="text-slate-500 text-sm">Real-time database records.</p>
         </div>
-        <div class="text-right">
-            <div class="text-xs opacity-50">DATABASE CONNECTION</div>
-            <div class="font-bold text-xl">SECURE <i class="fa-solid fa-lock"></i></div>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div class="glass-panel p-6 rounded-xl">
-            <div class="text-xs text-gray-400">TOTAL USERS</div>
-            <div class="text-4xl font-bold mt-2" id="totalUsers">0</div>
-        </div>
-        <div class="glass-panel p-6 rounded-xl">
-            <div class="text-xs text-gray-400">ACTIVE TRIALS</div>
-            <div class="text-4xl font-bold mt-2" id="activeTrials">0</div>
-        </div>
-        <div class="glass-panel p-6 rounded-xl">
-            <div class="text-xs text-gray-400">REVENUE (EST)</div>
-            <div class="text-4xl font-bold mt-2">₹0.00</div>
-        </div>
-    </div>
-
-    <div class="glass-panel rounded-xl overflow-hidden">
-        <div class="p-6 border-b border-green-900/50 flex justify-between items-center">
-            <h2 class="text-xl font-bold">LIVE USER DATABASE</h2>
-            <button onclick="loadData()" class="px-4 py-2 border border-[#00ff41] hover:bg-[#00ff41] hover:text-black transition uppercase text-xs font-bold">
-                <i class="fa-solid fa-rotate"></i> Refresh Data
+        <div class="flex space-x-3">
+            <a href="/" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold shadow-sm hover:bg-slate-50 transition">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Website
+            </a>
+            <button onclick="loadData()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-lg hover:bg-indigo-500 transition">
+                <i class="fa-solid fa-rotate mr-2"></i> Refresh Data
             </button>
         </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div class="glass p-6 rounded-2xl">
+            <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Total Users</div>
+            <div class="text-3xl font-extrabold text-indigo-600" id="totalUsers">0</div>
+        </div>
+        <div class="glass p-6 rounded-2xl">
+            <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Active Trials</div>
+            <div class="text-3xl font-extrabold text-purple-600" id="activeTrials">0</div>
+        </div>
+        <div class="glass p-6 rounded-2xl">
+            <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Revenue</div>
+            <div class="text-3xl font-extrabold text-green-600">₹0</div>
+        </div>
+         <div class="glass p-6 rounded-2xl">
+            <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Database Status</div>
+            <div class="flex items-center text-sm font-bold text-green-600 mt-2">
+                <span class="relative flex h-3 w-3 mr-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+                Connected
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto glass rounded-2xl overflow-hidden shadow-xl">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead>
+            <table class="w-full text-left text-sm">
+                <thead class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
                     <tr>
-                        <th>ID</th>
-                        <th>EMAIL</th>
-                        <th>DOMAIN</th>
-                        <th>PLAN</th>
-                        <th>JOINED</th>
-                        <th>STATUS</th>
+                        <th class="p-5 font-bold text-slate-500">User Email</th>
+                        <th class="p-5 font-bold text-slate-500">Domain Chosen</th>
+                        <th class="p-5 font-bold text-slate-500">Current Plan</th>
+                        <th class="p-5 font-bold text-slate-500">Signup Date</th>
+                        <th class="p-5 font-bold text-slate-500 text-right">Action</th>
                     </tr>
                 </thead>
-                <tbody id="userTable">
-                    <tr><td colspan="6" class="text-center py-8 opacity-50">Loading encrypted data...</td></tr>
+                <tbody id="adminTable" class="divide-y divide-slate-100 dark:divide-slate-800">
+                    <tr><td colspan="5" class="p-8 text-center text-slate-400">Loading data...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
+        // 1. Fetch Data from Server
         async function loadData() {
-            const table = document.getElementById('userTable');
             try {
-                const res = await fetch('/api/users'); // We need to create this API next!
+                const res = await fetch('/api/users');
                 const users = await res.json();
                 
+                // Update Metrics
                 document.getElementById('totalUsers').innerText = users.length;
-                document.getElementById('activeTrials').innerText = users.filter(u => u.plan.includes('Trial')).length;
+                document.getElementById('activeTrials').innerText = users.filter(u => u.plan && u.plan.includes('Trial')).length;
+
+                // Update Table
+                const table = document.getElementById('adminTable');
+                if (users.length === 0) {
+                    table.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400">No users found yet.</td></tr>`;
+                    return;
+                }
 
                 let html = '';
                 users.forEach(user => {
                     const date = new Date(user.date).toLocaleDateString();
                     html += `
-                    <tr>
-                        <td class="font-mono text-xs opacity-50">#${user._id.slice(-4)}</td>
-                        <td class="font-bold">${user.email}</td>
-                        <td>${user.domain || 'N/A'}</td>
-                        <td><span class="px-2 py-1 rounded bg-green-900/30 text-xs border border-green-500/30">${user.plan}</span></td>
-                        <td>${date}</td>
-                        <td><i class="fa-solid fa-circle text-[10px] text-green-500 mr-2"></i>Active</td>
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                        <td class="p-5 font-bold text-slate-700 dark:text-white">
+                            <div class="flex items-center">
+                                <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3 text-xs font-bold">
+                                    ${user.email.charAt(0).toUpperCase()}
+                                </div>
+                                ${user.email}
+                            </div>
+                        </td>
+                        <td class="p-5 text-indigo-600 font-medium">${user.domain || '-'}</td>
+                        <td class="p-5">
+                            <span class="px-2 py-1 rounded-md text-xs font-bold ${user.plan.includes('Trial') ? 'bg-purple-100 text-purple-600' : 'bg-slate-100 text-slate-600'}">
+                                ${user.plan}
+                            </span>
+                        </td>
+                        <td class="p-5 text-slate-500">${date}</td>
+                        <td class="p-5 text-right">
+                            <button class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-trash"></i></button>
+                        </td>
                     </tr>`;
                 });
                 table.innerHTML = html;
+
             } catch (err) {
-                table.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-red-500">ACCESS DENIED. Server API missing.</td></tr>';
+                console.error(err);
+                document.getElementById('adminTable').innerHTML = `<tr><td colspan="5" class="p-8 text-center text-red-500 font-bold">Error loading database.</td></tr>`;
             }
         }
-        
-        // Auto load on start
+
+        // Auto Load
         loadData();
+        
+        // Dark Mode Logic
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.classList.add('dark');
     </script>
 </body>
 </html>
