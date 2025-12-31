@@ -13,18 +13,27 @@
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         body { font-family: 'Outfit', sans-serif; }
         
+        /* --- VISUALS: NEON NEBULA --- */
         .nebula-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -50;
             background: #0f001e;
-            background-image: radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.4) 0%, transparent 50%), radial-gradient(circle at 80% 30%, rgba(236, 72, 153, 0.35) 0%, transparent 50%);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.4) 0%, transparent 50%), 
+                radial-gradient(circle at 80% 30%, rgba(236, 72, 153, 0.35) 0%, transparent 50%);
         }
+        
         .dash-glass {
             background: rgba(20, 10, 45, 0.85); backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
+
+        /* Login Overlay */
         .login-overlay {
             background: rgba(15, 0, 30, 0.98); backdrop-filter: blur(30px); z-index: 100;
         }
+
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0f001e; }
         ::-webkit-scrollbar-thumb { background: #9333ea; border-radius: 10px; }
@@ -35,21 +44,27 @@
     <div id="auth-lock" class="login-overlay fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-md bg-[#0f0520] border border-purple-500/30 p-8 rounded-3xl shadow-2xl relative">
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-purple-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/50"><i class="fa-solid fa-lock text-2xl text-purple-300"></i></div>
+                <div class="w-16 h-16 bg-purple-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/50">
+                    <i class="fa-solid fa-lock text-2xl text-purple-300"></i>
+                </div>
                 <h2 class="text-3xl font-bold">Member Login</h2>
                 <p class="text-slate-400 text-sm mt-2">Enter email to receive One-Time Password.</p>
             </div>
+
             <div id="step-email">
-                <input type="email" id="login-email" placeholder="name@example.com" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-purple-500 outline-none text-white">
-                <button onclick="sendOTP()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Send Code via Email</button>
+                <input type="email" id="login-email" placeholder="name@example.com" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-purple-500 outline-none text-white transition">
+                <button onclick="sendOTP(this)" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Send Code via Email</button>
             </div>
+
             <div id="step-otp" class="hidden">
-                <p class="text-sm text-center text-green-400 mb-4">Code sent! Check your inbox.</p>
+                <p class="text-sm text-center text-green-400 mb-4 animate-pulse">✅ Code sent! Check your inbox.</p>
                 <div class="flex gap-2 justify-center mb-6">
-                    <input type="text" maxlength="6" id="otp-code" class="w-full text-center text-2xl font-bold bg-black/30 border border-white/20 rounded-lg py-2 focus:border-purple-500 outline-none tracking-widest" placeholder="123456">
+                    <input type="text" maxlength="6" id="otp-code" class="w-full text-center text-2xl font-bold bg-black/30 border border-white/20 rounded-lg py-2 focus:border-purple-500 outline-none tracking-widest text-white" placeholder="123456">
                 </div>
-                <button onclick="verifyOTP()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Verify & Access</button>
+                <button onclick="verifyOTP(this)" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Verify & Access</button>
             </div>
+            
+            <p class="text-xs text-center text-slate-600 mt-6">Demo Mode: Use code <b>123456</b></p>
         </div>
     </div>
 
@@ -85,7 +100,7 @@
 
         <div class="p-6 md:p-10 max-w-6xl mx-auto space-y-8">
 
-            <div id="view-overview" class="space-y-8">
+            <div id="view-overview" class="space-y-8 animate-[fadeIn_0.5s]">
                 <h2 class="text-3xl font-bold mb-6 text-white">Account Overview</h2>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -126,106 +141,90 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="dash-glass p-8 rounded-3xl">
-                        <h3 class="text-lg font-bold mb-6 text-white"><i class="fa-solid fa-link mr-2 text-blue-400"></i> Linked Accounts</h3>
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/5">
-                                <div class="flex items-center gap-3"><div class="w-8 h-8 bg-white rounded-full flex items-center justify-center"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" class="w-5"></div><div><p class="font-bold text-sm text-white">Google</p><p class="text-xs text-green-400">Connected</p></div></div>
-                                <button class="text-xs bg-red-500/10 text-red-400 px-3 py-1 rounded border border-red-500/20">Unlink</button>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/5">
-                                <div class="flex items-center gap-3"><div class="w-8 h-8 bg-[#0077b5] rounded-full flex items-center justify-center text-white"><i class="fa-brands fa-linkedin-in"></i></div><div><p class="font-bold text-sm text-white">LinkedIn</p><p class="text-xs text-slate-500">Not Connected</p></div></div>
-                                <button class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded border border-blue-500/20">Connect</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dash-glass p-8 rounded-3xl">
-                        <h3 class="text-lg font-bold mb-6 text-white"><i class="fa-solid fa-shield-halved mr-2 text-green-400"></i> Security Hub</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-xs text-slate-400 uppercase font-bold mb-2">Active Session</p>
-                                <div class="flex items-center gap-2">
-                                    <i class="fa-brands fa-chrome text-yellow-400 text-lg"></i>
-                                    <div>
-                                        <p class="text-sm font-bold text-white" id="browser-info">Detecting Device...</p>
-                                        <p class="text-xs text-green-400">Active Now • <span id="ip-location">Locating...</span></p>
-                                    </div>
+                <div class="dash-glass p-8 rounded-3xl">
+                    <h3 class="text-lg font-bold mb-6 text-white"><i class="fa-solid fa-shield-halved mr-2 text-green-400"></i> Security Hub</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase font-bold mb-2">Active Session</p>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-brands fa-chrome text-yellow-400 text-lg"></i>
+                                <div>
+                                    <p class="text-sm font-bold text-white" id="browser-info">Detecting Device...</p>
+                                    <p class="text-xs text-green-400">Active Now • <span id="ip-location">Locating...</span></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div id="view-themes" class="hidden"><h2 class="text-3xl font-bold mb-6">Theme Hub</h2><p class="text-slate-400">Inventory loads here...</p></div>
-            <div id="view-domains" class="hidden"><h2 class="text-3xl font-bold mb-6">Domains</h2><p class="text-slate-400">Domain list loads here...</p></div>
 
+            <div id="view-themes" class="hidden space-y-6">
+                <div class="flex justify-between items-end">
+                    <h2 class="text-3xl font-bold text-white">Design Library</h2>
+                    <div class="flex gap-2">
+                        <button onclick="renderThemes()" class="bg-purple-600 px-4 py-2 rounded-lg text-sm font-bold text-white">Refresh</button>
+                    </div>
+                </div>
+                <div id="theme-grid-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+            </div>
+
+            <div id="view-domains" class="hidden space-y-6">
+                <h2 class="text-3xl font-bold text-white">My Domains</h2>
+                <div class="dash-glass p-6 rounded-2xl text-center py-10">
+                    <i class="fa-solid fa-server text-4xl text-slate-600 mb-4"></i>
+                    <p class="text-slate-400">No active domains found.</p>
+                </div>
+            </div>
         </div>
     </main>
 
     <script>
-       <script>
-        // --- 1. DATA ---
+        // --- 1. DATA (INVENTORY) ---
         const realThemes = [
             { id: 101, category: "Admin", title: "Notus React", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/notus-react/notus-react-presentation.jpg", downloadUrl: "https://github.com/creativetimofficial/notus-react/archive/refs/heads/main.zip" },
             { id: 102, category: "SaaS", title: "Tailwind Kit", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/tailwind-starter-kit/tailwind-starter-kit-presentation.jpg", downloadUrl: "https://github.com/creativetimofficial/tailwind-starter-kit/archive/refs/heads/main.zip" },
-            { 201: 201, category: "Premium", title: "Spotlight Pro", isFree: false, image: "https://picsum.photos/id/180/400/300", downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" }
+            { id: 201, category: "Premium", title: "Spotlight Pro", isFree: false, image: "https://picsum.photos/id/180/400/300", downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" }
         ];
 
         let currentUserEmail = "";
 
-        // --- 2. SEND OTP (SIMULATED FOR SPEED) ---
-        async function sendOTP() {
+        // --- 2. SEND OTP (BYPASS LOGIC) ---
+        function sendOTP(btn) {
             const email = document.getElementById('login-email').value;
             if(!email.includes('@')) { alert("Please enter a valid email."); return; }
             
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "Sending Secure Email...";
-            btn.disabled = true; // Prevent double clicking
-            
-            // SIMULATE SERVER DELAY (Makes it feel real)
+            // UI Feedback
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+
             setTimeout(() => {
                 currentUserEmail = email;
-                
-                // Hide Email Step
                 document.getElementById('step-email').classList.add('hidden');
-                // Show OTP Step
                 document.getElementById('step-otp').classList.remove('hidden');
-                
-                // Auto-focus the OTP input
                 document.getElementById('otp-code').focus();
-                
-                alert(`✅ Code Sent to ${email}\n\n(Since this is a demo, your code is: 123456)`);
-            }, 1500);
-        }
-
-        // --- 3. VERIFY OTP (MASTER KEY) ---
-        function verifyOTP() {
-            const code = document.getElementById('otp-code').value;
-            const btn = event.target;
-            
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...';
-
-            setTimeout(() => {
-                // MASTER CODE CHECK
-                if (code === "123456") {
-                    // Success! Unlock Dashboard
-                    document.getElementById('auth-lock').classList.add('hidden');
-                    setupProfile(); // Load User Data
-                    renderThemes(); // Load Themes
-                } else {
-                    alert("❌ Invalid Code. Try 123456");
-                    btn.innerText = "Verify & Access";
-                    document.getElementById('otp-code').value = "";
-                }
             }, 1000);
         }
 
-        // --- 4. PROFILE SETUP (YOUR REQUESTED FEATURES) ---
+        // --- 3. VERIFY OTP (MASTER CODE: 123456) ---
+        function verifyOTP(btn) {
+            const code = document.getElementById('otp-code').value;
+            btn.innerHTML = 'Verifying...';
+
+            setTimeout(() => {
+                if (code === "123456") {
+                    document.getElementById('auth-lock').classList.add('hidden');
+                    setupProfile();
+                    renderThemes();
+                } else {
+                    alert("❌ Wrong code. Use 123456");
+                    btn.innerText = "Verify & Access";
+                }
+            }, 800);
+        }
+
+        // --- 4. PROFILE SETUP ---
         function setupProfile() {
-            // Identity
+            // Setup Identity
             const name = currentUserEmail.split('@')[0];
             const properName = name.charAt(0).toUpperCase() + name.slice(1);
             
@@ -233,11 +232,11 @@
             document.getElementById('header-username').innerText = properName;
             document.getElementById('display-email').innerText = currentUserEmail;
             
-            // Generate Avatar based on name
+            // Setup Avatar
             document.getElementById('profile-pic').src = `https://ui-avatars.com/api/?name=${properName}&background=6d28d9&color=fff&size=128`;
             document.getElementById('header-avatar').src = `https://ui-avatars.com/api/?name=${properName}&background=random`;
 
-            // Subscription Dates (Real Time Calculation)
+            // Setup Dates
             const today = new Date();
             const nextYear = new Date();
             nextYear.setFullYear(today.getFullYear() + 1);
@@ -246,17 +245,15 @@
             document.getElementById('sub-start').innerText = today.toLocaleDateString();
             document.getElementById('sub-end').innerText = nextYear.toLocaleDateString();
 
-            // Real Device & Location Detection
+            // Detect Device
             detectEnvironment();
         }
 
         async function detectEnvironment() {
-            // Browser Detection
             const browser = navigator.userAgent.includes("Chrome") ? "Chrome" : "Browser";
             const os = navigator.platform;
             document.getElementById('browser-info').innerText = `${browser} on ${os}`;
             
-            // IP Location (Public API)
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
@@ -268,7 +265,7 @@
             }
         }
 
-        // --- 5. THEME RENDERER ---
+        // --- 5. RENDER THEMES ---
         function renderThemes() {
             const grid = document.getElementById('theme-grid-container');
             if(!grid) return;
@@ -276,15 +273,14 @@
             realThemes.forEach(theme => {
                 let badge = theme.isFree ? '<span class="bg-green-500 text-white text-[10px] px-2 py-1 rounded">FREE</span>' : '<span class="bg-yellow-500 text-black text-[10px] px-2 py-1 rounded">PRO</span>';
                 grid.innerHTML += `
-                <div class="dash-card rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition duration-300">
+                <div class="dash-glass rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition duration-300">
                     <div class="relative">
                         <div class="absolute top-2 left-2 z-10">${badge}</div>
                         <img src="${theme.image}" class="w-full h-40 object-cover opacity-80 hover:opacity-100 transition">
                     </div>
                     <div class="p-4">
                         <h4 class="font-bold text-white">${theme.title}</h4>
-                        <p class="text-xs text-slate-400 mb-3">${theme.category}</p>
-                        <button onclick="window.location.href='${theme.downloadUrl}'" class="w-full bg-white/10 hover:bg-purple-600 text-white text-xs font-bold py-2 rounded transition">Download</button>
+                        <button onclick="window.location.href='${theme.downloadUrl}'" class="w-full mt-3 bg-white/10 hover:bg-purple-600 text-white text-xs font-bold py-2 rounded transition">Download</button>
                     </div>
                 </div>`;
             });
@@ -302,4 +298,3 @@
     </script>
 </body>
 </html>
-
