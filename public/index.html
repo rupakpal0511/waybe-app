@@ -157,10 +157,15 @@
                     <h2 class="text-3xl md:text-5xl font-bold mb-2 text-slate-900 dark:text-white">100+ Professional Themes</h2>
                     <p class="text-slate-500 dark:text-slate-400">Ready-to-use layouts for every industry.</p>
                 </div>
-                <div class="hidden md:block text-indigo-500 font-bold cursor-pointer">View All <i class="fa-solid fa-arrow-right"></i></div>
+                <button onclick="loadMoreThemes()" class="hidden md:flex items-center text-indigo-600 dark:text-indigo-400 font-bold hover:scale-105 transition">
+                    View All <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
             </div>
+            
             <div id="themeGallery" class="flex overflow-x-auto gap-6 pb-8 no-scrollbar snap-x">
                 </div>
+            
+            <button onclick="loadMoreThemes()" class="md:hidden w-full py-3 mt-4 rounded-xl border border-indigo-500 text-indigo-500 font-bold">Load More Themes</button>
         </div>
     </section>
 
@@ -287,30 +292,53 @@
             else if (isDeleting && charIndex === 0) { isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; speed = 500; }
             setTimeout(typeEffect, speed);
         }
-        document.addEventListener('DOMContentLoaded', () => { typeEffect(); renderThemeGallery(); });
+        
+        // --- NEW: RENDER THEMES WITH REAL IMAGES ---
+        document.addEventListener('DOMContentLoaded', () => { 
+            typeEffect(); 
+            renderThemeGallery(10); // Initial load
+        });
 
-        // --- DYNAMIC THEME GALLERY ---
-        function renderThemeGallery() {
+        function renderThemeGallery(count) {
             const gallery = document.getElementById('themeGallery');
-            const categories = ['E-commerce', 'Portfolio', 'Agency', 'Blog', 'Startup', 'SaaS'];
-            for(let i=1; i<=12; i++) {
+            const categories = ['Startup', 'Agency', 'SaaS', 'Portfolio', 'E-commerce', 'Blog'];
+            
+            // Add 'count' new cards with REAL IMAGES
+            for(let i=1; i<=count; i++) {
                 const cat = categories[Math.floor(Math.random()*categories.length)];
-                const hue = Math.floor(Math.random()*360);
+                // Using Picsum with Seed to ensure consistent images
+                const imgUrl = `https://picsum.photos/seed/${Math.floor(Math.random()*1000)}/400/300`;
+                
                 const card = `
-                <div class="min-w-[280px] snap-center glass-card p-4 rounded-2xl cursor-pointer group">
-                    <div class="h-40 rounded-xl bg-gradient-to-br from-[hsl(${hue},70%,60%)] to-[hsl(${hue+40},70%,40%)] mb-4 flex items-center justify-center text-white font-bold text-2xl shadow-lg group-hover:scale-105 transition duration-500">
-                        Theme #${i}
+                <div class="min-w-[280px] snap-center glass-card p-4 rounded-2xl cursor-pointer group shrink-0">
+                    <div class="h-40 rounded-xl overflow-hidden mb-4 relative">
+                        <img src="${imgUrl}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="Theme Preview">
+                        <div class="absolute inset-0 bg-black/30 group-hover:bg-transparent transition"></div>
                     </div>
                     <div class="flex justify-between items-center">
                         <div>
                             <h4 class="font-bold text-slate-900 dark:text-white">Pro ${cat}</h4>
                             <p class="text-xs text-slate-500">Customizable</p>
                         </div>
-                        <div class="bg-white/10 p-2 rounded-lg text-slate-900 dark:text-white"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="bg-indigo-600 text-white w-8 h-8 flex items-center justify-center rounded-full"><i class="fa-solid fa-arrow-right -rotate-45 group-hover:rotate-0 transition"></i></div>
                     </div>
                 </div>`;
                 gallery.innerHTML += card;
             }
+        }
+
+        // --- NEW: LOAD MORE FUNCTION ---
+        function loadMoreThemes() {
+            const btn = document.querySelector('button[onclick="loadMoreThemes()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+            
+            setTimeout(() => {
+                renderThemeGallery(5); // Load 5 more
+                btn.innerHTML = originalText;
+                // Scroll a bit to show new items
+                document.getElementById('themeGallery').scrollBy({ left: 300, behavior: 'smooth' });
+            }, 800);
         }
 
         // --- REAL DNS CHECK ---
