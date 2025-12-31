@@ -10,35 +10,55 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         body { font-family: 'Outfit', sans-serif; }
         
+        /* Glass Effect */
         .dash-glass {
-            background: rgba(30, 41, 59, 0.7);
+            background: rgba(17, 4, 46, 0.6); /* Purple Tint Glass */
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         
+        /* --- NEW: PURPLE NEBULA ANIMATION --- */
+        .nebula-bg {
+            background-color: #050014; /* Deep Space */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10;
+        }
+        .nebula-orb-1 {
+            position: absolute; top: -10%; left: -10%; width: 50%; height: 50%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%); /* Purple */
+            filter: blur(80px); animation: float 10s infinite alternate;
+        }
+        .nebula-orb-2 {
+            position: absolute; bottom: -10%; right: -10%; width: 60%; height: 60%;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, transparent 70%); /* Pink */
+            filter: blur(80px); animation: float 15s infinite alternate-reverse;
+        }
+        @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, 50px) scale(1.1); } }
+
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar-track { background: #050014; }
+        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-950 text-white overflow-hidden h-screen flex">
+<body class="text-white overflow-hidden h-screen flex">
+
+    <div class="nebula-bg">
+        <div class="nebula-orb-1"></div>
+        <div class="nebula-orb-2"></div>
+    </div>
 
     <aside class="w-64 h-full dash-glass border-r border-white/5 flex flex-col hidden md:flex z-20">
         <div class="p-6 border-b border-white/5">
             <div class="text-2xl font-extrabold flex items-center tracking-tighter text-white">
-                <i class="fa-brands fa-hive text-indigo-500 mr-3"></i> waybe.in
+                <i class="fa-brands fa-hive text-purple-500 mr-3"></i> waybe.in
             </div>
         </div>
         <nav class="flex-1 p-4 space-y-2">
-            <button onclick="switchTab('overview')" id="nav-overview" class="w-full flex items-center p-3 rounded-xl bg-indigo-600/20 text-indigo-400 font-bold border border-indigo-500/30 transition"><i class="fa-solid fa-chart-pie w-8"></i> Overview</button>
+            <button onclick="switchTab('overview')" id="nav-overview" class="w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-300 font-bold border border-purple-500/30 transition"><i class="fa-solid fa-chart-pie w-8"></i> Overview</button>
             <button onclick="switchTab('themes')" id="nav-themes" class="w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition"><i class="fa-solid fa-palette w-8"></i> Theme Hub</button>
             <button onclick="switchTab('domains')" id="nav-domains" class="w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition"><i class="fa-solid fa-globe w-8"></i> My Domains</button>
             <button onclick="switchTab('settings')" id="nav-settings" class="w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition"><i class="fa-solid fa-gear w-8"></i> Settings</button>
@@ -49,19 +69,15 @@
     </aside>
 
     <main class="flex-1 h-full overflow-y-auto relative">
-        <div class="fixed top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-900/20 via-slate-950 to-slate-950 -z-10"></div>
-
-        <header class="w-full p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-slate-950/50">
-            <div class="md:hidden text-xl font-bold"><i class="fa-brands fa-hive text-indigo-500"></i> Waybe</div>
+        <header class="w-full p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-[#050014]/50">
+            <div class="md:hidden text-xl font-bold"><i class="fa-brands fa-hive text-purple-500"></i> Waybe</div>
             <div class="flex items-center gap-4 ml-auto">
                 <div class="text-right hidden md:block">
                     <h4 class="font-bold text-sm">Welcome User</h4>
-                    <p class="text-xs text-slate-400" id="user-email-display">user@example.com</p>
+                    <p class="text-xs text-slate-400">user@example.com</p>
                 </div>
-                <div class="relative group cursor-pointer">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center text-black shadow-[0_0_15px_rgba(234,179,8,0.5)]">
-                        <i class="fa-solid fa-trophy"></i>
-                    </div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center text-black shadow-[0_0_15px_rgba(234,179,8,0.5)]">
+                    <i class="fa-solid fa-trophy"></i>
                 </div>
             </div>
         </header>
@@ -69,29 +85,25 @@
         <div class="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
 
             <div id="view-overview" class="space-y-8">
-                <div class="w-full p-8 rounded-3xl bg-gradient-to-r from-indigo-600 to-purple-600 relative overflow-hidden shadow-2xl">
+                <div class="w-full p-8 rounded-3xl bg-gradient-to-r from-purple-900 to-indigo-900 relative overflow-hidden shadow-2xl border border-purple-500/30">
                     <div class="relative z-10">
                         <h1 class="text-3xl md:text-5xl font-extrabold mb-2">Dashboard</h1>
-                        <p class="text-indigo-100">Your <span class="font-bold text-yellow-300"><i class="fa-solid fa-crown"></i> Gold Badge</span> is active. Access the complete library.</p>
-                        <button onclick="switchTab('themes')" class="mt-6 bg-white text-indigo-600 px-6 py-2 rounded-lg font-bold text-sm hover:bg-indigo-50 transition shadow-lg">Browse Library</button>
+                        <p class="text-purple-200">Your <span class="font-bold text-yellow-300"><i class="fa-solid fa-crown"></i> Gold Badge</span> is active. Access the complete library.</p>
+                        <button onclick="switchTab('themes')" class="mt-6 bg-white text-purple-900 px-6 py-2 rounded-lg font-bold text-sm hover:bg-purple-50 transition shadow-lg">Browse Library</button>
                     </div>
-                    <div class="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-black/20 to-transparent"></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="dash-glass p-6 rounded-2xl border-l-4 border-green-500">
                         <div class="text-slate-400 text-xs font-bold uppercase">Public Access</div>
                         <div class="text-3xl font-bold mt-2">3 Free</div>
-                        <div class="text-green-400 text-xs mt-1">Themes Available to Everyone</div>
                     </div>
                     <div class="dash-glass p-6 rounded-2xl border-l-4 border-yellow-500">
                         <div class="text-slate-400 text-xs font-bold uppercase">Your Access</div>
                         <div class="text-3xl font-bold mt-2 text-yellow-400">100+ Pro</div>
-                        <div class="text-slate-500 text-xs mt-1">Super Premium Plan Active</div>
                     </div>
                     <div class="dash-glass p-6 rounded-2xl border-l-4 border-blue-500">
-                        <div class="text-slate-400 text-xs font-bold uppercase">Total Downloads</div>
-                        <div class="text-3xl font-bold mt-2" id="dl-count">0</div>
-                        <div class="text-blue-400 text-xs mt-1">Assets secured</div>
+                        <div class="text-slate-400 text-xs font-bold uppercase">Downloads</div>
+                        <div class="text-3xl font-bold mt-2">0</div>
                     </div>
                 </div>
             </div>
@@ -103,14 +115,12 @@
                         <p class="text-slate-400 text-sm">Download source code. 3 Free Public Themes included.</p>
                     </div>
                     <div class="flex gap-2">
-                        <button class="bg-indigo-600 px-4 py-2 rounded-lg text-sm font-bold">All</button>
-                        <button class="bg-slate-800 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700">Free</button>
+                        <button onclick="filterThemes('all')" id="btn-all" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-lg shadow-purple-500/20">All</button>
+                        <button onclick="filterThemes('free')" id="btn-free" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition">Free</button>
                     </div>
                 </div>
+                
                 <div id="theme-grid-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-                <div class="text-center pt-8">
-                    <button onclick="loadMoreThemes()" class="px-8 py-3 rounded-full border border-indigo-500 text-indigo-400 font-bold hover:bg-indigo-500/10 transition">Load More Designs</button>
-                </div>
             </div>
 
             <div id="view-domains" class="hidden space-y-6">
@@ -126,10 +136,6 @@
                         </div>
                         <button class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700">Manage DNS</button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-900/50 p-4 rounded-xl border border-white/5">
-                        <div><label class="text-xs text-slate-500 font-bold block mb-1">A RECORD</label><div class="font-mono text-sm">192.168.1.1</div></div>
-                        <div><label class="text-xs text-slate-500 font-bold block mb-1">CNAME</label><div class="font-mono text-sm">www.your-startup.com</div></div>
-                    </div>
                 </div>
             </div>
 
@@ -137,12 +143,12 @@
     </main>
 
     <div id="downloadModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/90 backdrop-blur-sm">
-        <div class="bg-slate-900 border border-slate-700 p-8 rounded-2xl w-full max-w-sm text-center">
-            <div class="text-indigo-500 text-5xl mb-4 animate-bounce"><i class="fa-solid fa-box-archive"></i></div>
-            <h3 class="text-2xl font-bold mb-2">Compressing...</h3>
-            <p class="text-slate-400 text-sm mb-6">Generating secure .ZIP archive.</p>
+        <div class="dash-glass p-8 rounded-2xl w-full max-w-sm text-center border border-purple-500/30 shadow-2xl shadow-purple-500/10">
+            <div class="text-purple-500 text-5xl mb-4 animate-bounce"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+            <h3 class="text-2xl font-bold mb-2">Downloading...</h3>
+            <p class="text-slate-400 text-sm mb-6">Connecting to secure cloud storage.</p>
             <div class="w-full bg-slate-800 rounded-full h-2 mb-2">
-                <div class="bg-indigo-500 h-2 rounded-full" style="width: 0%" id="downloadBar"></div>
+                <div class="bg-purple-500 h-2 rounded-full" style="width: 0%" id="downloadBar"></div>
             </div>
             <p id="downloadStatus" class="text-xs text-slate-500">Initializing...</p>
         </div>
@@ -151,79 +157,87 @@
     <script>
         AOS.init();
 
-        // --- 1. YOUR INVENTORY (REAL WORKING LINKS ADDED) ---
+        // 1. DATA (REAL LINKS)
         const realThemes = [
-            // FREE THEMES (Public Access)
             { 
-                id: 101, 
-                category: "Admin Panel", 
-                title: "Notus React Dashboard", 
-                isFree: true,
+                id: 101, category: "Admin Panel", title: "Notus React Dashboard", isFree: true,
                 image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/notus-react/notus-react-presentation.jpg", 
-                // REAL LINK: This downloads a 5MB+ file from GitHub
                 downloadUrl: "https://github.com/creativetimofficial/notus-react/archive/refs/heads/main.zip" 
             },
             { 
-                id: 102, 
-                category: "SaaS Starter", 
-                title: "Tailwind Landing Page", 
-                isFree: true,
+                id: 102, category: "SaaS Starter", title: "Tailwind Landing Page", isFree: true,
                 image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/tailwind-starter-kit/tailwind-starter-kit-presentation.jpg", 
                 downloadUrl: "https://github.com/creativetimofficial/tailwind-starter-kit/archive/refs/heads/main.zip" 
             },
             { 
-                id: 103, 
-                category: "Dashboard", 
-                title: "Windmill Admin", 
-                isFree: true,
+                id: 103, category: "Dashboard", title: "Windmill Admin", isFree: true,
                 image: "https://preview.tabler.io/static/og.png", 
                 downloadUrl: "https://github.com/estevanmaito/windmill-dashboard/archive/refs/heads/master.zip" 
             },
-            
-            // PREMIUM THEMES (Requires Gold Badge)
             { 
-                id: 201, 
-                category: "Portfolio", 
-                title: "Spotlight Pro", 
-                isFree: false,
-                image: "https://picsum.photos/id/1/400/300", 
-                // Currently using a placeholder link for testing premium flow
+                id: 201, category: "Portfolio", title: "Spotlight Pro", isFree: false,
+                image: "https://picsum.photos/id/180/400/300", 
                 downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" 
             },
             { 
-                id: 202, 
-                category: "Ecommerce", 
-                title: "Shopify Booster", 
-                isFree: false,
-                image: "https://picsum.photos/id/2/400/300", 
+                id: 202, category: "Ecommerce", title: "Shopify Booster", isFree: false,
+                image: "https://picsum.photos/id/119/400/300", 
                 downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" 
-            }
+            },
+            // Extra Placeholders for Visual Filling
+            { id: 301, category: "Crypto", title: "Web3 Dark", isFree: false, image: "https://picsum.photos/id/2/400/300", downloadUrl: "#" },
+            { id: 302, category: "Blog", title: "Minimal Writer", isFree: false, image: "https://picsum.photos/id/3/400/300", downloadUrl: "#" },
+            { id: 303, category: "Agency", title: "Creative Hub", isFree: false, image: "https://picsum.photos/id/4/400/300", downloadUrl: "#" }
         ];
 
-        // --- 2. RENDER ENGINE ---
-        document.addEventListener('DOMContentLoaded', () => {
-            renderThemes(); 
-        });
+        let activeFilter = 'all';
 
+        // 2. INIT
+        document.addEventListener('DOMContentLoaded', () => { renderThemes(); });
+
+        // 3. FILTER FUNCTION (NEW)
+        function filterThemes(type) {
+            activeFilter = type;
+            
+            // Update Button Styles
+            const btnAll = document.getElementById('btn-all');
+            const btnFree = document.getElementById('btn-free');
+            
+            if(type === 'all') {
+                btnAll.className = "bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-lg shadow-purple-500/20";
+                btnFree.className = "bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition";
+            } else {
+                btnAll.className = "bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition";
+                btnFree.className = "bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-lg shadow-purple-500/20";
+            }
+            
+            renderThemes();
+        }
+
+        // 4. RENDER FUNCTION
         function renderThemes() {
             const grid = document.getElementById('theme-grid-container');
-            grid.innerHTML = ""; // Clear existing
+            grid.innerHTML = ""; 
 
-            // A. Render Real Database Items
-            realThemes.forEach((theme) => {
+            // Filter logic
+            const filteredData = activeFilter === 'all' 
+                ? realThemes 
+                : realThemes.filter(item => item.isFree === true);
+
+            filteredData.forEach((theme) => {
                 let badgeHTML = theme.isFree 
                     ? `<span class="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg">FREE / PUBLIC</span>` 
                     : `<span class="bg-yellow-500 text-black text-[10px] font-bold px-2 py-1 rounded shadow-lg"><i class="fa-solid fa-crown"></i> PREMIUM</span>`;
 
                 const card = `
-                <div class="group relative rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-indigo-500/20 transition duration-300 bg-slate-900 border border-white/5">
+                <div class="group relative rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-purple-500/20 transition duration-300 bg-slate-900/50 border border-white/5">
                     <div class="absolute top-2 left-2 z-10">${badgeHTML}</div>
-                    <img src="${theme.image}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-700 opacity-80 group-hover:opacity-100">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent p-4 flex flex-col justify-end">
-                        <span class="text-xs font-bold text-indigo-400 mb-1 uppercase">${theme.category}</span>
+                    <img src="${theme.image}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-700 opacity-90 group-hover:opacity-100">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050014] via-[#050014]/60 to-transparent p-4 flex flex-col justify-end">
+                        <span class="text-xs font-bold text-purple-400 mb-1 uppercase">${theme.category}</span>
                         <h4 class="text-white font-bold text-lg leading-tight">${theme.title}</h4>
                         <div class="mt-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                            <button onclick="triggerCloudDownload('${theme.downloadUrl}')" class="flex-1 bg-white text-black text-xs font-bold py-2 rounded-lg hover:bg-indigo-50">
+                            <button onclick="triggerCloudDownload('${theme.downloadUrl}')" class="flex-1 bg-white text-black text-xs font-bold py-2 rounded-lg hover:bg-purple-50">
                                 <i class="fa-solid fa-cloud-arrow-down mr-1"></i> Download
                             </button>
                         </div>
@@ -231,78 +245,40 @@
                 </div>`;
                 grid.innerHTML += card;
             });
-
-            // B. Fill empty spots with "Coming Soon"
-            for(let i=0; i<3; i++) {
-                const imgId = Math.floor(Math.random() * 1000);
-                grid.innerHTML += `
-                <div class="group relative rounded-xl overflow-hidden opacity-40 border border-white/5 grayscale">
-                    <div class="absolute top-2 left-2 z-10"><span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-1 rounded">COMING SOON</span></div>
-                    <img src="https://picsum.photos/seed/${imgId+500}/400/300" class="w-full h-48 object-cover">
-                    <div class="absolute inset-0 bg-black/60 p-4 flex items-end">
-                        <h4 class="text-slate-400 font-bold">New Theme Coming</h4>
-                    </div>
-                </div>`;
-            }
         }
 
-        // --- 3. REAL CLOUD DOWNLOAD TRIGGER ---
+        // 5. DOWNLOAD
         function triggerCloudDownload(url) {
-            if(!url || url === "#") {
-                alert("Link not configured yet.");
-                return;
-            }
-
-            // UI Feedback (Fake Loading Bar before Redirect)
+            if(!url || url === "#") { alert("Theme coming soon!"); return; }
             const modal = document.getElementById('downloadModal');
             const bar = document.getElementById('downloadBar');
             const status = document.getElementById('downloadStatus');
             modal.classList.remove('hidden');
-            
             let width = 0;
             const interval = setInterval(() => {
                 if (width >= 100) {
                     clearInterval(interval);
-                    status.innerText = "Redirecting to Cloud Storage...";
+                    status.innerText = "Opening Secure Link...";
                     status.classList.add('text-green-400');
-                    
                     setTimeout(() => {
-                        // --- THE MAGIC LINE: Opens the Real Link ---
                         window.location.href = url; 
-                        
                         modal.classList.add('hidden');
                         width = 0; bar.style.width = '0%'; status.classList.remove('text-green-400');
                     }, 800);
-                } else {
-                    width += 20; 
-                    bar.style.width = width + '%';
-                }
+                } else { width += 20; bar.style.width = width + '%'; }
             }, 100);
         }
 
-        // --- 4. NAVIGATION LOGIC ---
+        // 6. TABS
         function switchTab(tabName) {
             ['overview', 'themes', 'domains', 'settings'].forEach(t => {
-                const el = document.getElementById(`view-${t}`);
-                if(el) el.classList.add('hidden');
-                const btn = document.getElementById(`nav-${t}`);
-                if(btn) btn.className = "w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition";
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition";
             });
-            const selectedView = document.getElementById(`view-${tabName}`);
-            if(selectedView) {
-                selectedView.classList.remove('hidden');
-                selectedView.classList.add('animate-[fadeIn_0.3s_ease-out]');
-            }
-            const activeBtn = document.getElementById(`nav-${tabName}`);
-            if(activeBtn) activeBtn.className = "w-full flex items-center p-3 rounded-xl bg-indigo-600/20 text-indigo-400 font-bold border border-indigo-500/30 transition";
-        }
-        
-        function loadMoreThemes() {
-            const btn = document.querySelector('button[onclick="loadMoreThemes()"]');
-            btn.innerHTML = 'All Themes Loaded';
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            document.getElementById(`view-${tabName}`).classList.add('animate-[fadeIn_0.3s_ease-out]');
+            document.getElementById(`nav-${tabName}`).className = "w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-300 font-bold border border-purple-500/30 transition";
         }
     </script>
 </body>
 </html>
-
