@@ -1,68 +1,76 @@
+// --- WAYBE.IN PROFESSIONAL SERVER (UPDATED FOR NEW PLANS) ---
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
+const Razorpay = require('razorpay');
+const path = require('path');
+require('dotenv').config(); // Load environment variables
+
 const app = express();
-
-// Middleware
-app.use(express.static('public'));
 app.use(express.json());
+app.use(cors());
+app.use(express.static('public')); // Serves your index.html
 
-// Database Connection
-const mongoUri = process.env.MONGO_URI || process.env.MONGO_URL;
-if (!mongoUri) console.log("⚠️ No Database Key found!");
-else mongoose.connect(mongoUri).then(() => console.log("✅ MongoDB Connected"));
+// 1. DATABASE CONNECTION (Real Memory)
+// This connects to MongoDB. If you haven't set the MONGO_URI in Render yet, 
+// it will just log a warning but keep the site running.
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://admin:admin123@cluster0.mongodb.net/waybe?retryWrites=true&w=majority";
 
-// UPGRADED User Model (Now tracks Status and Revenue)
+mongoose.connect(MONGO_URI)
+    .then(() => console.log('✅ Connected to Real Database'))
+    .catch(err => console.log('⚠️ Database Config Needed (App running in fallback mode)'));
+
+// Define User Schema (UPDATED FOR BADGES)
 const UserSchema = new mongoose.Schema({
-    email: String,
-    domain: String,
+    email: { type: String, required: true },
+    password: { type: String, required: true }, 
     plan: String,
-    status: { type: String, default: 'Active' }, // New: Active/Suspended
-    revenue: { type: Number, default: 0 },       // New: Money value
+    badge: String, // Stores "gold", "silver", "bronze"
+    domain_interest: String,
+    revenue_generated: Number, // Stores the exact amount paid (e.g., 4999)
     date: { type: Date, default: Date.now }
 });
 const User = mongoose.model('User', UserSchema);
 
-// --- APIs ---
-
-app.post('/api/search-domain', async (req, res) => {
-    const { domain } = req.body;
-    const isTaken = domain.toLowerCase().includes('google');
-    res.json({ available: !isTaken, domain, price: Math.floor(Math.random() * 500) + 199 });
+// 2. PAYMENT CONFIGURATION
+const razorpay = new Razorpay({
+    key_id: "rzp_test_1DP5mmOlF5G5ag", 
+    key_secret: process.env.RAZORPAY_SECRET || "YOUR_SECRET_HERE"
 });
 
-// SIGNUP (Auto-calculates Revenue)
+// --- API ROUTES ---
+
+// A. Signup & Order Creation (Matches your new index.html)
 app.post('/api/signup', async (req, res) => {
     try {
-        const { email, domain, plan } = req.body;
+        // Receiving the specific data sent by your new index.html
+        const { email, password, plan, badge, domain, revenue } = req.body;
         
-        // Assign fake revenue based on plan for the admin panel demo
-        let rev = 0;
-        if(plan === 'Starter') rev = 499;
-        if(plan === 'Pro') rev = 999;
+        // Save to Real DB
+        const newUser = new User({
+            email, 
+            password, 
+            plan, 
+            badge, 
+            domain_interest: domain,
+            revenue_generated: revenue
+        });
         
-        await new User({ email, domain, plan, revenue: rev }).save();
-        res.json({ success: true });
-    } catch (e) { res.status(500).json({ success: false }); }
+        await newUser.save();
+        console.log(`✅ New Customer: ${email} | Plan: ${plan} | Badge: ${badge}`);
+
+        res.json({ status: 'success', message: 'Account created successfully' });
+    } catch (error) {
+        console.error("Signup Error:", error);
+        res.status(500).json({ status: 'error', message: 'Server error' });
+    }
 });
 
-// READ (Get all users)
-app.get('/api/users', async (req, res) => {
-    const users = await User.find().sort({ date: -1 });
-    res.json(users);
+// Serve Frontend
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// DELETE USER
-app.delete('/api/users/:id', async (req, res) => {
-    await User.findByIdAndDelete(req.params.id);
-    res.json({ success: true });
-});
-
-// UPDATE STATUS (Suspend/Activate)
-app.put('/api/users/:id', async (req, res) => {
-    const { status } = req.body;
-    await User.findByIdAndUpdate(req.params.id, { status: status });
-    res.json({ success: true });
-});
-
+// Start Server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Waybe Server Live on Port ${PORT}`));
