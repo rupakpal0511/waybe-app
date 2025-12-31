@@ -8,36 +8,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script> tailwind.config = { darkMode: 'class' } </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         body { font-family: 'Outfit', sans-serif; }
         
-        /* --- PURPLE NEBULA BACKGROUND (Dual Shade) --- */
+        /* --- PURPLE NEBULA BACKGROUND --- */
         .nebula-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -50;
-            background: #0a0118; /* Deepest Purple Base */
+            background: #0a0118;
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(124, 58, 237, 0.25) 0%, transparent 50%), /* Violet */
-                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.2) 0%, transparent 50%); /* Pink */
-            animation: pulse-nebula 10s infinite alternate;
-        }
-        @keyframes pulse-nebula { 0% { opacity: 0.8; } 100% { opacity: 1; } }
-
-        /* Glass Cards */
-        .dash-glass {
-            background: rgba(20, 10, 40, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+                radial-gradient(circle at 15% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 40%), 
+                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15) 0%, transparent 40%);
         }
         
-        /* Grid Lines */
         .bg-grid-light {
             background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -49;
+        }
+
+        /* Glass Cards */
+        .dash-glass {
+            background: rgba(20, 10, 40, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         /* Scrollbar */
@@ -69,14 +65,14 @@
     </aside>
 
     <main class="flex-1 h-full overflow-y-auto relative">
-        <header class="w-full p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-[#0a0118]/50">
+        <header class="w-full p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-[#0a0118]/80 border-b border-white/5">
             <div class="md:hidden text-xl font-bold"><i class="fa-brands fa-hive text-purple-500"></i> Waybe</div>
             <div class="flex items-center gap-4 ml-auto">
                 <div class="text-right hidden md:block">
                     <h4 class="font-bold text-sm">Welcome User</h4>
                     <p class="text-xs text-slate-400">user@example.com</p>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center text-black shadow-[0_0_15px_rgba(234,179,8,0.5)]">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center text-black shadow-lg shadow-yellow-500/20">
                     <i class="fa-solid fa-trophy"></i>
                 </div>
             </div>
@@ -97,12 +93,10 @@
                     <div class="dash-glass p-6 rounded-2xl border-l-4 border-green-500">
                         <div class="text-slate-400 text-xs font-bold uppercase">Public Access</div>
                         <div class="text-3xl font-bold mt-2">3 Free</div>
-                        <div class="text-green-400 text-xs mt-1">Ready to download</div>
                     </div>
                     <div class="dash-glass p-6 rounded-2xl border-l-4 border-yellow-500">
                         <div class="text-slate-400 text-xs font-bold uppercase">Your Access</div>
                         <div class="text-3xl font-bold mt-2 text-yellow-400">100+ Pro</div>
-                        <div class="text-slate-500 text-xs mt-1">Super Premium Plan</div>
                     </div>
                     <div class="dash-glass p-6 rounded-2xl border-l-4 border-blue-500">
                         <div class="text-slate-400 text-xs font-bold uppercase">Downloads</div>
@@ -122,7 +116,6 @@
                         <button onclick="filterThemes('free')" id="btn-free" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition">Free Only</button>
                     </div>
                 </div>
-                
                 <div id="theme-grid-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
             </div>
 
@@ -142,6 +135,13 @@
                 </div>
             </div>
 
+            <div id="view-settings" class="hidden space-y-6">
+                <h2 class="text-3xl font-bold">Settings</h2>
+                <div class="dash-glass p-6 rounded-2xl">
+                    <p class="text-slate-400">Account settings coming soon.</p>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -158,9 +158,7 @@
     </div>
 
     <script>
-        AOS.init();
-
-        // 1. DATA (REAL LINKS)
+        // --- 1. DATA (REAL LINKS) ---
         const realThemes = [
             { 
                 id: 101, category: "Admin Panel", title: "Notus React Dashboard", isFree: true,
@@ -186,25 +184,22 @@
                 id: 202, category: "Ecommerce", title: "Shopify Booster", isFree: false,
                 image: "https://picsum.photos/id/119/400/300", 
                 downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" 
-            },
-            { id: 301, category: "Crypto", title: "Web3 Dark", isFree: false, image: "https://picsum.photos/id/2/400/300", downloadUrl: "#" },
-            { id: 302, category: "Blog", title: "Minimal Writer", isFree: false, image: "https://picsum.photos/id/3/400/300", downloadUrl: "#" },
-            { id: 303, category: "Agency", title: "Creative Hub", isFree: false, image: "https://picsum.photos/id/4/400/300", downloadUrl: "#" }
+            }
         ];
 
         let activeFilter = 'all';
 
-        // 2. INITIALIZATION (Fixes Black Screen)
+        // --- 2. STARTUP ---
         document.addEventListener('DOMContentLoaded', () => {
-            renderThemes(); 
-            // Ensures Overview is visible by default
+            renderThemes();
+            // Note: We don't rely on JS to show overview anymore, 
+            // but we call this to ensure button states match.
             switchTab('overview'); 
         });
 
-        // 3. FILTER FUNCTION (Fixes Buttons)
+        // --- 3. FILTER LOGIC ---
         function filterThemes(type) {
             activeFilter = type;
-            
             const btnAll = document.getElementById('btn-all');
             const btnFree = document.getElementById('btn-free');
             
@@ -215,24 +210,18 @@
                 btnAll.className = "bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition";
                 btnFree.className = "bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-lg shadow-purple-500/20";
             }
-            
             renderThemes();
         }
 
-        // 4. RENDER FUNCTION
+        // --- 4. RENDERER ---
         function renderThemes() {
             const grid = document.getElementById('theme-grid-container');
+            if(!grid) return; 
             grid.innerHTML = ""; 
 
-            // Filter logic
             const filteredData = activeFilter === 'all' 
                 ? realThemes 
                 : realThemes.filter(item => item.isFree === true);
-
-            if(filteredData.length === 0) {
-                grid.innerHTML = `<div class="col-span-3 text-center text-slate-500 py-10">No themes found.</div>`;
-                return;
-            }
 
             filteredData.forEach((theme) => {
                 let badgeHTML = theme.isFree 
@@ -243,7 +232,7 @@
                 <div class="group relative rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-purple-500/20 transition duration-300 bg-slate-900/50 border border-white/5">
                     <div class="absolute top-2 left-2 z-10">${badgeHTML}</div>
                     <img src="${theme.image}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-700 opacity-90 group-hover:opacity-100">
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#050014] via-[#050014]/60 to-transparent p-4 flex flex-col justify-end">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0118] via-[#0a0118]/60 to-transparent p-4 flex flex-col justify-end">
                         <span class="text-xs font-bold text-purple-400 mb-1 uppercase">${theme.category}</span>
                         <h4 class="text-white font-bold text-lg leading-tight">${theme.title}</h4>
                         <div class="mt-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
@@ -257,7 +246,7 @@
             });
         }
 
-        // 5. DOWNLOAD TRIGGER
+        // --- 5. DOWNLOADER ---
         function triggerCloudDownload(url) {
             if(!url || url === "#") { alert("Theme coming soon!"); return; }
             const modal = document.getElementById('downloadModal');
@@ -279,16 +268,21 @@
             }, 100);
         }
 
-        // 6. TABS LOGIC
+        // --- 6. NAVIGATION ---
         function switchTab(tabName) {
             ['overview', 'themes', 'domains', 'settings'].forEach(t => {
-                document.getElementById(`view-${t}`).classList.add('hidden');
+                const el = document.getElementById(`view-${t}`);
+                if(el) el.classList.add('hidden');
+                
                 const btn = document.getElementById(`nav-${t}`);
                 if(btn) btn.className = "w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition";
             });
-            document.getElementById(`view-${tabName}`).classList.remove('hidden');
-            document.getElementById(`view-${tabName}`).classList.add('animate-[fadeIn_0.3s_ease-out]');
-            document.getElementById(`nav-${tabName}`).className = "w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-300 font-bold border border-purple-500/30 transition";
+
+            const selectedView = document.getElementById(`view-${tabName}`);
+            if(selectedView) selectedView.classList.remove('hidden');
+
+            const activeBtn = document.getElementById(`nav-${tabName}`);
+            if(activeBtn) activeBtn.className = "w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-300 font-bold border border-purple-500/30 transition";
         }
     </script>
 </body>
