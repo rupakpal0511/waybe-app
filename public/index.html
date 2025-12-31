@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waybe.in | Future-Ready Domains</title>
+    <title>Waybe.in | Domains & Design Ecosystem</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script> tailwind.config = { darkMode: 'class' } </script>
@@ -13,31 +13,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
     
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            overflow-x: hidden;
-            transition: background-color 0.5s ease, color 0.5s ease;
-        }
+        body { font-family: 'Outfit', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
 
         /* --- BACKGROUND FX --- */
         .dark .ambient-light {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.15), transparent 25%), 
                         radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%);
-            z-index: -2;
-            animation: pulseLight 8s ease-in-out infinite alternate;
+            z-index: -2; animation: pulseLight 8s ease-in-out infinite alternate;
         }
         .light-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
-            z-index: -2;
-            display: none;
+            z-index: -2; display: none;
         }
         html:not(.dark) .light-bg { display: block; }
         html:not(.dark) .ambient-light { display: none; }
@@ -52,16 +45,15 @@
             mask-image: radial-gradient(circle at center, black 40%, transparent 100%); 
         }
 
-        /* --- GLASS CARDS (With 3D Support) --- */
+        /* --- CARDS & BADGES --- */
         .glass-card {
             background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            transform-style: preserve-3d; /* For 3D Effect */
-            transform: perspective(1000px);
+            border: 1px solid rgba(0, 0, 0, 0.05); transform-style: preserve-3d; transform: perspective(1000px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .dark .glass-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
-        
-        /* Text & Cursor */
+        .glass-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.2); border-color: rgba(99, 102, 241, 0.5); }
+
         .gradient-text {
             background: linear-gradient(to right, #4f46e5, #ec4899, #8b5cf6);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -69,9 +61,19 @@
         }
         .dark .gradient-text { background: linear-gradient(to right, #818cf8, #e879f9, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         @keyframes shine { to { background-position: 200% center; } }
+        
         .cursor { display: inline-block; width: 3px; background-color: #4f46e5; animation: blink 1s infinite; margin-left: 4px; }
         .dark .cursor { background-color: #22d3ee; }
         @keyframes blink { 50% { opacity: 0; } }
+
+        /* Badge Glows */
+        .badge-glow-gold { filter: drop-shadow(0 0 10px rgba(234, 179, 8, 0.6)); }
+        .badge-glow-silver { filter: drop-shadow(0 0 8px rgba(148, 163, 184, 0.6)); }
+        .badge-glow-bronze { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6)); }
+
+        /* Scrollbar Hide */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 
@@ -98,13 +100,13 @@
 
     <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-24 md:pt-20">
         <div data-aos="fade-down" class="mb-8 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-50/50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 text-xs font-bold uppercase tracking-widest cursor-default">
-            ✨ Launch Offer: 15-Day Free Trial
+            ✨ New: Website Themes Added
         </div>
         <h1 data-aos="zoom-out-up" class="text-4xl md:text-8xl font-extrabold mb-6 md:mb-8 tracking-tight leading-tight">
-            Define Your <br> <span class="gradient-text" id="typewriter"></span><span class="cursor">&nbsp;</span>
+            Build Your <br> <span class="gradient-text" id="typewriter"></span><span class="cursor">&nbsp;</span>
         </h1>
         <p data-aos="fade-up" data-aos-delay="200" class="text-slate-600 dark:text-slate-400 text-base md:text-xl max-w-2xl mb-10 md:mb-12 leading-relaxed px-2">
-            Secure your perfect domain name instantly. No paperwork, just ownership. <span class="text-slate-900 dark:text-white font-semibold">Join 10,000+ creators</span>.
+            Secure domains and access 100+ professional themes. <span class="text-slate-900 dark:text-white font-semibold">The complete ecosystem for creators.</span>
         </p>
 
         <div data-aos="fade-up" data-aos-delay="400" class="w-full max-w-2xl relative group z-10 px-2">
@@ -118,31 +120,131 @@
         <div id="searchResult" class="w-full max-w-2xl mt-6 hidden px-2"></div>
     </section>
 
-    <section class="py-20 md:py-24 px-6 relative z-10">
+    <section class="py-20 px-6 relative z-10">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16 md:mb-20">
-                <h2 data-aos="fade-up" class="text-3xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">Unleash Your Potential</h2>
+            <div class="text-center mb-16">
+                <h2 data-aos="fade-up" class="text-3xl md:text-4xl font-bold mb-4 text-slate-900 dark:text-white">Domain Plans</h2>
                 <div data-aos="fade-up" data-aos-delay="100" class="h-1 w-20 bg-indigo-500 mx-auto rounded-full"></div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                <div data-tilt data-tilt-max="10" data-aos="fade-right" class="glass-card p-8 rounded-3xl relative group">
-                    <div class="bg-indigo-100 dark:bg-indigo-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-6 text-indigo-600 dark:text-indigo-400 text-xl group-hover:scale-110 transition"><i class="fa-solid fa-rocket"></i></div>
-                    <div class="text-slate-500 dark:text-slate-400 font-bold mb-2 tracking-wider text-sm">STARTER</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div data-tilt data-aos="fade-right" class="glass-card p-8 rounded-3xl relative">
+                    <div class="bg-indigo-100 dark:bg-indigo-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-6 text-indigo-600 dark:text-indigo-400 text-xl"><i class="fa-solid fa-rocket"></i></div>
+                    <div class="text-slate-500 dark:text-slate-400 font-bold mb-2 tracking-wider text-sm">DOMAIN STARTER</div>
                     <div class="text-4xl font-extrabold mb-6 text-slate-900 dark:text-white">₹499<span class="text-lg font-normal text-slate-500">/yr</span></div>
-                    <button onclick="openModal('Starter', 499)" class="w-full py-4 rounded-xl border border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 font-bold transition text-slate-700 dark:text-white">Select Plan</button>
+                    <button onclick="openModal('Domain Starter', 499)" class="w-full py-4 rounded-xl border border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 font-bold transition text-slate-700 dark:text-white">Select</button>
                 </div>
-                <div data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.5" data-aos="fade-up" data-aos-delay="200" class="glass-card p-8 rounded-3xl relative border-purple-500/30 bg-purple-50 dark:bg-purple-900/10">
-                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg">MOST POPULAR</div>
+                <div data-tilt data-aos="fade-up" class="glass-card p-8 rounded-3xl relative border-purple-500/30 bg-purple-50 dark:bg-purple-900/10">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg">TRIAL</div>
                     <div class="bg-purple-100 dark:bg-purple-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-6 text-purple-600 dark:text-purple-400 text-xl"><i class="fa-solid fa-bolt"></i></div>
                     <div class="text-purple-600 dark:text-purple-400 font-bold mb-2 tracking-wider text-sm">FREE TRIAL</div>
                     <div class="text-4xl font-extrabold mb-6 text-slate-900 dark:text-white">₹0<span class="text-lg font-normal text-slate-500">/15 days</span></div>
-                    <button onclick="openModal('15-Day Trial', 0)" class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold transition shadow-lg shadow-purple-500/30 transform hover:scale-105">Start Free Trial</button>
+                    <button onclick="openModal('Domain Trial', 0)" class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold transition shadow-lg shadow-purple-500/30">Start Free</button>
                 </div>
-                <div data-tilt data-tilt-max="10" data-aos="fade-left" data-aos-delay="400" class="glass-card p-8 rounded-3xl relative group">
-                    <div class="bg-blue-100 dark:bg-blue-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-6 text-blue-600 dark:text-blue-400 text-xl group-hover:scale-110 transition"><i class="fa-solid fa-crown"></i></div>
-                    <div class="text-slate-500 dark:text-slate-400 font-bold mb-2 tracking-wider text-sm">PRO</div>
+                <div data-tilt data-aos="fade-left" class="glass-card p-8 rounded-3xl relative">
+                    <div class="bg-blue-100 dark:bg-blue-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-6 text-blue-600 dark:text-blue-400 text-xl"><i class="fa-solid fa-crown"></i></div>
+                    <div class="text-slate-500 dark:text-slate-400 font-bold mb-2 tracking-wider text-sm">DOMAIN PRO</div>
                     <div class="text-4xl font-extrabold mb-6 text-slate-900 dark:text-white">₹999<span class="text-lg font-normal text-slate-500">/yr</span></div>
-                    <button onclick="openModal('Pro', 999)" class="w-full py-4 rounded-xl border border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 font-bold transition text-slate-700 dark:text-white">Select Plan</button>
+                    <button onclick="openModal('Domain Pro', 999)" class="w-full py-4 rounded-xl border border-gray-300 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 font-bold transition text-slate-700 dark:text-white">Select</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 bg-gray-100 dark:bg-black/20">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h2 class="text-3xl md:text-5xl font-bold mb-2 text-slate-900 dark:text-white">100+ Professional Themes</h2>
+                    <p class="text-slate-500 dark:text-slate-400">Ready-to-use layouts for every industry.</p>
+                </div>
+                <div class="hidden md:block text-indigo-500 font-bold cursor-pointer">View All <i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+            <div id="themeGallery" class="flex overflow-x-auto gap-6 pb-8 no-scrollbar snap-x">
+                </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-6 relative z-10 border-b border-gray-200 dark:border-white/5">
+        <div class="max-w-7xl mx-auto text-center">
+            <h3 class="text-xl font-bold mb-8 text-slate-500 dark:text-slate-400 uppercase tracking-widest">Powered By World-Class Libraries</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-6 rounded-2xl bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+                    <div class="text-indigo-500 text-3xl mb-4"><i class="fa-solid fa-code-branch"></i></div>
+                    <h4 class="font-bold text-lg text-slate-900 dark:text-white">HyperUI / Meraki / FloatUI</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Amazing free Tailwind components included in our Basic Plan.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-white/50 dark:bg-white/5 border border-blue-500/30">
+                    <div class="text-blue-500 text-3xl mb-4"><i class="fa-solid fa-layer-group"></i></div>
+                    <h4 class="font-bold text-lg text-slate-900 dark:text-white">Tailwind UI</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">The Gold Standard (Premium). Official components by Tailwind Labs.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-white/50 dark:bg-white/5 border border-yellow-500/30">
+                    <div class="text-yellow-500 text-3xl mb-4"><i class="fa-solid fa-tree"></i></div>
+                    <h4 class="font-bold text-lg text-slate-900 dark:text-white">ThemeForest</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Super Premium WordPress & HTML Templates for high-end projects.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 data-aos="fade-up" class="text-3xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">Design & Layout Plans</h2>
+                <p data-aos="fade-up" class="text-slate-500">Unlock the badges of power.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div data-tilt data-aos="fade-up" data-aos-delay="0" class="glass-card p-6 rounded-3xl flex flex-col relative">
+                    <div class="mb-4 text-green-500 text-3xl"><i class="fa-solid fa-leaf"></i></div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Free Access</h3>
+                    <div class="text-3xl font-extrabold my-4 text-slate-900 dark:text-white">₹0</div>
+                    <ul class="text-sm text-slate-500 dark:text-slate-400 space-y-2 mb-8 flex-grow">
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> 3 Public Themes</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Powered by HyperUI</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> No Badge</li>
+                    </ul>
+                    <button onclick="openModal('Free Themes', 0)" class="w-full py-3 rounded-xl bg-slate-200 dark:bg-white/10 font-bold hover:bg-slate-300 transition text-slate-800 dark:text-white">Get Started</button>
+                </div>
+
+                <div data-tilt data-aos="fade-up" data-aos-delay="100" class="glass-card p-6 rounded-3xl flex flex-col relative border-blue-500/30">
+                    <div class="absolute top-4 right-4 text-2xl text-blue-500 badge-glow-bronze"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="mb-4 text-blue-500 text-3xl"><i class="fa-solid fa-layer-group"></i></div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Basic</h3>
+                    <div class="text-3xl font-extrabold my-4 text-slate-900 dark:text-white">₹999</div>
+                    <ul class="text-sm text-slate-500 dark:text-slate-400 space-y-2 mb-8 flex-grow">
+                        <li><i class="fa-solid fa-check text-blue-500 mr-2"></i> <b>1-10</b> Layouts</li>
+                        <li><i class="fa-solid fa-check text-blue-500 mr-2"></i> Meraki UI / FloatUI</li>
+                        <li class="text-blue-500 font-bold"><i class="fa-solid fa-medal mr-2"></i> Bronze Badge</li>
+                    </ul>
+                    <button onclick="openModal('Basic Design', 999)" class="w-full py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition">Select Basic</button>
+                </div>
+
+                <div data-tilt data-aos="fade-up" data-aos-delay="200" class="glass-card p-6 rounded-3xl flex flex-col relative border-purple-500/30">
+                    <div class="absolute top-4 right-4 text-2xl text-slate-400 badge-glow-silver"><i class="fa-solid fa-crown"></i></div>
+                    <div class="mb-4 text-purple-500 text-3xl"><i class="fa-solid fa-palette"></i></div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Premium</h3>
+                    <div class="text-3xl font-extrabold my-4 text-slate-900 dark:text-white">₹2,499</div>
+                    <ul class="text-sm text-slate-500 dark:text-slate-400 space-y-2 mb-8 flex-grow">
+                        <li><i class="fa-solid fa-check text-purple-500 mr-2"></i> <b>1-50</b> Layouts</li>
+                        <li><i class="fa-solid fa-check text-purple-500 mr-2"></i> <b>Tailwind UI</b> Access</li>
+                        <li class="text-slate-400 font-bold"><i class="fa-solid fa-crown mr-2"></i> Silver Badge</li>
+                    </ul>
+                    <button onclick="openModal('Premium Design', 2499)" class="w-full py-3 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-500 transition">Select Premium</button>
+                </div>
+
+                <div data-tilt data-aos="fade-up" data-aos-delay="300" class="glass-card p-6 rounded-3xl flex flex-col relative border-yellow-500/50 bg-yellow-500/5">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded-full">BEST VALUE</div>
+                    <div class="absolute top-4 right-4 text-2xl text-yellow-500 badge-glow-gold animate-pulse"><i class="fa-solid fa-trophy"></i></div>
+                    <div class="mb-4 text-yellow-500 text-3xl"><i class="fa-solid fa-gem"></i></div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Super Premium</h3>
+                    <div class="text-3xl font-extrabold my-4 text-slate-900 dark:text-white">₹4,999</div>
+                    <ul class="text-sm text-slate-500 dark:text-slate-400 space-y-2 mb-8 flex-grow">
+                        <li><i class="fa-solid fa-check text-yellow-500 mr-2"></i> <b>100+</b> Designs</li>
+                        <li><i class="fa-solid fa-check text-yellow-500 mr-2"></i> <b>ThemeForest</b> Templates</li>
+                        <li class="text-yellow-500 font-bold"><i class="fa-solid fa-trophy mr-2"></i> Gold Badge</li>
+                    </ul>
+                    <button onclick="openModal('Super Premium', 4999)" class="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold hover:brightness-110 transition shadow-lg shadow-yellow-500/20">Go Super</button>
                 </div>
             </div>
         </div>
@@ -151,8 +253,8 @@
     <div id="signupModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-md px-4">
         <div class="glass-card bg-white dark:bg-slate-900 p-8 rounded-3xl w-full max-w-md relative animate-[fadeIn_0.3s_ease-out] shadow-2xl">
             <button onclick="document.getElementById('signupModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-500 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Unlock Your Domain</h2>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Create account for <span id="planName" class="text-indigo-600 dark:text-indigo-400 font-bold"></span>.</p>
+            <h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Confirm Selection</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Unlock: <span id="planName" class="text-indigo-600 dark:text-indigo-400 font-bold"></span></p>
             <div class="space-y-4">
                 <input type="email" id="userEmail" placeholder="Email Address" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-4 text-slate-900 dark:text-white outline-none focus:border-indigo-500 transition">
                 <input type="password" id="userPassword" placeholder="Create Secure Password" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-4 text-slate-900 dark:text-white outline-none focus:border-indigo-500 transition">
@@ -166,13 +268,14 @@
         AOS.init({ duration: 800, once: false });
         VanillaTilt.init(document.querySelectorAll("[data-tilt]"), { speed: 400, glare: true, "max-glare": 0.2 });
 
+        // --- THEME & TYPEWRITER ---
         function toggleTheme() {
             const html = document.documentElement;
             html.classList.toggle('dark');
             document.getElementById('themeIcon').className = html.classList.contains('dark') ? 'fa-solid fa-moon' : 'fa-solid fa-sun text-yellow-500';
         }
 
-        const phrases = ["Digital Identity", "Online Empire", "Next Big Idea", "Dream Brand"];
+        const phrases = ["Digital Identity", "Web Empire", "Design Portfolio", "Dream Brand"];
         let phraseIndex = 0, charIndex = 0, isDeleting = false;
         function typeEffect() {
             const currentPhrase = phrases[phraseIndex];
@@ -184,8 +287,33 @@
             else if (isDeleting && charIndex === 0) { isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; speed = 500; }
             setTimeout(typeEffect, speed);
         }
-        document.addEventListener('DOMContentLoaded', typeEffect);
+        document.addEventListener('DOMContentLoaded', () => { typeEffect(); renderThemeGallery(); });
 
+        // --- DYNAMIC THEME GALLERY ---
+        function renderThemeGallery() {
+            const gallery = document.getElementById('themeGallery');
+            const categories = ['E-commerce', 'Portfolio', 'Agency', 'Blog', 'Startup', 'SaaS'];
+            for(let i=1; i<=12; i++) {
+                const cat = categories[Math.floor(Math.random()*categories.length)];
+                const hue = Math.floor(Math.random()*360);
+                const card = `
+                <div class="min-w-[280px] snap-center glass-card p-4 rounded-2xl cursor-pointer group">
+                    <div class="h-40 rounded-xl bg-gradient-to-br from-[hsl(${hue},70%,60%)] to-[hsl(${hue+40},70%,40%)] mb-4 flex items-center justify-center text-white font-bold text-2xl shadow-lg group-hover:scale-105 transition duration-500">
+                        Theme #${i}
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-slate-900 dark:text-white">Pro ${cat}</h4>
+                            <p class="text-xs text-slate-500">Customizable</p>
+                        </div>
+                        <div class="bg-white/10 p-2 rounded-lg text-slate-900 dark:text-white"><i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
+                </div>`;
+                gallery.innerHTML += card;
+            }
+        }
+
+        // --- REAL DNS CHECK ---
         async function searchDomain() {
             const domain = document.getElementById('domainInput').value;
             const result = document.getElementById('searchResult');
@@ -204,15 +332,15 @@
             } catch (err) { result.innerHTML = '<div class="text-red-500 text-center mt-4">Network Error. Check connection.</div>'; }
         }
 
-        // --- PAYMENT LOGIC (REAL + SIMULATION) ---
+        // --- PAYMENT LOGIC ---
         let selectedPlan = ""; let selectedAmount = 0;
-        // ⚠️ REPLACE THIS WITH YOUR REAL KEY FROM RAZORPAY DASHBOARD
+        // ⚠️ PASTE YOUR RAZORPAY KEY ID BELOW
         const RAZORPAY_KEY_ID = "ENTER_YOUR_RAZORPAY_KEY"; 
 
         function openModal(plan, amount) {
             selectedPlan = plan; selectedAmount = amount;
             document.getElementById('planName').innerText = plan;
-            document.getElementById('submitBtn').innerText = amount > 0 ? `Pay ₹${amount} & Register` : "Activate Free Trial";
+            document.getElementById('submitBtn').innerText = amount > 0 ? `Pay ₹${amount} & Register` : "Claim Free Access";
             document.getElementById('signupModal').classList.remove('hidden');
         }
 
@@ -222,27 +350,23 @@
             if (!email.includes('@')) { alert("Enter valid email"); return; }
             if (password.length < 4) { alert("Password must be at least 4 chars"); return; }
 
-            // 1. FREE TRIAL
             if (selectedAmount === 0) {
                 saveUserToDB(email, password, selectedPlan);
                 return;
             }
 
-            // 2. CHECK IF KEY IS SET (If "ENTER_..." is still there, use Simulation)
             if (RAZORPAY_KEY_ID === "ENTER_YOUR_RAZORPAY_KEY" || RAZORPAY_KEY_ID.length < 5) {
-                alert(`✅ Payment Simulated! (Test Mode)\n\nTip: Add your Key ID in the code to enable real Razorpay popup.`);
+                alert(`✅ Payment Simulated! (Test Mode)\n\nAdd your Key ID for real payments.`);
                 saveUserToDB(email, password, selectedPlan);
-            } 
-            // 3. REAL RAZORPAY POPUP
-            else {
+            } else {
                 var options = {
                     "key": RAZORPAY_KEY_ID, 
                     "amount": selectedAmount * 100, 
                     "currency": "INR",
-                    "name": "Waybe Domains",
+                    "name": "Waybe Agency",
                     "description": selectedPlan,
                     "handler": function (response) {
-                        alert("Payment ID: " + response.razorpay_payment_id);
+                        alert("Success! ID: " + response.razorpay_payment_id);
                         saveUserToDB(email, password, selectedPlan);
                     },
                     "prefill": { "email": email },
@@ -257,14 +381,24 @@
             const btn = document.getElementById('submitBtn');
             const msg = document.getElementById('msg');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            
+            // Logic to assign badge based on plan
+            let badge = "none";
+            if (plan.includes("Basic")) badge = "bronze";
+            if (plan.includes("Premium") && !plan.includes("Super")) badge = "silver";
+            if (plan.includes("Super")) badge = "gold";
+
             try {
-                const revenue = plan.includes('Trial') ? 0 : (plan.includes('Pro') ? 999 : 499);
                 await fetch('/api/signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, plan, domain: "User-" + Math.floor(Math.random()*1000), revenue })
+                    body: JSON.stringify({ 
+                        email, password, plan, badge, 
+                        domain: "User-" + Math.floor(Math.random()*1000), 
+                        revenue: selectedAmount 
+                    })
                 });
-                msg.innerText = "🚀 Redirecting...";
+                msg.innerText = "🚀 Redirecting to Dashboard...";
                 msg.className = "text-green-500 text-center mt-4 text-sm font-bold";
                 setTimeout(() => window.location.href = "dashboard.html", 1500);
             } catch (err) { console.error(err); }
