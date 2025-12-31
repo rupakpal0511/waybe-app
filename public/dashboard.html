@@ -13,33 +13,42 @@
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         body { font-family: 'Outfit', sans-serif; }
         
-        /* --- PURPLE NEBULA BACKGROUND --- */
+        /* --- HIGH SATURATION NEBULA --- */
         .nebula-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -50;
-            background: #0a0118;
+            background: #0f001e; /* Darker, richer base */
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 40%), 
-                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15) 0%, transparent 40%);
+                radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.4) 0%, transparent 50%), /* Bright Violet */
+                radial-gradient(circle at 80% 30%, rgba(236, 72, 153, 0.35) 0%, transparent 50%); /* Bright Pink */
+            background-blend-mode: screen;
         }
         
         .bg-grid-light {
-            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
             background-size: 50px 50px;
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -49;
         }
 
-        /* Glass Cards */
+        /* Glass Cards - Higher Contrast */
         .dash-glass {
-            background: rgba(20, 10, 40, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(20, 10, 45, 0.85); /* Darker for better text visibility */
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
+
+        /* --- NEW ANIMATIONS --- */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0118; }
-        ::-webkit-scrollbar-thumb { background: #5b21b6; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #0f001e; }
+        ::-webkit-scrollbar-thumb { background: #9333ea; border-radius: 4px; }
     </style>
 </head>
 <body class="text-white overflow-hidden h-screen flex">
@@ -47,32 +56,32 @@
     <div class="nebula-bg"></div>
     <div class="bg-grid-light"></div>
 
-    <aside class="w-64 h-full dash-glass border-r border-white/5 flex flex-col hidden md:flex z-20">
-        <div class="p-6 border-b border-white/5">
+    <aside class="w-64 h-full dash-glass border-r border-white/10 flex flex-col hidden md:flex z-20">
+        <div class="p-6 border-b border-white/10">
             <div class="text-2xl font-extrabold flex items-center tracking-tighter text-white">
-                <i class="fa-brands fa-hive text-purple-500 mr-3"></i> waybe.in
+                <i class="fa-brands fa-hive text-purple-400 mr-3 shadow-purple-500 drop-shadow-lg"></i> waybe.in
             </div>
         </div>
         <nav class="flex-1 p-4 space-y-2">
-            <button onclick="switchTab('overview')" id="nav-overview" class="w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-300 font-bold border border-purple-500/30 transition"><i class="fa-solid fa-chart-pie w-8"></i> Overview</button>
-            <button onclick="switchTab('themes')" id="nav-themes" class="w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition"><i class="fa-solid fa-palette w-8"></i> Theme Hub</button>
-            <button onclick="switchTab('domains')" id="nav-domains" class="w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition"><i class="fa-solid fa-globe w-8"></i> My Domains</button>
-            <button onclick="switchTab('settings')" id="nav-settings" class="w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition"><i class="fa-solid fa-gear w-8"></i> Settings</button>
+            <button onclick="switchTab('overview')" id="nav-overview" class="w-full flex items-center p-3 rounded-xl bg-purple-600/30 text-purple-200 font-bold border border-purple-500/50 transition"><i class="fa-solid fa-chart-pie w-8"></i> Overview</button>
+            <button onclick="switchTab('themes')" id="nav-themes" class="w-full flex items-center p-3 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white font-medium transition"><i class="fa-solid fa-palette w-8"></i> Theme Hub</button>
+            <button onclick="switchTab('domains')" id="nav-domains" class="w-full flex items-center p-3 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white font-medium transition"><i class="fa-solid fa-globe w-8"></i> My Domains</button>
+            <button onclick="switchTab('settings')" id="nav-settings" class="w-full flex items-center p-3 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white font-medium transition"><i class="fa-solid fa-gear w-8"></i> Settings</button>
         </nav>
-        <div class="p-4 border-t border-white/5">
-            <a href="index.html" class="flex items-center text-slate-500 hover:text-red-400 transition text-sm font-bold"><i class="fa-solid fa-right-from-bracket mr-2"></i> Log Out</a>
+        <div class="p-4 border-t border-white/10">
+            <a href="index.html" class="flex items-center text-slate-400 hover:text-red-400 transition text-sm font-bold"><i class="fa-solid fa-right-from-bracket mr-2"></i> Log Out</a>
         </div>
     </aside>
 
     <main class="flex-1 h-full overflow-y-auto relative">
-        <header class="w-full p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-[#0a0118]/80 border-b border-white/5">
+        <header class="w-full p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-[#0f001e]/80 border-b border-white/10">
             <div class="md:hidden text-xl font-bold"><i class="fa-brands fa-hive text-purple-500"></i> Waybe</div>
             <div class="flex items-center gap-4 ml-auto">
                 <div class="text-right hidden md:block">
-                    <h4 class="font-bold text-sm">Welcome User</h4>
-                    <p class="text-xs text-slate-400">user@example.com</p>
+                    <h4 class="font-bold text-sm text-white">Welcome User</h4>
+                    <p class="text-xs text-purple-300">user@example.com</p>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center text-black shadow-lg shadow-yellow-500/20">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center text-black shadow-lg shadow-yellow-500/40 ring-2 ring-yellow-500/50">
                     <i class="fa-solid fa-trophy"></i>
                 </div>
             </div>
@@ -80,63 +89,66 @@
 
         <div class="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
 
-            <div id="view-overview" class="space-y-8">
-                <div class="w-full p-8 rounded-3xl bg-gradient-to-r from-purple-900 to-indigo-900 relative overflow-hidden shadow-2xl border border-purple-500/30">
+            <div id="view-overview" class="space-y-8 animate-pop">
+                <div class="w-full p-8 rounded-3xl bg-gradient-to-r from-purple-800 to-indigo-900 relative overflow-hidden shadow-2xl border border-purple-500/50">
                     <div class="relative z-10">
-                        <h1 class="text-3xl md:text-5xl font-extrabold mb-2">Dashboard</h1>
-                        <p class="text-purple-200">Your <span class="font-bold text-yellow-300"><i class="fa-solid fa-crown"></i> Gold Badge</span> is active.</p>
-                        <button onclick="switchTab('themes')" class="mt-6 bg-white text-purple-900 px-6 py-2 rounded-lg font-bold text-sm hover:bg-purple-50 transition shadow-lg">Browse Library</button>
+                        <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-white">Dashboard</h1>
+                        <p class="text-purple-100">Your <span class="font-bold text-yellow-300"><i class="fa-solid fa-crown"></i> Gold Badge</span> is active.</p>
+                        <button onclick="switchTab('themes')" class="mt-6 bg-white text-purple-900 px-6 py-2 rounded-lg font-bold text-sm hover:bg-purple-100 transition shadow-lg shadow-purple-900/50">Browse Library</button>
                     </div>
+                    <div class="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-purple-500/20 to-transparent"></div>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="dash-glass p-6 rounded-2xl border-l-4 border-green-500">
+                    <div class="dash-glass p-6 rounded-2xl border-l-4 border-green-400">
                         <div class="text-slate-400 text-xs font-bold uppercase">Public Access</div>
-                        <div class="text-3xl font-bold mt-2">3 Free</div>
+                        <div class="text-3xl font-bold mt-2 text-white">3 Free</div>
                     </div>
-                    <div class="dash-glass p-6 rounded-2xl border-l-4 border-yellow-500">
+                    <div class="dash-glass p-6 rounded-2xl border-l-4 border-yellow-400">
                         <div class="text-slate-400 text-xs font-bold uppercase">Your Access</div>
                         <div class="text-3xl font-bold mt-2 text-yellow-400">100+ Pro</div>
                     </div>
-                    <div class="dash-glass p-6 rounded-2xl border-l-4 border-blue-500">
+                    <div class="dash-glass p-6 rounded-2xl border-l-4 border-blue-400">
                         <div class="text-slate-400 text-xs font-bold uppercase">Downloads</div>
-                        <div class="text-3xl font-bold mt-2">0</div>
+                        <div class="text-3xl font-bold mt-2 text-white">0</div>
                     </div>
                 </div>
             </div>
 
             <div id="view-themes" class="hidden space-y-6">
-                <div class="flex justify-between items-end">
+                <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                     <div>
-                        <h2 class="text-3xl font-bold">Design Library</h2>
-                        <p class="text-slate-400 text-sm">Download source code. 3 Free Public Themes included.</p>
+                        <h2 class="text-3xl font-bold text-white">Design Library</h2>
+                        <p class="text-slate-400 text-sm">Download source code. Real files secured in cloud.</p>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="filterThemes('all')" id="btn-all" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-purple-500/20">All</button>
-                        <button onclick="filterThemes('free')" id="btn-free" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition">Free Only</button>
+                    <div class="flex gap-2 bg-slate-900/50 p-1 rounded-xl border border-white/10">
+                        <button onclick="filterThemes('all')" id="btn-all" class="px-4 py-2 rounded-lg text-sm font-bold transition bg-purple-600 text-white shadow-lg">All</button>
+                        <button onclick="filterThemes('premium')" id="btn-premium" class="px-4 py-2 rounded-lg text-sm font-bold transition text-slate-300 hover:text-white hover:bg-white/5">Premium</button>
+                        <button onclick="filterThemes('free')" id="btn-free" class="px-4 py-2 rounded-lg text-sm font-bold transition text-slate-300 hover:text-white hover:bg-white/5">Free</button>
                     </div>
                 </div>
-                <div id="theme-grid-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+                
+                <div id="theme-grid-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-pop"></div>
             </div>
 
-            <div id="view-domains" class="hidden space-y-6">
-                <h2 class="text-3xl font-bold">My Domains</h2>
+            <div id="view-domains" class="hidden space-y-6 animate-pop">
+                <h2 class="text-3xl font-bold text-white">My Domains</h2>
                 <div class="dash-glass p-6 rounded-2xl">
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center gap-4">
-                            <div class="bg-green-500/10 text-green-500 p-3 rounded-lg text-xl"><i class="fa-solid fa-globe"></i></div>
+                            <div class="bg-green-500/10 text-green-400 p-3 rounded-lg text-xl"><i class="fa-solid fa-globe"></i></div>
                             <div>
-                                <h3 class="text-xl font-bold">your-startup.com</h3>
+                                <h3 class="text-xl font-bold text-white">your-startup.com</h3>
                                 <p class="text-green-400 text-xs font-bold"><i class="fa-solid fa-check"></i> Active</p>
                             </div>
                         </div>
-                        <button class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700">Manage DNS</button>
+                        <button class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-sm font-bold border border-slate-600 text-white">Manage DNS</button>
                     </div>
                 </div>
             </div>
 
-            <div id="view-settings" class="hidden space-y-6">
-                <h2 class="text-3xl font-bold">Settings</h2>
+            <div id="view-settings" class="hidden space-y-6 animate-pop">
+                <h2 class="text-3xl font-bold text-white">Settings</h2>
                 <div class="dash-glass p-6 rounded-2xl">
                     <p class="text-slate-400">Account settings coming soon.</p>
                 </div>
@@ -145,98 +157,87 @@
         </div>
     </main>
 
-    <div id="downloadModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/90 backdrop-blur-sm">
-        <div class="dash-glass p-8 rounded-2xl w-full max-w-sm text-center border border-purple-500/30 shadow-2xl shadow-purple-500/10">
-            <div class="text-purple-500 text-5xl mb-4 animate-bounce"><i class="fa-solid fa-cloud-arrow-down"></i></div>
-            <h3 class="text-2xl font-bold mb-2">Connecting...</h3>
-            <p class="text-slate-400 text-sm mb-6">Redirecting to secure file storage.</p>
+    <div id="downloadModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/90 backdrop-blur-md">
+        <div class="dash-glass p-8 rounded-2xl w-full max-w-sm text-center border border-purple-500/30 shadow-2xl shadow-purple-500/20 transform transition-all scale-100">
+            <div class="text-purple-400 text-5xl mb-4 animate-bounce"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+            <h3 class="text-2xl font-bold mb-2 text-white">Connecting...</h3>
+            <p class="text-slate-300 text-sm mb-6">Fetching secure file from cloud storage.</p>
             <div class="w-full bg-slate-800 rounded-full h-2 mb-2">
-                <div class="bg-purple-500 h-2 rounded-full" style="width: 0%" id="downloadBar"></div>
+                <div class="bg-purple-500 h-2 rounded-full shadow-[0_0_10px_#a855f7]" style="width: 0%" id="downloadBar"></div>
             </div>
-            <p id="downloadStatus" class="text-xs text-slate-500">Initializing...</p>
+            <p id="downloadStatus" class="text-xs text-slate-400">Initializing...</p>
         </div>
     </div>
 
     <script>
         // --- 1. DATA (REAL LINKS) ---
         const realThemes = [
-            { 
-                id: 101, category: "Admin Panel", title: "Notus React Dashboard", isFree: true,
-                image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/notus-react/notus-react-presentation.jpg", 
-                downloadUrl: "https://github.com/creativetimofficial/notus-react/archive/refs/heads/main.zip" 
-            },
-            { 
-                id: 102, category: "SaaS Starter", title: "Tailwind Landing Page", isFree: true,
-                image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/tailwind-starter-kit/tailwind-starter-kit-presentation.jpg", 
-                downloadUrl: "https://github.com/creativetimofficial/tailwind-starter-kit/archive/refs/heads/main.zip" 
-            },
-            { 
-                id: 103, category: "Dashboard", title: "Windmill Admin", isFree: true,
-                image: "https://preview.tabler.io/static/og.png", 
-                downloadUrl: "https://github.com/estevanmaito/windmill-dashboard/archive/refs/heads/master.zip" 
-            },
-            { 
-                id: 201, category: "Portfolio", title: "Spotlight Pro", isFree: false,
-                image: "https://picsum.photos/id/180/400/300", 
-                downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" 
-            },
-            { 
-                id: 202, category: "Ecommerce", title: "Shopify Booster", isFree: false,
-                image: "https://picsum.photos/id/119/400/300", 
-                downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" 
-            }
+            // FREE
+            { id: 101, category: "Admin Panel", title: "Notus React", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/notus-react/notus-react-presentation.jpg", downloadUrl: "https://github.com/creativetimofficial/notus-react/archive/refs/heads/main.zip" },
+            { id: 102, category: "SaaS Starter", title: "Tailwind Kit", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/tailwind-starter-kit/tailwind-starter-kit-presentation.jpg", downloadUrl: "https://github.com/creativetimofficial/tailwind-starter-kit/archive/refs/heads/main.zip" },
+            { id: 103, category: "Dashboard", title: "Windmill Admin", isFree: true, image: "https://preview.tabler.io/static/og.png", downloadUrl: "https://github.com/estevanmaito/windmill-dashboard/archive/refs/heads/master.zip" },
+            // PREMIUM
+            { id: 201, category: "Portfolio", title: "Spotlight Pro", isFree: false, image: "https://picsum.photos/id/180/400/300", downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" },
+            { id: 202, category: "Ecommerce", title: "Shopify Booster", isFree: false, image: "https://picsum.photos/id/119/400/300", downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" },
+            { id: 203, category: "Crypto", title: "Web3 Dark", isFree: false, image: "https://picsum.photos/id/2/400/300", downloadUrl: "#" }
         ];
 
         let activeFilter = 'all';
 
-        // --- 2. STARTUP ---
         document.addEventListener('DOMContentLoaded', () => {
             renderThemes();
-            // Note: We don't rely on JS to show overview anymore, 
-            // but we call this to ensure button states match.
             switchTab('overview'); 
         });
 
-        // --- 3. FILTER LOGIC ---
+        // --- FILTER LOGIC (UPDATED FOR PREMIUM BUTTON) ---
         function filterThemes(type) {
             activeFilter = type;
-            const btnAll = document.getElementById('btn-all');
-            const btnFree = document.getElementById('btn-free');
             
-            if(type === 'all') {
-                btnAll.className = "bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-lg shadow-purple-500/20";
-                btnFree.className = "bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition";
-            } else {
-                btnAll.className = "bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition";
-                btnFree.className = "bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-lg shadow-purple-500/20";
-            }
+            // Reset all buttons
+            ['btn-all', 'btn-premium', 'btn-free'].forEach(id => {
+                document.getElementById(id).className = "px-4 py-2 rounded-lg text-sm font-bold transition text-slate-300 hover:text-white hover:bg-white/5";
+            });
+
+            // Highlight Active
+            document.getElementById(`btn-${type}`).className = "px-4 py-2 rounded-lg text-sm font-bold transition bg-purple-600 text-white shadow-lg shadow-purple-500/20";
+            
+            // Re-render with animation
+            const grid = document.getElementById('theme-grid-container');
+            grid.classList.remove('animate-pop');
+            void grid.offsetWidth; // Trigger reflow to restart animation
+            grid.classList.add('animate-pop');
+            
             renderThemes();
         }
 
-        // --- 4. RENDERER ---
         function renderThemes() {
             const grid = document.getElementById('theme-grid-container');
             if(!grid) return; 
             grid.innerHTML = ""; 
 
-            const filteredData = activeFilter === 'all' 
-                ? realThemes 
-                : realThemes.filter(item => item.isFree === true);
+            let filteredData = realThemes;
+            if (activeFilter === 'free') filteredData = realThemes.filter(t => t.isFree);
+            if (activeFilter === 'premium') filteredData = realThemes.filter(t => !t.isFree);
+
+            if(filteredData.length === 0) {
+                grid.innerHTML = `<div class="col-span-4 text-center text-slate-400 py-10 glass-card rounded-xl">No themes found in this category.</div>`;
+                return;
+            }
 
             filteredData.forEach((theme) => {
                 let badgeHTML = theme.isFree 
-                    ? `<span class="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg">FREE / PUBLIC</span>` 
-                    : `<span class="bg-yellow-500 text-black text-[10px] font-bold px-2 py-1 rounded shadow-lg"><i class="fa-solid fa-crown"></i> PREMIUM</span>`;
+                    ? `<span class="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg shadow-green-500/20">FREE / PUBLIC</span>` 
+                    : `<span class="bg-yellow-500 text-black text-[10px] font-bold px-2 py-1 rounded shadow-lg shadow-yellow-500/20"><i class="fa-solid fa-crown"></i> PREMIUM</span>`;
 
                 const card = `
-                <div class="group relative rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-purple-500/20 transition duration-300 bg-slate-900/50 border border-white/5">
+                <div class="group relative rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-purple-500/30 transition duration-300 bg-slate-900/40 border border-white/10 hover:border-purple-500/50">
                     <div class="absolute top-2 left-2 z-10">${badgeHTML}</div>
                     <img src="${theme.image}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-700 opacity-90 group-hover:opacity-100">
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0118] via-[#0a0118]/60 to-transparent p-4 flex flex-col justify-end">
-                        <span class="text-xs font-bold text-purple-400 mb-1 uppercase">${theme.category}</span>
-                        <h4 class="text-white font-bold text-lg leading-tight">${theme.title}</h4>
-                        <div class="mt-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                            <button onclick="triggerCloudDownload('${theme.downloadUrl}')" class="flex-1 bg-white text-black text-xs font-bold py-2 rounded-lg hover:bg-purple-50">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0f001e] via-[#0f001e]/80 to-transparent p-4 flex flex-col justify-end">
+                        <span class="text-xs font-bold text-purple-400 mb-1 uppercase tracking-wider">${theme.category}</span>
+                        <h4 class="text-white font-bold text-lg leading-tight mb-3">${theme.title}</h4>
+                        <div class="mt-auto flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                            <button onclick="triggerCloudDownload('${theme.downloadUrl}')" class="flex-1 bg-white text-black text-xs font-bold py-2 rounded-lg hover:bg-purple-50 transition shadow-lg shadow-white/10">
                                 <i class="fa-solid fa-cloud-arrow-down mr-1"></i> Download
                             </button>
                         </div>
@@ -246,7 +247,6 @@
             });
         }
 
-        // --- 5. DOWNLOADER ---
         function triggerCloudDownload(url) {
             if(!url || url === "#") { alert("Theme coming soon!"); return; }
             const modal = document.getElementById('downloadModal');
@@ -268,21 +268,20 @@
             }, 100);
         }
 
-        // --- 6. NAVIGATION ---
         function switchTab(tabName) {
             ['overview', 'themes', 'domains', 'settings'].forEach(t => {
-                const el = document.getElementById(`view-${t}`);
-                if(el) el.classList.add('hidden');
-                
-                const btn = document.getElementById(`nav-${t}`);
-                if(btn) btn.className = "w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition";
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "w-full flex items-center p-3 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white font-medium transition";
             });
 
-            const selectedView = document.getElementById(`view-${tabName}`);
-            if(selectedView) selectedView.classList.remove('hidden');
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            
+            // Trigger Animation on View Switch
+            document.getElementById(`view-${tabName}`).classList.remove('animate-pop');
+            void document.getElementById(`view-${tabName}`).offsetWidth;
+            document.getElementById(`view-${tabName}`).classList.add('animate-pop');
 
-            const activeBtn = document.getElementById(`nav-${tabName}`);
-            if(activeBtn) activeBtn.className = "w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-300 font-bold border border-purple-500/30 transition";
+            document.getElementById(`nav-${tabName}`).className = "w-full flex items-center p-3 rounded-xl bg-purple-600/30 text-purple-200 font-bold border border-purple-500/50 transition";
         }
     </script>
 </body>
