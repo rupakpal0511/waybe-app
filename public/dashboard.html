@@ -14,42 +14,42 @@
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         body { font-family: 'Outfit', sans-serif; }
         
-        /* Glass Effect */
+        /* --- PURPLE NEBULA BACKGROUND (Dual Shade) --- */
+        .nebula-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -50;
+            background: #0a0118; /* Deepest Purple Base */
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(124, 58, 237, 0.25) 0%, transparent 50%), /* Violet */
+                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.2) 0%, transparent 50%); /* Pink */
+            animation: pulse-nebula 10s infinite alternate;
+        }
+        @keyframes pulse-nebula { 0% { opacity: 0.8; } 100% { opacity: 1; } }
+
+        /* Glass Cards */
         .dash-glass {
-            background: rgba(17, 4, 46, 0.6); /* Purple Tint Glass */
+            background: rgba(20, 10, 40, 0.6);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         
-        /* --- NEW: PURPLE NEBULA ANIMATION --- */
-        .nebula-bg {
-            background-color: #050014; /* Deep Space */
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10;
+        /* Grid Lines */
+        .bg-grid-light {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -49;
         }
-        .nebula-orb-1 {
-            position: absolute; top: -10%; left: -10%; width: 50%; height: 50%;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%); /* Purple */
-            filter: blur(80px); animation: float 10s infinite alternate;
-        }
-        .nebula-orb-2 {
-            position: absolute; bottom: -10%; right: -10%; width: 60%; height: 60%;
-            background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, transparent 70%); /* Pink */
-            filter: blur(80px); animation: float 15s infinite alternate-reverse;
-        }
-        @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, 50px) scale(1.1); } }
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #050014; }
-        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #0a0118; }
+        ::-webkit-scrollbar-thumb { background: #5b21b6; border-radius: 4px; }
     </style>
 </head>
 <body class="text-white overflow-hidden h-screen flex">
 
-    <div class="nebula-bg">
-        <div class="nebula-orb-1"></div>
-        <div class="nebula-orb-2"></div>
-    </div>
+    <div class="nebula-bg"></div>
+    <div class="bg-grid-light"></div>
 
     <aside class="w-64 h-full dash-glass border-r border-white/5 flex flex-col hidden md:flex z-20">
         <div class="p-6 border-b border-white/5">
@@ -69,7 +69,7 @@
     </aside>
 
     <main class="flex-1 h-full overflow-y-auto relative">
-        <header class="w-full p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-[#050014]/50">
+        <header class="w-full p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-[#0a0118]/50">
             <div class="md:hidden text-xl font-bold"><i class="fa-brands fa-hive text-purple-500"></i> Waybe</div>
             <div class="flex items-center gap-4 ml-auto">
                 <div class="text-right hidden md:block">
@@ -88,18 +88,21 @@
                 <div class="w-full p-8 rounded-3xl bg-gradient-to-r from-purple-900 to-indigo-900 relative overflow-hidden shadow-2xl border border-purple-500/30">
                     <div class="relative z-10">
                         <h1 class="text-3xl md:text-5xl font-extrabold mb-2">Dashboard</h1>
-                        <p class="text-purple-200">Your <span class="font-bold text-yellow-300"><i class="fa-solid fa-crown"></i> Gold Badge</span> is active. Access the complete library.</p>
+                        <p class="text-purple-200">Your <span class="font-bold text-yellow-300"><i class="fa-solid fa-crown"></i> Gold Badge</span> is active.</p>
                         <button onclick="switchTab('themes')" class="mt-6 bg-white text-purple-900 px-6 py-2 rounded-lg font-bold text-sm hover:bg-purple-50 transition shadow-lg">Browse Library</button>
                     </div>
                 </div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="dash-glass p-6 rounded-2xl border-l-4 border-green-500">
                         <div class="text-slate-400 text-xs font-bold uppercase">Public Access</div>
                         <div class="text-3xl font-bold mt-2">3 Free</div>
+                        <div class="text-green-400 text-xs mt-1">Ready to download</div>
                     </div>
                     <div class="dash-glass p-6 rounded-2xl border-l-4 border-yellow-500">
                         <div class="text-slate-400 text-xs font-bold uppercase">Your Access</div>
                         <div class="text-3xl font-bold mt-2 text-yellow-400">100+ Pro</div>
+                        <div class="text-slate-500 text-xs mt-1">Super Premium Plan</div>
                     </div>
                     <div class="dash-glass p-6 rounded-2xl border-l-4 border-blue-500">
                         <div class="text-slate-400 text-xs font-bold uppercase">Downloads</div>
@@ -115,8 +118,8 @@
                         <p class="text-slate-400 text-sm">Download source code. 3 Free Public Themes included.</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="filterThemes('all')" id="btn-all" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-lg shadow-purple-500/20">All</button>
-                        <button onclick="filterThemes('free')" id="btn-free" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition">Free</button>
+                        <button onclick="filterThemes('all')" id="btn-all" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-purple-500/20">All</button>
+                        <button onclick="filterThemes('free')" id="btn-free" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold border border-slate-700 hover:bg-slate-700 transition">Free Only</button>
                     </div>
                 </div>
                 
@@ -145,8 +148,8 @@
     <div id="downloadModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/90 backdrop-blur-sm">
         <div class="dash-glass p-8 rounded-2xl w-full max-w-sm text-center border border-purple-500/30 shadow-2xl shadow-purple-500/10">
             <div class="text-purple-500 text-5xl mb-4 animate-bounce"><i class="fa-solid fa-cloud-arrow-down"></i></div>
-            <h3 class="text-2xl font-bold mb-2">Downloading...</h3>
-            <p class="text-slate-400 text-sm mb-6">Connecting to secure cloud storage.</p>
+            <h3 class="text-2xl font-bold mb-2">Connecting...</h3>
+            <p class="text-slate-400 text-sm mb-6">Redirecting to secure file storage.</p>
             <div class="w-full bg-slate-800 rounded-full h-2 mb-2">
                 <div class="bg-purple-500 h-2 rounded-full" style="width: 0%" id="downloadBar"></div>
             </div>
@@ -184,7 +187,6 @@
                 image: "https://picsum.photos/id/119/400/300", 
                 downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" 
             },
-            // Extra Placeholders for Visual Filling
             { id: 301, category: "Crypto", title: "Web3 Dark", isFree: false, image: "https://picsum.photos/id/2/400/300", downloadUrl: "#" },
             { id: 302, category: "Blog", title: "Minimal Writer", isFree: false, image: "https://picsum.photos/id/3/400/300", downloadUrl: "#" },
             { id: 303, category: "Agency", title: "Creative Hub", isFree: false, image: "https://picsum.photos/id/4/400/300", downloadUrl: "#" }
@@ -192,14 +194,17 @@
 
         let activeFilter = 'all';
 
-        // 2. INIT
-        document.addEventListener('DOMContentLoaded', () => { renderThemes(); });
+        // 2. INITIALIZATION (Fixes Black Screen)
+        document.addEventListener('DOMContentLoaded', () => {
+            renderThemes(); 
+            // Ensures Overview is visible by default
+            switchTab('overview'); 
+        });
 
-        // 3. FILTER FUNCTION (NEW)
+        // 3. FILTER FUNCTION (Fixes Buttons)
         function filterThemes(type) {
             activeFilter = type;
             
-            // Update Button Styles
             const btnAll = document.getElementById('btn-all');
             const btnFree = document.getElementById('btn-free');
             
@@ -224,6 +229,11 @@
                 ? realThemes 
                 : realThemes.filter(item => item.isFree === true);
 
+            if(filteredData.length === 0) {
+                grid.innerHTML = `<div class="col-span-3 text-center text-slate-500 py-10">No themes found.</div>`;
+                return;
+            }
+
             filteredData.forEach((theme) => {
                 let badgeHTML = theme.isFree 
                     ? `<span class="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg">FREE / PUBLIC</span>` 
@@ -247,7 +257,7 @@
             });
         }
 
-        // 5. DOWNLOAD
+        // 5. DOWNLOAD TRIGGER
         function triggerCloudDownload(url) {
             if(!url || url === "#") { alert("Theme coming soon!"); return; }
             const modal = document.getElementById('downloadModal');
@@ -269,11 +279,12 @@
             }, 100);
         }
 
-        // 6. TABS
+        // 6. TABS LOGIC
         function switchTab(tabName) {
             ['overview', 'themes', 'domains', 'settings'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).className = "w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition";
+                const btn = document.getElementById(`nav-${t}`);
+                if(btn) btn.className = "w-full flex items-center p-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white font-medium transition";
             });
             document.getElementById(`view-${tabName}`).classList.remove('hidden');
             document.getElementById(`view-${tabName}`).classList.add('animate-[fadeIn_0.3s_ease-out]');
