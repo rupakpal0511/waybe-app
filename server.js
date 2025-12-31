@@ -1,68 +1,76 @@
-// --- WAYBE.IN PROFESSIONAL SERVER (UPDATED FOR NEW PLANS) ---
+// --- WAYBE.IN REAL-TIME SERVER ---
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const Razorpay = require('razorpay');
+const nodemailer = require('nodemailer');
 const path = require('path');
-require('dotenv').config(); // Load environment variables
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(express.static('public')); // Serves your index.html
+app.use(express.static('public'));
 
-// 1. DATABASE CONNECTION (Real Memory)
-// This connects to MongoDB. If you haven't set the MONGO_URI in Render yet, 
-// it will just log a warning but keep the site running.
+// 1. EMAIL CONFIGURATION (Real Gmail Sender)
+// ⚠️ REPLACE THESE WITH YOUR REAL DETAILS
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'rupakpal602@gmail.com', // Put your GMAIL address here
+        pass: 'lmop xjyg kyhq rsfm'    // Put your 16-digit App Password here
+    }
+});
+
+// Temporary OTP Storage (In memory)
+const otpStore = {}; 
+
+// 2. DATABASE CONNECTION
 const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://admin:admin123@cluster0.mongodb.net/waybe?retryWrites=true&w=majority";
-
 mongoose.connect(MONGO_URI)
-    .then(() => console.log('✅ Connected to Real Database'))
-    .catch(err => console.log('⚠️ Database Config Needed (App running in fallback mode)'));
+    .then(() => console.log('✅ Real Database Connected'))
+    .catch(err => console.log('⚠️ Database Config Needed'));
 
-// Define User Schema (UPDATED FOR BADGES)
 const UserSchema = new mongoose.Schema({
     email: { type: String, required: true },
-    password: { type: String, required: true }, 
     plan: String,
-    badge: String, // Stores "gold", "silver", "bronze"
-    domain_interest: String,
-    revenue_generated: Number, // Stores the exact amount paid (e.g., 4999)
     date: { type: Date, default: Date.now }
 });
 const User = mongoose.model('User', UserSchema);
 
-// 2. PAYMENT CONFIGURATION
-const razorpay = new Razorpay({
-    key_id: "rzp_test_1DP5mmOlF5G5ag", 
-    key_secret: process.env.RAZORPAY_SECRET || "YOUR_SECRET_HERE"
-});
-
 // --- API ROUTES ---
 
-// A. Signup & Order Creation (Matches your new index.html)
-app.post('/api/signup', async (req, res) => {
-    try {
-        // Receiving the specific data sent by your new index.html
-        const { email, password, plan, badge, domain, revenue } = req.body;
-        
-        // Save to Real DB
-        const newUser = new User({
-            email, 
-            password, 
-            plan, 
-            badge, 
-            domain_interest: domain,
-            revenue_generated: revenue
-        });
-        
-        await newUser.save();
-        console.log(`✅ New Customer: ${email} | Plan: ${plan} | Badge: ${badge}`);
+// A. SEND REAL EMAIL OTP
+app.post('/api/send-otp', async (req, res) => {
+    const { email } = req.body;
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate 6-digit code
+    otpStore[email] = otp; // Save code
 
-        res.json({ status: 'success', message: 'Account created successfully' });
+    const mailOptions = {
+        from: 'Waybe Security <no-reply@waybe.in>',
+        to: email,
+        subject: 'Your Login Verification Code',
+        text: `Your Waybe Secure Login Code is: ${otp}. Do not share this code.`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`✅ Email sent to ${email}`);
+        res.json({ status: 'success', message: 'OTP Sent' });
     } catch (error) {
-        console.error("Signup Error:", error);
-        res.status(500).json({ status: 'error', message: 'Server error' });
+        console.error("Email Error:", error);
+        res.status(500).json({ status: 'error', message: 'Failed to send email' });
+    }
+});
+
+// B. VERIFY OTP
+app.post('/api/verify-otp', async (req, res) => {
+    const { email, code } = req.body;
+    
+    if (otpStore[email] === code) {
+        delete otpStore[email]; // Clear used code
+        res.json({ status: 'success', message: 'Verified' });
+    } else {
+        res.status(400).json({ status: 'error', message: 'Invalid Code' });
     }
 });
 
@@ -71,6 +79,5 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start Server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Waybe Server Live on Port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server Live on Port ${PORT}`));
