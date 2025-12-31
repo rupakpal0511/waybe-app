@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Waybe.in | Future-Ready Domains</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
@@ -14,87 +16,112 @@
         
         body { 
             font-family: 'Outfit', sans-serif; 
-            background-color: #050505; 
+            background-color: #020617; /* Deep Slate Blue instead of Black */
             color: white; 
             overflow-x: hidden;
         }
 
-        /* --- BACKGROUND FX --- */
+        /* --- 1. DYNAMIC BACKGROUND (The Aurora Effect) --- */
+        .ambient-light {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.15), transparent 25%), 
+                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%);
+            z-index: -2;
+            animation: pulseLight 8s ease-in-out infinite alternate;
+        }
+        @keyframes pulseLight { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 1; transform: scale(1.1); } }
+
+        /* The Grid Floor */
         .bg-grid {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-size: 50px 50px;
-            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
             z-index: -1;
-            transform: perspective(500px) rotateX(60deg) translateY(-100px) scale(2);
-            animation: gridMove 20s linear infinite;
+            transform: perspective(1000px) rotateX(20deg) scale(1.2);
         }
-        @keyframes gridMove { from { transform: perspective(500px) rotateX(60deg) translateY(0) scale(2); } to { transform: perspective(500px) rotateX(60deg) translateY(50px) scale(2); } }
 
-        .orb { position: fixed; border-radius: 50%; filter: blur(80px); z-index: -2; animation: floatOrb 10s infinite alternate; }
-        .orb-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(79, 70, 229, 0.2); }
-        .orb-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: rgba(236, 72, 153, 0.2); animation-delay: -5s; }
-        @keyframes floatOrb { from { transform: translate(0, 0); } to { transform: translate(30px, 50px); } }
+        /* Floating Shapes (Eye Candy) */
+        .floater { position: absolute; opacity: 0.2; z-index: -1; animation: float 20s infinite linear; }
+        .floater-1 { top: 20%; left: 10%; width: 100px; height: 100px; border: 2px solid #6366f1; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        .floater-2 { bottom: 20%; right: 10%; width: 150px; height: 150px; border: 2px solid #ec4899; border-radius: 50%; animation-direction: reverse; }
+        @keyframes float { from { transform: rotate(0deg) translate(0,0); } to { transform: rotate(360deg) translate(20px, 20px); } }
 
-        /* --- GLASS & TEXT FX --- */
-        .glass {
-            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        /* --- 2. GLASS CARDS & HOVER ANIMATIONS --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy effect */
         }
-        .glass:hover { border-color: rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.07); }
+        
+        /* HOVER: Lift up + Glow + Bright Border */
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(99, 102, 241, 0.5); /* Indigo Glow */
+            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.3);
+            cursor: pointer;
+        }
 
         .gradient-text {
-            background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
+            background: linear-gradient(to right, #818cf8, #e879f9, #22d3ee);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% auto; animation: shine 5s linear infinite;
         }
+        @keyframes shine { to { background-position: 200% center; } }
 
-        /* --- TYPEWRITER CURSOR --- */
-        .cursor {
-            display: inline-block; width: 4px; background-color: #c084fc;
-            animation: blink 1s infinite; margin-left: 5px; vertical-align: middle;
-        }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-        .glow-focus:focus-within { box-shadow: 0 0 30px rgba(99, 102, 241, 0.3); border-color: rgba(99, 102, 241, 0.5); }
+        /* Typewriter Cursor */
+        .cursor { display: inline-block; width: 3px; background-color: #22d3ee; animation: blink 1s infinite; margin-left: 4px; }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
-<body class="relative">
+<body class="relative selection:bg-indigo-500 selection:text-white">
 
+    <div class="ambient-light"></div>
     <div class="bg-grid"></div>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
+    <div class="floater floater-1"></div>
+    <div class="floater floater-2"></div>
 
-    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-black/50 backdrop-blur-md">
+    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-extrabold flex items-center tracking-tighter">
-                <i class="fa-brands fa-hive text-indigo-500 mr-2"></i> waybe.in
+            <div class="text-2xl font-extrabold flex items-center tracking-tighter hover:text-indigo-400 transition cursor-pointer">
+                <i class="fa-brands fa-hive text-indigo-500 mr-2 animate-pulse"></i> waybe.in
             </div>
-            <a href="dashboard.html" class="px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 transition font-bold text-sm backdrop-blur-sm">Sign In</a>
+            <a href="dashboard.html" class="px-6 py-2 rounded-full bg-white/5 hover:bg-indigo-600 border border-white/10 hover:border-indigo-500 transition font-bold text-sm backdrop-blur-sm group">
+                Sign In <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+            </a>
         </div>
     </nav>
 
-    <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative overflow-hidden">
+    <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-20">
         
-        <div data-aos="fade-down" class="mb-6 px-4 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(99,102,241,0.3)]">
-            New: 15-Day Trial Active
+        <div data-aos="fade-down" class="mb-8 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-bold uppercase tracking-widest hover:bg-indigo-500/20 transition cursor-default">
+            ✨ Launch Offer: 15-Day Free Trial
         </div>
 
-        <h1 data-aos="zoom-in" class="text-6xl md:text-8xl font-extrabold mb-6 tracking-tight leading-tight h-[160px] md:h-auto">
+        <h1 data-aos="zoom-out-up" class="text-6xl md:text-8xl font-extrabold mb-8 tracking-tight leading-tight">
             Define Your <br> 
             <span class="gradient-text" id="typewriter"></span><span class="cursor">&nbsp;</span>
         </h1>
         
-        <p data-aos="fade-up" data-aos-delay="200" class="text-slate-400 text-lg md:text-xl max-w-2xl mb-10">
+        <p data-aos="fade-up" data-aos-delay="200" class="text-slate-400 text-lg md:text-xl max-w-2xl mb-12 leading-relaxed">
             Secure your perfect domain name instantly. No paperwork, just ownership. 
-            Join the future of web identity today.
+            <span class="text-white font-semibold">Join 10,000+ creators</span> building the future.
         </p>
 
         <div data-aos="fade-up" data-aos-delay="400" class="w-full max-w-2xl relative group z-10">
-            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
-            <div class="relative glass rounded-full flex items-center p-2 glow-focus transition-all duration-300">
-                <i class="fa-solid fa-magnifying-glass text-slate-400 ml-4 text-xl"></i>
-                <input type="text" id="domainInput" placeholder="Search your dream domain..." class="flex-grow bg-transparent text-white px-4 py-4 outline-none font-medium placeholder-slate-500 text-lg">
-                <button onclick="searchDomain()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-full font-bold transition shadow-lg shadow-indigo-500/30">Search</button>
+            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full blur-xl opacity-20 group-hover:opacity-60 transition duration-500"></div>
+            
+            <div class="relative bg-slate-900/80 border border-white/10 rounded-full flex items-center p-2 focus-within:border-indigo-500/50 focus-within:shadow-[0_0_30px_rgba(99,102,241,0.3)] transition-all duration-300">
+                <i class="fa-solid fa-magnifying-glass text-slate-400 ml-5 text-xl"></i>
+                <input type="text" id="domainInput" placeholder="Search your dream domain..." class="flex-grow bg-transparent text-white px-5 py-4 outline-none font-medium placeholder-slate-500 text-lg">
+                <button onclick="searchDomain()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-full font-bold transition shadow-lg hover:shadow-indigo-500/50 transform active:scale-95">
+                    Search
+                </button>
             </div>
         </div>
         <div id="searchResult" class="w-full max-w-2xl mt-6 hidden"></div>
@@ -103,61 +130,78 @@
 
     <section class="py-24 px-6 relative z-10">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-3xl md:text-5xl font-bold mb-4">Choose Your Power</h2>
-                <p class="text-slate-400">Simple pricing. No hidden fees.</p>
+            <div class="text-center mb-20">
+                <h2 data-aos="fade-up" class="text-3xl md:text-5xl font-bold mb-4">Unleash Your Potential</h2>
+                <div data-aos="fade-up" data-aos-delay="100" class="h-1 w-20 bg-indigo-500 mx-auto rounded-full"></div>
             </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div data-aos="fade-right" class="glass p-8 rounded-3xl relative hover:-translate-y-2 transition duration-300">
-                    <div class="text-slate-400 font-bold mb-2">STARTER</div>
+                
+                <div data-aos="fade-right" data-aos-delay="0" class="glass-card p-8 rounded-3xl relative group">
+                    <div class="bg-indigo-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-6 text-indigo-400 text-xl group-hover:scale-110 transition"><i class="fa-solid fa-rocket"></i></div>
+                    <div class="text-slate-400 font-bold mb-2 tracking-wider text-sm">STARTER</div>
                     <div class="text-4xl font-extrabold mb-6">₹499<span class="text-lg font-normal text-slate-500">/yr</span></div>
-                    <button onclick="openModal('Starter', 499)" class="w-full py-4 rounded-xl border border-white/20 hover:bg-white/10 font-bold transition">Select Plan</button>
+                    <ul class="space-y-3 mb-8 text-slate-400 text-sm">
+                        <li><i class="fa-solid fa-check text-green-400 mr-2"></i> .in & .co.in Domains</li>
+                        <li><i class="fa-solid fa-check text-green-400 mr-2"></i> Basic DNS Support</li>
+                    </ul>
+                    <button onclick="openModal('Starter', 499)" class="w-full py-4 rounded-xl border border-white/10 hover:bg-white/10 font-bold transition">Select Plan</button>
                 </div>
-                <div data-aos="fade-up" class="glass p-8 rounded-3xl relative border-purple-500/50 bg-purple-900/10 hover:-translate-y-2 transition duration-300">
-                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg">MOST POPULAR</div>
-                    <div class="text-purple-400 font-bold mb-2">FREE TRIAL</div>
+
+                <div data-aos="fade-up" data-aos-delay="200" class="glass-card p-8 rounded-3xl relative border-purple-500/30 bg-purple-900/10 shadow-[0_0_50px_rgba(168,85,247,0.15)]">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg animate-bounce">MOST POPULAR</div>
+                    <div class="bg-purple-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-6 text-purple-400 text-xl"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="text-purple-400 font-bold mb-2 tracking-wider text-sm">FREE TRIAL</div>
                     <div class="text-4xl font-extrabold mb-6">₹0<span class="text-lg font-normal text-slate-500">/15 days</span></div>
-                    <button onclick="openModal('15-Day Trial', 0)" class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 font-bold transition shadow-lg shadow-purple-500/30">Start Free Trial</button>
+                    <ul class="space-y-3 mb-8 text-slate-300 text-sm font-medium">
+                        <li><i class="fa-solid fa-check text-purple-400 mr-2"></i> Try ANY Domain</li>
+                        <li><i class="fa-solid fa-check text-purple-400 mr-2"></i> Instant Setup</li>
+                        <li><i class="fa-solid fa-check text-purple-400 mr-2"></i> No Credit Card</li>
+                    </ul>
+                    <button onclick="openModal('15-Day Trial', 0)" class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 font-bold transition shadow-lg shadow-purple-500/30 transform hover:scale-105">Start Free Trial</button>
                 </div>
-                <div data-aos="fade-left" class="glass p-8 rounded-3xl relative hover:-translate-y-2 transition duration-300">
-                    <div class="text-slate-400 font-bold mb-2">PRO</div>
+
+                <div data-aos="fade-left" data-aos-delay="400" class="glass-card p-8 rounded-3xl relative group">
+                    <div class="bg-blue-500/20 w-12 h-12 rounded-xl flex items-center justify-center mb-6 text-blue-400 text-xl group-hover:scale-110 transition"><i class="fa-solid fa-crown"></i></div>
+                    <div class="text-slate-400 font-bold mb-2 tracking-wider text-sm">PRO</div>
                     <div class="text-4xl font-extrabold mb-6">₹999<span class="text-lg font-normal text-slate-500">/yr</span></div>
-                    <button onclick="openModal('Pro', 999)" class="w-full py-4 rounded-xl border border-white/20 hover:bg-white/10 font-bold transition">Select Plan</button>
+                    <ul class="space-y-3 mb-8 text-slate-400 text-sm">
+                        <li><i class="fa-solid fa-check text-green-400 mr-2"></i> .com Global Domains</li>
+                        <li><i class="fa-solid fa-check text-green-400 mr-2"></i> Priority 24/7 Support</li>
+                    </ul>
+                    <button onclick="openModal('Pro', 999)" class="w-full py-4 rounded-xl border border-white/10 hover:bg-white/10 font-bold transition">Select Plan</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <div id="signupModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/90 backdrop-blur-sm px-4">
-        <div class="glass p-8 rounded-3xl w-full max-w-md relative animate-[fadeIn_0.3s_ease-out]">
-            <button onclick="document.getElementById('signupModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-500 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h2 class="text-2xl font-bold mb-2 text-white">Complete Setup</h2>
-            <p class="text-sm text-slate-400 mb-6">Create your account to activate <span id="planName" class="text-indigo-400 font-bold"></span>.</p>
+    <div id="signupModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-md px-4">
+        <div class="glass-card bg-slate-900 p-8 rounded-3xl w-full max-w-md relative animate-[fadeIn_0.3s_ease-out] shadow-2xl border-slate-700">
+            <button onclick="document.getElementById('signupModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-500 hover:text-white transition rotate-0 hover:rotate-90 duration-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h2 class="text-2xl font-bold mb-2 text-white">Unlock Your Domain</h2>
+            <p class="text-sm text-slate-400 mb-6">You are one step away from <span id="planName" class="text-indigo-400 font-bold"></span>.</p>
             <div class="space-y-4">
-                <input type="email" id="userEmail" placeholder="Email Address" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white outline-none focus:border-indigo-500 transition">
-                <input type="password" id="userPassword" placeholder="Create Password" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white outline-none focus:border-indigo-500 transition">
+                <input type="email" id="userEmail" placeholder="Email Address" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-4 text-white outline-none focus:border-indigo-500 transition focus:ring-1 focus:ring-indigo-500">
+                <input type="password" id="userPassword" placeholder="Create Secure Password" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-4 text-white outline-none focus:border-indigo-500 transition focus:ring-1 focus:ring-indigo-500">
             </div>
-            <button onclick="processPayment()" id="submitBtn" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-indigo-500/30">Proceed</button>
+            <button onclick="processPayment()" id="submitBtn" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-indigo-500/30 transform hover:-translate-y-1">Proceed</button>
             <p id="msg" class="text-center mt-4 text-sm font-medium"></p>
         </div>
     </div>
 
     <script>
-        AOS.init({ duration: 1000, once: true });
+        // Init Scroll Animations
+        AOS.init({ duration: 800, once: false, mirror: true });
 
-        // --- TYPEWRITER EFFECT LOGIC ---
-        const phrases = ["Digital Identity", "Online Empire", "Future Brand", "Dream Website"];
+        // TYPEWRITER EFFECT
+        const phrases = ["Digital Identity", "Online Empire", "Next Big Idea", "Dream Brand"];
         let phraseIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
-        const typeSpeed = 100;
-        const deleteSpeed = 50;
-        const delayBetweenPhrases = 2000;
-
+        
         function typeEffect() {
             const currentPhrase = phrases[phraseIndex];
             const typeText = document.getElementById("typewriter");
-
             if (isDeleting) {
                 typeText.textContent = currentPhrase.substring(0, charIndex - 1);
                 charIndex--;
@@ -165,24 +209,15 @@
                 typeText.textContent = currentPhrase.substring(0, charIndex + 1);
                 charIndex++;
             }
-
-            if (!isDeleting && charIndex === currentPhrase.length) {
-                isDeleting = true;
-                setTimeout(typeEffect, delayBetweenPhrases);
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                phraseIndex = (phraseIndex + 1) % phrases.length;
-                setTimeout(typeEffect, 500);
-            } else {
-                setTimeout(typeEffect, isDeleting ? deleteSpeed : typeSpeed);
-            }
+            let speed = isDeleting ? 50 : 100;
+            if (!isDeleting && charIndex === currentPhrase.length) { speed = 2000; isDeleting = true; }
+            else if (isDeleting && charIndex === 0) { isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; speed = 500; }
+            setTimeout(typeEffect, speed);
         }
-        // Start animation on load
         document.addEventListener('DOMContentLoaded', typeEffect);
 
-        // --- EXISTING LOGIC (Payments etc) ---
-        let selectedPlan = "";
-        let selectedAmount = 0;
+        // --- PAYMENT & DB LOGIC ---
+        let selectedPlan = ""; let selectedAmount = 0;
 
         function openModal(plan, amount) {
             selectedPlan = plan; selectedAmount = amount;
@@ -196,9 +231,9 @@
             const password = document.getElementById('userPassword').value;
             if (!email.includes('@')) { alert("Enter valid email"); return; }
             if (password.length < 4) { alert("Password must be at least 4 chars"); return; }
+            
             if (selectedAmount > 0) {
-                const fakeID = "pay_test_" + Math.floor(Math.random() * 1000000);
-                alert(`✅ Payment Simulated!\nPayment ID: ${fakeID}`);
+                alert(`✅ Payment Simulated!\nNo real money taken in Test Mode.`);
             }
             saveUserToDB(email, password, selectedPlan);
         }
@@ -214,7 +249,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password, plan, domain: "User-" + Math.floor(Math.random()*1000), revenue })
                 });
-                msg.innerText = "🚀 Redirecting...";
+                msg.innerText = "🚀 Redirecting to Dashboard...";
                 msg.className = "text-green-400 text-center mt-4 text-sm font-bold";
                 setTimeout(() => window.location.href = "dashboard.html", 1500);
             } catch (err) { console.error(err); }
@@ -224,10 +259,10 @@
             const domain = document.getElementById('domainInput').value;
             const result = document.getElementById('searchResult');
             if(domain.length < 3) return;
-            result.innerHTML = '<div class="text-center text-slate-500 animate-pulse">Scanning Database...</div>';
+            result.innerHTML = '<div class="text-center text-slate-500 animate-pulse mt-4">Scanning Global Database...</div>';
             result.classList.remove('hidden');
             setTimeout(() => {
-                result.innerHTML = `<div class="glass p-4 rounded-2xl flex justify-between items-center animate-[fadeIn_0.5s_ease-out]"><span class="text-white font-bold text-lg">✅ ${domain}</span><button class="bg-white text-black px-6 py-2 rounded-lg text-sm font-bold hover:bg-slate-200 transition" onclick="openModal('Buy ${domain}', 499)">Buy Now</button></div>`;
+                result.innerHTML = `<div class="glass-card p-4 rounded-2xl flex justify-between items-center animate-[fadeIn_0.5s_ease-out] mt-4 border-green-500/30 bg-green-500/5"><div class="flex items-center gap-3"><div class="bg-green-500 text-white rounded-full p-1"><i class="fa-solid fa-check text-xs"></i></div><span class="text-white font-bold text-lg">${domain}</span></div><button class="bg-white text-black px-6 py-2 rounded-lg text-sm font-bold hover:bg-slate-200 transition" onclick="openModal('Buy ${domain}', 499)">Buy Now</button></div>`;
             }, 800);
         }
     </script>
