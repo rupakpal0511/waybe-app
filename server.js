@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'rupakpal602@gmail.com', // Put your GMAIL address here
-        pass: 'lmop xjyg kyhq rsfm'    // Put your 16-digit App Password here
+        pass: 'lmopxjygkyhqrsfm'    // Put your 16-digit App Password here
     }
 });
 
@@ -81,3 +81,4 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server Live on Port ${PORT}`));
+
