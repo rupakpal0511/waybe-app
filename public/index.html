@@ -161,10 +161,8 @@
                     View All <i class="fa-solid fa-arrow-right ml-2"></i>
                 </button>
             </div>
-            
             <div id="themeGallery" class="flex overflow-x-auto gap-6 pb-8 no-scrollbar snap-x">
                 </div>
-            
             <button onclick="loadMoreThemes()" class="md:hidden w-full py-3 mt-4 rounded-xl border border-indigo-500 text-indigo-500 font-bold">Load More Themes</button>
         </div>
     </section>
@@ -269,6 +267,27 @@
         </div>
     </div>
 
+    <div id="themeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/90 backdrop-blur-md px-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl relative animate-[zoomIn_0.3s_ease-out]">
+            <button onclick="document.getElementById('themeModal').classList.add('hidden')" class="absolute top-4 right-4 z-10 bg-black/50 text-white p-2 rounded-full hover:bg-red-500 transition"><i class="fa-solid fa-xmark"></i></button>
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <div class="h-64 md:h-auto bg-gray-200">
+                    <img id="previewImg" src="" class="w-full h-full object-cover">
+                </div>
+                <div class="p-8 flex flex-col justify-center">
+                    <h2 id="previewTitle" class="text-3xl font-bold mb-2 text-slate-900 dark:text-white">Theme Preview</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mb-6">This professional high-converting layout is available for customization. Perfect for startups and portfolios.</p>
+                    <ul class="space-y-2 mb-8 text-sm text-slate-600 dark:text-slate-300">
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Fully Responsive (Mobile/PC)</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> SEO Optimized Structure</li>
+                        <li><i class="fa-solid fa-check text-green-500 mr-2"></i> Easy Admin Panel Access</li>
+                    </ul>
+                    <button id="useThemeBtn" class="w-full py-4 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-500 transition shadow-lg shadow-indigo-500/30">Use This Theme</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         AOS.init({ duration: 800, once: false });
         VanillaTilt.init(document.querySelectorAll("[data-tilt]"), { speed: 400, glare: true, "max-glare": 0.2 });
@@ -293,27 +312,30 @@
             setTimeout(typeEffect, speed);
         }
         
-        // --- NEW: RENDER THEMES WITH REAL IMAGES ---
+        // --- NEW: RENDER THEMES WITH REAL IMAGES + CLICK FUNCTION ---
         document.addEventListener('DOMContentLoaded', () => { 
             typeEffect(); 
-            renderThemeGallery(10); // Initial load
+            renderThemeGallery(10); 
         });
 
         function renderThemeGallery(count) {
             const gallery = document.getElementById('themeGallery');
             const categories = ['Startup', 'Agency', 'SaaS', 'Portfolio', 'E-commerce', 'Blog'];
             
-            // Add 'count' new cards with REAL IMAGES
             for(let i=1; i<=count; i++) {
                 const cat = categories[Math.floor(Math.random()*categories.length)];
-                // Using Picsum with Seed to ensure consistent images
                 const imgUrl = `https://picsum.photos/seed/${Math.floor(Math.random()*1000)}/400/300`;
                 
+                // ADDED ONCLICK EVENT TO CARD
                 const card = `
-                <div class="min-w-[280px] snap-center glass-card p-4 rounded-2xl cursor-pointer group shrink-0">
+                <div onclick="openThemePreview('${cat}', '${imgUrl}')" class="min-w-[280px] snap-center glass-card p-4 rounded-2xl cursor-pointer group shrink-0 hover:border-indigo-500/50 transition-all">
                     <div class="h-40 rounded-xl overflow-hidden mb-4 relative">
                         <img src="${imgUrl}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="Theme Preview">
-                        <div class="absolute inset-0 bg-black/30 group-hover:bg-transparent transition"></div>
+                        <div class="absolute inset-0 bg-black/30 group-hover:bg-transparent transition">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                <span class="bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-white font-bold text-sm">Preview</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center">
                         <div>
@@ -327,16 +349,29 @@
             }
         }
 
-        // --- NEW: LOAD MORE FUNCTION ---
+        // --- NEW: OPEN THEME PREVIEW MODAL ---
+        function openThemePreview(category, imgUrl) {
+            document.getElementById('previewImg').src = imgUrl;
+            document.getElementById('previewTitle').innerText = category + " Template";
+            
+            // Set up the "Use This Theme" button to trigger payment for "Basic Design" (Default)
+            const useBtn = document.getElementById('useThemeBtn');
+            useBtn.onclick = function() {
+                document.getElementById('themeModal').classList.add('hidden');
+                openModal(`Theme: ${category}`, 999);
+            };
+            
+            document.getElementById('themeModal').classList.remove('hidden');
+        }
+
+        // --- LOAD MORE FUNCTION ---
         function loadMoreThemes() {
             const btn = document.querySelector('button[onclick="loadMoreThemes()"]');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
-            
             setTimeout(() => {
-                renderThemeGallery(5); // Load 5 more
+                renderThemeGallery(5); 
                 btn.innerHTML = originalText;
-                // Scroll a bit to show new items
                 document.getElementById('themeGallery').scrollBy({ left: 300, behavior: 'smooth' });
             }, 800);
         }
@@ -412,7 +447,7 @@
             
             // Logic to assign badge based on plan
             let badge = "none";
-            if (plan.includes("Basic")) badge = "bronze";
+            if (plan.includes("Basic") || plan.includes("Theme")) badge = "bronze"; // Basic or Single Theme purchase
             if (plan.includes("Premium") && !plan.includes("Super")) badge = "silver";
             if (plan.includes("Super")) badge = "gold";
 
