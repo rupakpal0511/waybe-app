@@ -1,13 +1,25 @@
 {
-  "name": "waybe-app",
-  "version": "1.0.0",
-  "description": "Waybe Domain App",
+  "name": "waybe-professional-server",
+  "version": "2.0.0",
+  "description": "Backend for Waybe Domains & Design Agency",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "mongoose": "^8.0.0"
-  }
+    "mongoose": "^7.0.3",
+    "cors": "^2.8.5",
+    "razorpay": "^2.9.2",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18.x"
+  },
+  "keywords": [
+    "saas",
+    "domains",
+    "design",
+    "agency"
+  ]
 }
