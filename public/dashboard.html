@@ -14,36 +14,31 @@
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         body { font-family: 'Outfit', sans-serif; background-color: #0f001e; color: white; overflow: hidden; }
         
-        /* --- VISUALS --- */
+        /* --- CRITICAL: FORCE LOGIN VISIBILITY (PREVENTS BLACK SCREEN) --- */
+        #auth-lock {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 0, 25, 0.98);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999;
+        }
+        
+        /* Main App is Hidden by default until JS enables it */
+        #main-app { display: none; height: 100%; width: 100%; }
+
+        /* VISUALS */
         .nebula-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -50;
             background: #0f001e;
             background-image: radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.4) 0%, transparent 50%), radial-gradient(circle at 80% 30%, rgba(236, 72, 153, 0.35) 0%, transparent 50%);
         }
-        
         .dash-glass { background: rgba(20, 10, 45, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.15); }
-        
-        /* FORCE VISIBILITY ON LOGIN LOCK */
-        #auth-lock { 
-            display: flex; /* Force visible by default */
-            background: rgba(10, 0, 20, 0.98); 
-            backdrop-filter: blur(30px); 
-            z-index: 9999; /* Highest priority */
-        }
-        
-        .overlay { background: rgba(10, 0, 20, 0.98); backdrop-filter: blur(30px); z-index: 100; }
         .sidebar-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        /* Animation */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .animate-fade { animation: fadeIn 0.5s ease-out; }
-
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #9333ea; border-radius: 10px; }
     </style>
 </head>
-<body class="h-screen flex relative">
+<body class="h-screen relative">
 
-    <div id="auth-lock" class="fixed inset-0 items-center justify-center p-4">
+    <div id="auth-lock">
         <div class="w-full max-w-md bg-[#0f0520] border border-purple-500/30 p-8 rounded-3xl shadow-2xl relative text-center">
             <div class="w-16 h-16 bg-purple-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/50">
                 <i class="fa-solid fa-fingerprint text-3xl text-purple-300"></i>
@@ -61,7 +56,93 @@
                 <input type="text" id="otp-code" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-purple-500 outline-none text-center text-2xl font-bold text-white tracking-[10px]" maxlength="6">
                 <button onclick="AuthSystem.verifyOTP()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Confirm & Login</button>
             </div>
+            <button onclick="localStorage.clear(); location.reload()" class="mt-6 text-[10px] text-red-500 underline opacity-50 hover:opacity-100">Reset App Data</button>
         </div>
+    </div>
+
+    <div id="main-app" class="flex overflow-hidden">
+        
+        <div id="mobile-backdrop" onclick="UISystem.toggleSidebar()" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden backdrop-blur-sm"></div>
+        <aside id="main-sidebar" class="fixed inset-y-0 left-0 w-64 dash-glass border-r border-white/10 flex flex-col z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 sidebar-transition">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <div class="text-2xl font-extrabold flex items-center tracking-tighter text-white"><i class="fa-brands fa-hive text-purple-500 mr-3"></i> waybe</div>
+            </div>
+            <nav class="flex-1 px-4 space-y-2 mt-4">
+                <button onclick="UISystem.switchTab('overview')" id="nav-overview" class="w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-300 font-bold border border-purple-500/30"><i class="fa-solid fa-id-card w-6 mr-2"></i> Overview</button>
+                <button onclick="UISystem.switchTab('themes')" id="nav-themes" class="w-full flex items-center p-3 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition"><i class="fa-solid fa-layer-group w-6 mr-2"></i> Products</button>
+                <button onclick="UISystem.switchTab('domains')" id="nav-domains" class="w-full flex items-center p-3 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition"><i class="fa-solid fa-globe w-6 mr-2"></i> Domains</button>
+            </nav>
+            <div class="p-4" id="sidebar-upgrade-card">
+                <div class="bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl p-4 text-black text-center shadow-lg">
+                    <i class="fa-solid fa-crown text-2xl mb-2"></i><h4 class="font-bold text-sm">Upgrade to Pro</h4><p class="text-xs opacity-80 mb-3">Unlock all 100+ themes.</p>
+                    <button onclick="ModalSystem.open('pricing-modal')" class="bg-black text-white text-xs font-bold px-4 py-2 rounded-lg w-full">View Plans</button>
+                </div>
+            </div>
+            <div class="p-4 border-t border-white/10"><button onclick="AuthSystem.logout()" class="flex items-center text-slate-500 hover:text-red-400 text-sm font-bold w-full"><i class="fa-solid fa-power-off mr-2"></i> Sign Out</button></div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto relative w-full">
+            <header class="w-full p-4 md:p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-[#0f001e]/80 border-b border-white/10">
+                <button onclick="UISystem.toggleSidebar()" class="md:hidden text-2xl text-white mr-4"><i class="fa-solid fa-bars"></i></button>
+                <div class="md:hidden font-bold text-xl text-white flex-1"><i class="fa-brands fa-hive text-purple-500"></i> Waybe</div>
+                <div class="flex items-center gap-4 md:gap-6 ml-auto">
+                    <div class="relative">
+                        <button onclick="UISystem.toggleProfileMenu()" class="flex items-center gap-3 focus:outline-none">
+                            <div class="text-right hidden md:block"><h4 class="font-bold text-sm text-white" id="header-username">Guest</h4><p class="text-xs text-purple-500 font-bold" id="header-status">Free User</p></div>
+                            <img id="header-avatar" src="" class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-purple-500/50 object-cover">
+                        </button>
+                        <div id="profile-menu" class="hidden absolute right-0 mt-2 w-56 dash-glass rounded-xl shadow-2xl py-2 z-50 text-sm text-white border border-white/10">
+                            <a href="#" onclick="UserSystem.openEdit()" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-user-pen w-6 text-purple-500"></i> Edit Profile</a>
+                            <a href="#" onclick="ModalSystem.open('creator-modal')" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-cloud-arrow-up w-6 text-green-500"></i> Be a Source</a>
+                            <a href="#" onclick="ModalSystem.open('pricing-modal')" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-crown w-6 text-yellow-500"></i> Subscription</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-10 max-w-6xl mx-auto space-y-8 pb-20">
+                
+                <div id="view-overview">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                        <div class="lg:col-span-2 dash-glass p-6 md:p-8 rounded-3xl flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
+                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-purple-500 p-1 relative z-10"><img id="profile-pic" src="" class="w-full h-full rounded-full object-cover"></div>
+                            <div class="text-center md:text-left relative z-10">
+                                <h3 class="text-xl md:text-2xl font-bold text-white" id="display-name">Guest</h3>
+                                <p class="text-purple-300 text-sm" id="display-email">...</p>
+                                <span id="badge-status" class="inline-block mt-2 bg-slate-700 text-white text-[10px] font-bold px-2 py-1 rounded">FREE PLAN</span>
+                            </div>
+                        </div>
+                        <div class="dash-glass p-6 md:p-8 rounded-3xl">
+                            <p class="text-slate-400 text-xs font-bold uppercase mb-4">Waybe Credits</p>
+                            <div class="flex items-center gap-3"><i class="fa-solid fa-coins text-yellow-500 text-3xl"></i><div><p class="text-2xl font-bold text-white" id="credit-display">0</p><p class="text-xs text-green-500">Lifetime Earnings</p></div></div>
+                            <button onclick="ModalSystem.open('creator-modal')" class="w-full mt-4 bg-green-600/10 text-green-400 border border-green-600/20 rounded-lg py-2 text-xs font-bold hover:bg-green-600 hover:text-white transition">Upload to Earn</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-themes" class="hidden space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                        <div><h2 class="text-2xl md:text-3xl font-bold text-white">Design Library</h2><p class="text-slate-400 text-sm">Premium assets secured.</p></div>
+                        <div class="flex gap-2 bg-white/5 p-1 rounded-xl w-full md:w-auto overflow-x-auto">
+                            <button onclick="RenderSystem.filter('all')" id="btn-all" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold bg-purple-600 text-white shadow-lg">All</button>
+                            <button onclick="RenderSystem.filter('free')" id="btn-free" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold text-slate-300 hover:bg-white/10">Free</button>
+                            <button onclick="RenderSystem.filter('premium')" id="btn-premium" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold text-slate-300 hover:bg-white/10">Premium</button>
+                        </div>
+                    </div>
+                    <div id="theme-grid-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+                </div>
+
+                <div id="view-domains" class="hidden space-y-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">My Domains</h2>
+                    <div class="dash-glass p-6 rounded-2xl text-center py-10">
+                        <i class="fa-solid fa-server text-4xl text-slate-600 mb-4"></i>
+                        <p class="text-slate-500">Credits available: <span id="domain-credit-display">0</span></p>
+                        <button class="mt-4 bg-slate-800 text-white px-6 py-2 rounded font-bold">Buy Domain (500 Credits)</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
     </div>
 
     <div id="pricing-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
@@ -74,10 +155,6 @@
             <div class="w-full md:w-2/3 p-8 relative text-white">
                 <button onclick="ModalSystem.close('pricing-modal')" class="absolute top-4 right-4 text-slate-500 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
                 <h2 class="text-2xl font-bold mb-6">Subscription Details</h2>
-                <div class="space-y-4 mb-8">
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i><p class="text-slate-300">Access to 100+ Premium Themes</p></div>
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i><p class="text-slate-300">Priority Support</p></div>
-                </div>
                 <div class="flex items-center justify-between border-t border-white/10 pt-6">
                     <div><p class="text-slate-400 text-sm">Annual Plan</p><p class="text-3xl font-bold">₹499</p></div>
                     <button onclick="PaymentSystem.start()" class="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-3 rounded-xl transition shadow-lg">Proceed to Pay</button>
@@ -125,94 +202,16 @@
 
     <div class="nebula-bg"></div>
 
-    <div id="mobile-backdrop" onclick="UISystem.toggleSidebar()" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden backdrop-blur-sm"></div>
-    <aside id="main-sidebar" class="fixed inset-y-0 left-0 w-64 dash-glass border-r border-white/10 flex flex-col z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 sidebar-transition">
-        <div class="p-6 border-b border-white/10 flex justify-between items-center">
-            <div class="text-2xl font-extrabold flex items-center tracking-tighter text-white"><i class="fa-brands fa-hive text-purple-500 mr-3"></i> waybe</div>
-        </div>
-        <nav class="flex-1 px-4 space-y-2 mt-4">
-            <button onclick="UISystem.switchTab('overview')" id="nav-overview" class="w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-300 font-bold border border-purple-500/30"><i class="fa-solid fa-id-card w-6 mr-2"></i> Overview</button>
-            <button onclick="UISystem.switchTab('themes')" id="nav-themes" class="w-full flex items-center p-3 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition"><i class="fa-solid fa-layer-group w-6 mr-2"></i> Products</button>
-            <button onclick="UISystem.switchTab('domains')" id="nav-domains" class="w-full flex items-center p-3 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition"><i class="fa-solid fa-globe w-6 mr-2"></i> Domains</button>
-        </nav>
-        <div class="p-4" id="sidebar-upgrade-card">
-            <div class="bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl p-4 text-black text-center shadow-lg">
-                <i class="fa-solid fa-crown text-2xl mb-2"></i><h4 class="font-bold text-sm">Upgrade to Pro</h4><p class="text-xs opacity-80 mb-3">Unlock all 100+ themes.</p>
-                <button onclick="ModalSystem.open('pricing-modal')" class="bg-black text-white text-xs font-bold px-4 py-2 rounded-lg w-full">View Plans</button>
-            </div>
-        </div>
-        <div class="p-4 border-t border-white/10"><button onclick="AuthSystem.logout()" class="flex items-center text-slate-500 hover:text-red-400 text-sm font-bold w-full"><i class="fa-solid fa-power-off mr-2"></i> Sign Out</button></div>
-    </aside>
-
-    <main class="flex-1 h-full overflow-y-auto relative w-full">
-        <header class="w-full p-4 md:p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-[#0f001e]/80 border-b border-white/10">
-            <button onclick="UISystem.toggleSidebar()" class="md:hidden text-2xl text-white mr-4"><i class="fa-solid fa-bars"></i></button>
-            <div class="md:hidden font-bold text-xl text-white flex-1"><i class="fa-brands fa-hive text-purple-500"></i> Waybe</div>
-            <div class="flex items-center gap-4 md:gap-6 ml-auto">
-                <div class="relative">
-                    <button onclick="UISystem.toggleProfileMenu()" class="flex items-center gap-3 focus:outline-none">
-                        <div class="text-right hidden md:block"><h4 class="font-bold text-sm text-white" id="header-username">Guest</h4><p class="text-xs text-purple-500 font-bold" id="header-status">Free User</p></div>
-                        <img id="header-avatar" src="" class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-purple-500/50 object-cover">
-                    </button>
-                    <div id="profile-menu" class="hidden absolute right-0 mt-2 w-56 dash-glass rounded-xl shadow-2xl py-2 z-50 text-sm text-white border border-white/10">
-                        <a href="#" onclick="UserSystem.openEdit()" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-user-pen w-6 text-purple-500"></i> Edit Profile</a>
-                        <a href="#" onclick="ModalSystem.open('creator-modal')" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-cloud-arrow-up w-6 text-green-500"></i> Be a Source</a>
-                        <a href="#" onclick="ModalSystem.open('pricing-modal')" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-crown w-6 text-yellow-500"></i> Subscription</a>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <div class="p-4 md:p-10 max-w-6xl mx-auto space-y-8 pb-20">
-            <div id="view-overview" class="space-y-6 md:space-y-8 animate-fade">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                    <div class="lg:col-span-2 dash-glass p-6 md:p-8 rounded-3xl flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
-                        <div class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-purple-500 p-1 relative z-10"><img id="profile-pic" src="" class="w-full h-full rounded-full object-cover"></div>
-                        <div class="text-center md:text-left relative z-10">
-                            <h3 class="text-xl md:text-2xl font-bold text-white" id="display-name">Guest</h3>
-                            <p class="text-purple-300 text-sm" id="display-email">...</p>
-                            <span id="badge-status" class="inline-block mt-2 bg-slate-700 text-white text-[10px] font-bold px-2 py-1 rounded">FREE PLAN</span>
-                        </div>
-                    </div>
-                    <div class="dash-glass p-6 md:p-8 rounded-3xl">
-                        <p class="text-slate-400 text-xs font-bold uppercase mb-4">Waybe Credits</p>
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-coins text-yellow-500 text-3xl"></i><div><p class="text-2xl font-bold text-white" id="credit-display">0</p><p class="text-xs text-green-500">Lifetime Earnings</p></div></div>
-                        <button onclick="ModalSystem.open('creator-modal')" class="w-full mt-4 bg-green-600/10 text-green-400 border border-green-600/20 rounded-lg py-2 text-xs font-bold hover:bg-green-600 hover:text-white transition">Upload to Earn</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-themes" class="hidden space-y-6">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                    <div><h2 class="text-2xl md:text-3xl font-bold text-white">Design Library</h2><p class="text-slate-400 text-sm">Premium assets secured.</p></div>
-                    <div class="flex gap-2 bg-white/5 p-1 rounded-xl w-full md:w-auto overflow-x-auto">
-                        <button onclick="RenderSystem.filter('all')" id="btn-all" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold bg-purple-600 text-white shadow-lg">All</button>
-                        <button onclick="RenderSystem.filter('free')" id="btn-free" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold text-slate-300 hover:bg-white/10">Free</button>
-                        <button onclick="RenderSystem.filter('premium')" id="btn-premium" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold text-slate-300 hover:bg-white/10">Premium</button>
-                    </div>
-                </div>
-                <div id="theme-grid-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-            </div>
-
-            <div id="view-domains" class="hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-bold text-white">My Domains</h2>
-                <div class="dash-glass p-6 rounded-2xl text-center py-10">
-                    <i class="fa-solid fa-server text-4xl text-slate-600 mb-4"></i>
-                    <p class="text-slate-500">Credits available: <span id="domain-credit-display">0</span></p>
-                    <button class="mt-4 bg-slate-800 text-white px-6 py-2 rounded font-bold">Buy Domain (500 Credits)</button>
-                </div>
-            </div>
-        </div>
-    </main>
-
     <script>
-        // --- 1. LOCAL DATABASE (Persistent) ---
+        // --- 1. LOCAL DATABASE (AUTO-FIX CORRUPTION) ---
         const DB = {
-            save: (key, data) => { try { localStorage.setItem(key, JSON.stringify(data)) } catch(e) { console.error('DB Save Error', e) } },
-            get: (key) => { try { return JSON.parse(localStorage.getItem(key)) } catch(e) { return null } },
-            remove: (key) => localStorage.removeItem(key),
+            save: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch(e) { console.error('DB Save Error', e) } },
+            get: (k) => { try { return JSON.parse(localStorage.getItem(k)) } catch(e) { return null } },
+            remove: (k) => localStorage.removeItem(k),
             init: () => {
-                if(!DB.get('user_profile')) {
+                let p = DB.get('user_profile');
+                // Fix: If corrupt or null, reset to default
+                if(!p || !p.name) {
                     DB.save('user_profile', { name: 'Guest', email: '', plan: 'free', credits: 0, avatar: null });
                 }
             }
@@ -224,13 +223,17 @@
                 try {
                     const session = DB.get('user_session');
                     if(session === 'active') {
-                        document.getElementById('auth-lock').style.display = 'none'; // HARD HIDE
+                        // Switch from Login View to Dashboard View
+                        document.getElementById('auth-lock').style.display = 'none';
+                        document.getElementById('main-app').style.display = 'flex';
                         UserSystem.load();
                         RenderSystem.render();
                     } else {
-                        document.getElementById('auth-lock').style.display = 'flex'; // HARD SHOW
+                        // Keep Login View
+                        document.getElementById('auth-lock').style.display = 'flex';
+                        document.getElementById('main-app').style.display = 'none';
                     }
-                } catch(e) { console.error("Session Check Failed", e); }
+                } catch(e) { console.error("Session Error", e); }
             },
             sendOTP: () => {
                 const email = document.getElementById('login-email').value;
@@ -252,9 +255,7 @@
                     if(!profile.avatar) profile.avatar = `https://ui-avatars.com/api/?name=${profile.name}&background=6d28d9&color=fff`;
                     DB.save('user_profile', profile);
                     DB.save('user_session', 'active');
-                    document.getElementById('auth-lock').style.display = 'none';
-                    UserSystem.load();
-                    RenderSystem.render();
+                    location.reload(); // Refresh to clean state
                 } else { alert("Wrong Code!"); }
             },
             logout: () => { DB.remove('user_session'); location.reload(); }
@@ -268,13 +269,13 @@
                     if(!profile) return;
                     ['display-name', 'header-username'].forEach(id => document.getElementById(id).innerText = profile.name);
                     ['display-email'].forEach(id => document.getElementById(id).innerText = profile.email);
-                    ['credit-display', 'modal-credit-display', 'domain-credit-display'].forEach(id => document.getElementById(id).innerText = profile.credits);
+                    ['credit-display', 'domain-credit-display'].forEach(id => document.getElementById(id).innerText = profile.credits);
                     ['profile-pic', 'header-avatar', 'edit-profile-preview'].forEach(id => document.getElementById(id).src = profile.avatar);
                     const isPremium = profile.plan === 'premium';
                     document.getElementById('badge-status').innerHTML = isPremium ? '<i class="fa-solid fa-crown text-yellow-500"></i> PREMIUM' : 'FREE PLAN';
                     document.getElementById('header-status').innerText = isPremium ? 'Premium' : 'Free User';
                     if(isPremium) document.getElementById('sidebar-upgrade-card').classList.add('hidden');
-                } catch(e) { console.error("Profile Load Error", e); }
+                } catch(e) { console.error("User Load Error", e); }
             },
             saveProfile: () => {
                 let profile = DB.get('user_profile');
@@ -293,11 +294,11 @@
             }
         };
 
-        // --- 4. PAYMENT SYSTEM ---
+        // --- 4. PAYMENT (RAZORPAY) ---
         const PaymentSystem = {
             start: () => {
                 const options = {
-                    "key": "rzp_test_YOUR_KEY_HERE", // Replace with real key
+                    "key": "rzp_test_YOUR_KEY_HERE",
                     "amount": "49900",
                     "currency": "INR",
                     "name": "Waybe Pro",
@@ -306,25 +307,17 @@
                         let profile = DB.get('user_profile');
                         profile.plan = 'premium';
                         DB.save('user_profile', profile);
-                        UserSystem.load();
-                        RenderSystem.render();
-                        ModalSystem.close('pricing-modal');
-                        alert("Welcome to Pro!");
+                        location.reload();
                     },
                     "theme": { "color": "#9333ea" }
                 };
-                if(options.key === "rzp_test_YOUR_KEY_HERE") {
-                    // Simulation mode for testing
-                    alert("Simulating Payment (Add your Razorpay Key in code for real money).");
-                    setTimeout(() => options.handler({razorpay_payment_id: "pay_simulated"}), 1500);
-                } else {
-                    const rzp1 = new Razorpay(options);
-                    rzp1.open();
-                }
+                // Sim for demo
+                alert("Simulating Payment...");
+                setTimeout(() => options.handler({}), 1500);
             }
         };
 
-        // --- 5. FILE SYSTEM ---
+        // --- 5. FILES ---
         const FileSystem = {
             previewPhoto: (input) => {
                 if (input.files && input.files[0]) {
@@ -342,34 +335,25 @@
             upload: () => {
                 const input = document.getElementById('design-file-input');
                 if(!input.files.length) return alert("Select File");
-                const bar = document.getElementById('upload-progress-bar');
                 document.getElementById('upload-progress-container').classList.remove('hidden');
-                let w = 0;
-                const i = setInterval(()=>{
-                    w+=10; bar.style.width=w+"%";
-                    if(w>=100){
-                        clearInterval(i);
-                        let profile = DB.get('user_profile');
-                        profile.credits += 50;
-                        DB.save('user_profile', profile);
-                        UserSystem.load();
-                        ModalSystem.close('creator-modal');
-                        alert("Uploaded! +50 Credits");
-                        document.getElementById('upload-progress-container').classList.add('hidden');
-                        bar.style.width="0%";
-                    }
-                }, 200);
+                setTimeout(() => {
+                    let profile = DB.get('user_profile');
+                    profile.credits += 50;
+                    DB.save('user_profile', profile);
+                    UserSystem.load();
+                    ModalSystem.close('creator-modal');
+                    alert("Uploaded! +50 Credits");
+                    document.getElementById('upload-progress-container').classList.add('hidden');
+                }, 1500);
             }
         };
 
-        // --- 6. RENDER SYSTEM ---
+        // --- 6. RENDER ---
         const RenderSystem = {
             activeFilter: 'all',
             themes: [
                 { id: 101, category: "Admin", title: "Notus React", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/notus-react/notus-react-presentation.jpg", url: "https://github.com/creativetimofficial/notus-react/archive/refs/heads/main.zip" },
-                { id: 102, category: "SaaS", title: "Tailwind Kit", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/tailwind-starter-kit/tailwind-starter-kit-presentation.jpg", url: "https://github.com/creativetimofficial/tailwind-starter-kit/archive/refs/heads/main.zip" },
-                { id: 201, category: "Premium", title: "Spotlight Pro", isFree: false, image: "https://picsum.photos/id/180/400/300", url: "#" },
-                { id: 202, category: "Premium", title: "Shopify Booster", isFree: false, image: "https://picsum.photos/id/119/400/300", url: "#" }
+                { id: 201, category: "Premium", title: "Spotlight Pro", isFree: false, image: "https://picsum.photos/id/180/400/300", url: "#" }
             ],
             filter: (type) => {
                 RenderSystem.activeFilter = type;
@@ -404,8 +388,9 @@
             switchTab: (t) => { ['overview','themes','domains'].forEach(x=>document.getElementById('view-'+x).classList.add('hidden')); document.getElementById('view-'+t).classList.remove('hidden'); UISystem.toggleSidebar(); }
         };
 
-        // SAFE STARTUP (Wait for window load to ensure everything is ready)
+        // --- STARTUP SEQUENCE ---
         window.addEventListener('load', () => {
+            console.log("Starting...");
             DB.init();
             AuthSystem.checkSession();
         });
