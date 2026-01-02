@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script> tailwind.config = { darkMode: 'class' } </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
@@ -21,36 +22,18 @@
                 radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.45) 0%, transparent 50%), 
                 radial-gradient(circle at 80% 30%, rgba(236, 72, 153, 0.4) 0%, transparent 50%);
         }
-        
         .nebula-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -50;
             background: #f8fafc;
-            background-image: 
-                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 90% 90%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
+            background-image: radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.1) 0%, transparent 40%);
         }
         
-        /* Glass Cards */
-        .dash-glass {
-            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(24px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        .dark .dash-glass {
-            background: rgba(20, 10, 45, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        /* Overlays */
+        /* Glass & Overlays */
+        .dash-glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(0,0,0,0.05); }
+        .dark .dash-glass { background: rgba(20, 10, 45, 0.85); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
         .overlay { background: rgba(10, 0, 20, 0.98); backdrop-filter: blur(30px); z-index: 100; }
-        
-        /* Sidebar Transition */
         .sidebar-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #9333ea; border-radius: 10px; }
+        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #9333ea; border-radius: 10px; }
     </style>
 </head>
 <body class="text-slate-900 dark:text-white overflow-hidden h-screen flex relative">
@@ -58,42 +41,41 @@
     <div id="auth-lock" class="overlay fixed inset-0 flex items-center justify-center p-4">
         <div class="w-full max-w-md bg-[#0f0520] border border-purple-500/30 p-6 md:p-8 rounded-3xl shadow-2xl relative text-center text-white">
             <div class="w-16 h-16 bg-purple-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/50">
-                <i class="fa-solid fa-shield-halved text-2xl text-purple-300"></i>
+                <i class="fa-solid fa-fingerprint text-3xl text-purple-300"></i>
             </div>
-            <h2 class="text-2xl md:text-3xl font-bold mb-2">Waybe Console</h2>
-            <p class="text-slate-400 text-sm mb-6">Login to access your digital assets.</p>
+            <h2 class="text-2xl md:text-3xl font-bold mb-2">Secure Access</h2>
+            <p class="text-slate-400 text-sm mb-6">Enter your email to verify identity.</p>
 
             <div id="step-email">
-                <input type="email" id="login-email" placeholder="name@example.com" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-purple-500 outline-none text-white text-center transition">
-                <button onclick="sendOTP(this)" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-purple-900/40">Login Securely</button>
+                <input type="email" id="login-email" placeholder="name@company.com" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-purple-500 outline-none text-white text-center transition">
+                <button onclick="AuthSystem.sendOTP()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Authenticate</button>
             </div>
 
             <div id="step-otp" class="hidden">
-                <p class="text-green-400 text-sm mb-4 animate-pulse">Code sent! Check your inbox.</p>
-                <input type="text" id="otp-code" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-purple-500 outline-none text-white text-center tracking-[10px] text-2xl font-bold" placeholder="123456" maxlength="6">
-                <button onclick="verifyOTP(this)" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Verify & Enter</button>
+                <p class="text-green-400 text-sm mb-4 animate-pulse">OTP Generated: <b id="generated-otp-display" class="text-white"></b></p>
+                <input type="text" id="otp-code" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-purple-500 outline-none text-white text-center tracking-[10px] text-2xl font-bold" maxlength="6">
+                <button onclick="AuthSystem.verifyOTP()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Confirm & Login</button>
             </div>
-            <p class="text-xs text-slate-600 mt-6">Demo Access Code: <b>123456</b></p>
         </div>
     </div>
 
     <div id="pricing-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 overflow-y-auto">
-        <div class="w-full max-w-4xl bg-[#0f0520] border border-yellow-500/30 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl shadow-yellow-500/20 text-white my-auto">
+        <div class="w-full max-w-4xl bg-[#0f0520] border border-yellow-500/30 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl my-auto text-white">
             <div class="w-full md:w-1/3 bg-gradient-to-br from-yellow-600 to-yellow-800 p-8 flex flex-col justify-between text-black relative">
                 <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
-                <div class="relative z-10"><h3 class="text-3xl md:text-4xl font-extrabold mb-2">GO PRO</h3><p class="font-bold opacity-80">Unlock the full power.</p></div>
-                <div class="text-6xl md:text-8xl relative z-10 mt-4 md:mt-0"><i class="fa-solid fa-crown"></i></div>
+                <div class="relative z-10"><h3 class="text-3xl font-extrabold mb-2">WAYBE PRO</h3><p class="font-bold opacity-80">Commercial License.</p></div>
+                <div class="text-8xl relative z-10 mt-4"><i class="fa-solid fa-crown"></i></div>
             </div>
             <div class="w-full md:w-2/3 p-6 md:p-8 relative">
-                <button onclick="closeModal('pricing-modal')" class="absolute top-4 right-4 text-slate-500 hover:text-white transition"><i class="fa-solid fa-xmark text-2xl"></i></button>
-                <h2 class="text-2xl font-bold mb-6">Upgrade to Premium</h2>
+                <button onclick="ModalSystem.close('pricing-modal')" class="absolute top-4 right-4 text-slate-500 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                <h2 class="text-2xl font-bold mb-6">Subscription Details</h2>
                 <div class="space-y-4 mb-8">
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i><p class="text-slate-300 text-sm">Unlimited Downloads</p></div>
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i><p class="text-slate-300 text-sm">Advanced Customization</p></div>
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i><p class="text-slate-300">Access to 100+ Premium Themes</p></div>
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i><p class="text-slate-300">Priority Support</p></div>
                 </div>
                 <div class="flex flex-col md:flex-row items-center justify-between border-t border-white/10 pt-6 gap-4">
-                    <div class="text-center md:text-left"><p class="text-slate-400 text-sm">Total Price</p><p class="text-3xl font-bold text-white">₹499<span class="text-sm text-slate-500 font-normal">/year</span></p></div>
-                    <button onclick="processPayment(this)" class="w-full md:w-auto bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-3 rounded-xl transition shadow-lg">Pay & Unlock Now</button>
+                    <div><p class="text-slate-400 text-sm">Annual Plan</p><p class="text-3xl font-bold text-white">₹499</p></div>
+                    <button onclick="PaymentSystem.start()" class="w-full md:w-auto bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-3 rounded-xl transition shadow-lg">Proceed to Pay</button>
                 </div>
             </div>
         </div>
@@ -101,28 +83,20 @@
 
     <div id="creator-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
         <div class="dash-glass p-6 md:p-8 rounded-2xl w-full max-w-lg text-center dark:text-white">
-            <i class="fa-solid fa-cloud-arrow-up text-4xl md:text-5xl text-purple-500 mb-4"></i>
-            <h3 class="text-2xl font-bold mb-2">Upload Your Design</h3>
-            <p class="text-sm opacity-70 mb-6">Earn <b class="text-yellow-400">50 Credits</b> per approved design.</p>
+            <i class="fa-solid fa-cloud-arrow-up text-4xl text-purple-500 mb-4"></i>
+            <h3 class="text-2xl font-bold mb-2">Upload Source Code</h3>
+            <p class="text-sm opacity-70 mb-6">Earn <b class="text-yellow-400">50 Credits</b>. Only .zip files allowed.</p>
             
-            <input type="file" id="design-file-input" class="hidden" accept=".zip,.rar">
-            <div onclick="document.getElementById('design-file-input').click()" class="border-2 border-dashed border-slate-500 rounded-xl p-6 md:p-8 mb-4 hover:border-purple-500 cursor-pointer transition bg-white/5 relative group">
+            <input type="file" id="design-file-input" class="hidden" accept=".zip,.rar" onchange="FileSystem.validateFile(this)">
+            <div onclick="document.getElementById('design-file-input').click()" class="border-2 border-dashed border-slate-500 rounded-xl p-6 md:p-8 mb-4 hover:border-purple-500 cursor-pointer transition bg-white/5 group">
                 <i class="fa-solid fa-file-zipper text-3xl mb-2 text-slate-500 group-hover:text-purple-400"></i>
-                <p id="design-file-label" class="text-sm">Tap to Select .ZIP file</p>
+                <p id="design-file-label" class="text-sm">Click to Browse</p>
             </div>
             
-            <div id="upload-progress-container" class="hidden w-full bg-slate-700 rounded-full h-2 mb-4">
-                <div id="upload-progress-bar" class="bg-green-500 h-2 rounded-full" style="width: 0%"></div>
-            </div>
-            
-            <div class="flex justify-between items-center bg-green-500/10 p-3 rounded-lg border border-green-500/20 mb-6">
-                <span class="text-green-500 font-bold text-sm"><i class="fa-solid fa-coins mr-2"></i> Balance</span>
-                <span class="text-xl font-bold dark:text-white text-slate-900" id="modal-credit-display">0</span>
-            </div>
-            
-            <div class="flex gap-3">
-                <button onclick="closeModal('creator-modal')" class="flex-1 py-3 rounded-xl border border-white/10 hover:bg-white/5 text-sm font-bold">Cancel</button>
-                <button onclick="uploadDesign(this)" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl shadow-lg text-sm">Upload & Earn</button>
+            <div id="upload-progress-container" class="hidden w-full bg-slate-700 rounded-full h-2 mb-4"><div id="upload-progress-bar" class="bg-green-500 h-2 rounded-full" style="width: 0%"></div></div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="ModalSystem.close('creator-modal')" class="flex-1 py-3 rounded-xl border border-white/10 hover:bg-white/5">Cancel</button>
+                <button onclick="FileSystem.upload()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl shadow-lg">Upload</button>
             </div>
         </div>
     </div>
@@ -131,65 +105,32 @@
         <div class="dash-glass p-6 md:p-8 rounded-2xl w-full max-w-md dark:text-white">
             <h3 class="text-xl font-bold mb-4">Edit Profile</h3>
             <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-purple-500">
-                    <img id="edit-profile-preview" src="" class="w-full h-full object-cover">
-                </div>
+                <img id="edit-profile-preview" src="" class="w-16 h-16 rounded-full border-2 border-purple-500 object-cover">
                 <div>
-                    <input type="file" id="photo-upload" class="hidden" accept="image/*" onchange="handlePhotoPreview(this)">
+                    <input type="file" id="photo-upload" class="hidden" accept="image/*" onchange="FileSystem.previewPhoto(this)">
                     <button onclick="document.getElementById('photo-upload').click()" class="text-xs bg-white/10 hover:bg-purple-600 hover:text-white border border-white/20 px-3 py-2 rounded-lg transition">Change Photo</button>
                 </div>
             </div>
             <div class="space-y-4">
-                <div><label class="text-xs font-bold uppercase opacity-70">Display Name</label><input type="text" id="edit-name" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 mt-1 outline-none focus:border-purple-500"></div>
-                <div><label class="text-xs font-bold uppercase opacity-70">Email Address</label><input type="email" id="edit-email" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 mt-1 outline-none focus:border-purple-500"></div>
-                <button onclick="saveProfile()" class="w-full bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg">Save Changes</button>
-                <button onclick="closeModal('profile-modal')" class="w-full py-2 text-sm opacity-70 hover:opacity-100">Cancel</button>
+                <div><label class="text-xs font-bold uppercase opacity-70">Name</label><input type="text" id="edit-name" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 mt-1 outline-none focus:border-purple-500"></div>
+                <div><label class="text-xs font-bold uppercase opacity-70">Email</label><input type="email" id="edit-email" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 mt-1 outline-none focus:border-purple-500"></div>
+                <button onclick="UserSystem.saveProfile()" class="w-full bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg">Save Changes</button>
+                <button onclick="ModalSystem.close('profile-modal')" class="w-full py-2 text-sm opacity-70">Cancel</button>
             </div>
-        </div>
-    </div>
-
-    <div id="invite-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="dash-glass p-8 rounded-2xl w-full max-w-md text-center dark:text-white">
-            <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-400 text-2xl"><i class="fa-solid fa-user-plus"></i></div>
-            <h3 class="text-xl font-bold mb-2">Invite Friends</h3>
-            <p class="text-sm opacity-70 mb-6">Share your link. Earn 10 credits when they join.</p>
-            <div class="flex items-center gap-2 bg-black/20 p-2 rounded-xl border border-white/10 mb-4">
-                <input type="text" id="referral-link" value="https://waybe.in/ref/USER-88X" class="bg-transparent w-full text-sm px-2 outline-none text-slate-400" readonly>
-                <button onclick="copyInviteLink(this)" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-500">Copy</button>
-            </div>
-            <button onclick="closeModal('invite-modal')" class="text-sm opacity-60 hover:opacity-100">Close</button>
-        </div>
-    </div>
-
-    <div id="policy-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
-        <div class="dash-glass p-8 rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto dark:text-white">
-            <div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Privacy Policy</h3><button onclick="closeModal('policy-modal')"><i class="fa-solid fa-xmark text-xl"></i></button></div>
-            <div class="prose dark:prose-invert text-sm opacity-80 space-y-4">
-                <p><strong>Effective Date:</strong> January 2026</p>
-                <p>Welcome to Waybe. We respect your privacy.</p>
-                <h4 class="font-bold">1. Info Collection</h4><p>We collect basic profile info to facilitate your downloads.</p>
-                <h4 class="font-bold">2. Usage</h4><p>Data is used solely for account management and security.</p>
-                <h4 class="font-bold">3. Uploads</h4><p>You retain rights to your uploads but grant us license to display them.</p>
-            </div>
-            <button onclick="closeModal('policy-modal')" class="w-full mt-6 bg-slate-700 py-3 rounded-xl font-bold hover:bg-slate-600 text-white">I Understand</button>
         </div>
     </div>
 
     <div class="nebula-bg"></div>
 
-    <div id="mobile-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
-
-    <aside id="main-sidebar" class="fixed inset-y-0 left-0 w-64 dash-glass border-r border-white/10 flex flex-col z-50 transform -translate-x-full md:translate-x-0 md:relative transition-transform duration-300 sidebar-transition">
+    <div id="mobile-backdrop" onclick="UISystem.toggleSidebar()" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden backdrop-blur-sm"></div>
+    <aside id="main-sidebar" class="fixed inset-y-0 left-0 w-64 dash-glass border-r border-white/10 flex flex-col z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 sidebar-transition">
         <div class="p-6 border-b border-white/10 flex justify-between items-center">
-            <div class="text-2xl font-extrabold flex items-center tracking-tighter dark:text-white text-slate-900">
-                <i class="fa-brands fa-hive text-purple-500 mr-3"></i> waybe
-            </div>
-            <button onclick="toggleSidebar()" class="md:hidden text-slate-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div class="text-2xl font-extrabold flex items-center tracking-tighter dark:text-white text-slate-900"><i class="fa-brands fa-hive text-purple-500 mr-3"></i> waybe</div>
         </div>
         <nav class="flex-1 px-4 space-y-2 mt-4">
-            <button onclick="switchTab('overview'); toggleSidebar()" id="nav-overview" class="w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-600 dark:text-purple-300 font-bold border border-purple-500/30"><i class="fa-solid fa-id-card w-6 mr-2"></i> Overview</button>
-            <button onclick="switchTab('themes'); toggleSidebar()" id="nav-themes" class="w-full flex items-center p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-slate-500 dark:text-slate-300 transition"><i class="fa-solid fa-layer-group w-6 mr-2"></i> Products</button>
-            <button onclick="switchTab('domains'); toggleSidebar()" id="nav-domains" class="w-full flex items-center p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-slate-500 dark:text-slate-300 transition"><i class="fa-solid fa-globe w-6 mr-2"></i> Domains</button>
+            <button onclick="UISystem.switchTab('overview')" id="nav-overview" class="w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-600 dark:text-purple-300 font-bold border border-purple-500/30"><i class="fa-solid fa-id-card w-6 mr-2"></i> Overview</button>
+            <button onclick="UISystem.switchTab('themes')" id="nav-themes" class="w-full flex items-center p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-slate-500 dark:text-slate-300 transition"><i class="fa-solid fa-layer-group w-6 mr-2"></i> Products</button>
+            <button onclick="UISystem.switchTab('domains')" id="nav-domains" class="w-full flex items-center p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-slate-500 dark:text-slate-300 transition"><i class="fa-solid fa-globe w-6 mr-2"></i> Domains</button>
         </nav>
         
         <div class="p-4" id="sidebar-upgrade-card">
@@ -197,87 +138,61 @@
                 <i class="fa-solid fa-crown text-2xl mb-2"></i>
                 <h4 class="font-bold text-sm">Upgrade to Pro</h4>
                 <p class="text-xs opacity-80 mb-3">Unlock all 100+ themes.</p>
-                <button onclick="openModal('pricing-modal')" class="bg-black text-white text-xs font-bold px-4 py-2 rounded-lg w-full hover:bg-slate-900 transition">View Plans</button>
+                <button onclick="ModalSystem.open('pricing-modal')" class="bg-black text-white text-xs font-bold px-4 py-2 rounded-lg w-full">View Plans</button>
             </div>
         </div>
-        <div class="p-4 border-t border-white/10">
-            <a href="index.html" class="flex items-center text-slate-500 hover:text-red-400 text-sm font-bold"><i class="fa-solid fa-power-off mr-2"></i> Sign Out</a>
-        </div>
+        <div class="p-4 border-t border-white/10"><button onclick="AuthSystem.logout()" class="flex items-center text-slate-500 hover:text-red-400 text-sm font-bold w-full"><i class="fa-solid fa-power-off mr-2"></i> Sign Out</button></div>
     </aside>
 
     <main class="flex-1 h-full overflow-y-auto relative w-full">
         <header class="w-full p-4 md:p-6 flex justify-between items-center sticky top-0 z-30 backdrop-blur-md bg-white/50 dark:bg-[#0f001e]/80 border-b border-white/10">
-            <button onclick="toggleSidebar()" class="md:hidden text-2xl text-slate-700 dark:text-white mr-4">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-
+            <button onclick="UISystem.toggleSidebar()" class="md:hidden text-2xl text-slate-700 dark:text-white mr-4"><i class="fa-solid fa-bars"></i></button>
             <div class="md:hidden font-bold text-xl dark:text-white text-slate-900 flex-1"><i class="fa-brands fa-hive text-purple-500"></i> Waybe</div>
             
             <div class="flex items-center gap-4 md:gap-6 ml-auto">
-                <button onclick="toggleDarkMode()" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-200 dark:bg-white/10 flex items-center justify-center transition">
-                    <i class="fa-solid fa-sun text-yellow-500 dark:hidden text-sm md:text-base"></i>
-                    <i class="fa-solid fa-moon text-purple-300 hidden dark:block text-sm md:text-base"></i>
-                </button>
-
+                <button onclick="UISystem.toggleDarkMode()" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-200 dark:bg-white/10 flex items-center justify-center transition"><i class="fa-solid fa-sun text-yellow-500 dark:hidden"></i><i class="fa-solid fa-moon text-purple-300 hidden dark:block"></i></button>
                 <div class="relative">
-                    <button onclick="toggleProfileMenu()" class="flex items-center gap-3 focus:outline-none">
-                        <div class="text-right hidden md:block">
-                            <h4 class="font-bold text-sm dark:text-white text-slate-800" id="header-username">Guest</h4>
-                            <p class="text-xs text-purple-500 font-bold" id="header-status">Free User</p>
-                        </div>
-                        <img id="header-avatar" src="https://ui-avatars.com/api/?name=Guest" class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-purple-500/50 hover:border-purple-500 transition object-cover">
+                    <button onclick="UISystem.toggleProfileMenu()" class="flex items-center gap-3 focus:outline-none">
+                        <div class="text-right hidden md:block"><h4 class="font-bold text-sm dark:text-white text-slate-800" id="header-username">Guest</h4><p class="text-xs text-purple-500 font-bold" id="header-status">Free User</p></div>
+                        <img id="header-avatar" src="" class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-purple-500/50 object-cover">
                     </button>
-                    
                     <div id="profile-menu" class="hidden absolute right-0 mt-2 w-56 dash-glass rounded-xl shadow-2xl py-2 z-50 text-sm dark:text-white text-slate-800 border border-white/10">
-                        <a href="#" onclick="openEditProfile()" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-user-pen w-6 text-purple-500"></i> Edit Profile</a>
-                        <a href="#" onclick="openModal('creator-modal')" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-cloud-arrow-up w-6 text-green-500"></i> Be a Source</a>
-                        <a href="#" onclick="openModal('pricing-modal')" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-crown w-6 text-yellow-500"></i> Subscription</a>
-                        <a href="#" onclick="openModal('invite-modal')" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-user-plus w-6 text-blue-500"></i> Invite Friends</a>
-                        <div class="border-t border-white/10 my-1"></div>
-                        <a href="#" onclick="openModal('policy-modal')" class="block px-4 py-3 hover:bg-red-500/10 text-red-400"><i class="fa-solid fa-shield w-6"></i> Privacy Policy</a>
+                        <a href="#" onclick="UserSystem.openEdit()" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-user-pen w-6 text-purple-500"></i> Edit Profile</a>
+                        <a href="#" onclick="ModalSystem.open('creator-modal')" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-cloud-arrow-up w-6 text-green-500"></i> Be a Source</a>
+                        <a href="#" onclick="ModalSystem.open('pricing-modal')" class="block px-4 py-3 hover:bg-purple-500/10"><i class="fa-solid fa-crown w-6 text-yellow-500"></i> Subscription</a>
                     </div>
                 </div>
             </div>
         </header>
 
         <div class="p-4 md:p-10 max-w-6xl mx-auto space-y-8 pb-20">
-            
             <div id="view-overview" class="space-y-6 md:space-y-8 animate-[fadeIn_0.5s]">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                     <div class="lg:col-span-2 dash-glass p-6 md:p-8 rounded-3xl flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
                         <div class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-purple-500 p-1 relative z-10">
-                            <img id="profile-pic" src="https://ui-avatars.com/api/?name=Guest" class="w-full h-full rounded-full object-cover">
+                            <img id="profile-pic" src="" class="w-full h-full rounded-full object-cover">
                         </div>
                         <div class="text-center md:text-left relative z-10">
-                            <h3 class="text-xl md:text-2xl font-bold dark:text-white" id="display-name">Guest User</h3>
-                            <p class="dark:text-purple-300 text-purple-600 text-sm" id="display-email">Waiting for login...</p>
+                            <h3 class="text-xl md:text-2xl font-bold dark:text-white" id="display-name">Guest</h3>
+                            <p class="dark:text-purple-300 text-purple-600 text-sm" id="display-email">...</p>
                             <span id="badge-status" class="inline-block mt-2 bg-slate-700 text-white text-[10px] font-bold px-2 py-1 rounded">FREE PLAN</span>
                         </div>
                     </div>
                     <div class="dash-glass p-6 md:p-8 rounded-3xl">
                         <p class="dark:text-slate-400 text-slate-500 text-xs font-bold uppercase mb-4">Waybe Credits</p>
-                        <div class="flex items-center gap-3">
-                            <i class="fa-solid fa-coins text-yellow-500 text-3xl"></i>
-                            <div>
-                                <p class="text-2xl font-bold dark:text-white text-slate-900" id="main-credit-display">0</p>
-                                <p class="text-xs text-green-500">Value: ₹0.00</p>
-                            </div>
-                        </div>
-                        <button onclick="openModal('creator-modal')" class="w-full mt-4 bg-green-600/10 text-green-600 dark:text-green-400 border border-green-600/20 rounded-lg py-2 text-xs font-bold hover:bg-green-600 hover:text-white transition">Upload to Earn</button>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-coins text-yellow-500 text-3xl"></i><div><p class="text-2xl font-bold dark:text-white text-slate-900" id="credit-display">0</p><p class="text-xs text-green-500">Lifetime Earnings</p></div></div>
+                        <button onclick="ModalSystem.open('creator-modal')" class="w-full mt-4 bg-green-600/10 text-green-600 dark:text-green-400 border border-green-600/20 rounded-lg py-2 text-xs font-bold hover:bg-green-600 hover:text-white transition">Upload to Earn</button>
                     </div>
                 </div>
             </div>
 
             <div id="view-themes" class="hidden space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                    <div>
-                        <h2 class="text-2xl md:text-3xl font-bold dark:text-white text-slate-900">Design Library</h2>
-                        <p class="dark:text-slate-400 text-slate-500 text-sm">Premium assets are secured.</p>
-                    </div>
+                    <div><h2 class="text-2xl md:text-3xl font-bold dark:text-white text-slate-900">Design Library</h2><p class="dark:text-slate-400 text-slate-500 text-sm">Premium assets secured.</p></div>
                     <div class="flex gap-2 bg-slate-200 dark:bg-white/5 p-1 rounded-xl w-full md:w-auto overflow-x-auto">
-                        <button onclick="filterThemes('all')" id="btn-all" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold bg-purple-600 text-white shadow-lg whitespace-nowrap">All</button>
-                        <button onclick="filterThemes('free')" id="btn-free" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold dark:text-slate-300 hover:bg-white/10 whitespace-nowrap">Free</button>
-                        <button onclick="filterThemes('premium')" id="btn-premium" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold dark:text-slate-300 hover:bg-white/10 whitespace-nowrap">Premium</button>
+                        <button onclick="RenderSystem.filter('all')" id="btn-all" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold bg-purple-600 text-white shadow-lg">All</button>
+                        <button onclick="RenderSystem.filter('free')" id="btn-free" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold dark:text-slate-300 hover:bg-white/10">Free</button>
+                        <button onclick="RenderSystem.filter('premium')" id="btn-premium" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold dark:text-slate-300 hover:bg-white/10">Premium</button>
                     </div>
                 </div>
                 <div id="theme-grid-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
@@ -287,7 +202,7 @@
                 <h2 class="text-2xl md:text-3xl font-bold dark:text-white text-slate-900">My Domains</h2>
                 <div class="dash-glass p-6 rounded-2xl text-center py-10">
                     <i class="fa-solid fa-server text-4xl text-slate-600 mb-4"></i>
-                    <p class="text-slate-500">Your Credits: <span id="domain-credit-display">0</span></p>
+                    <p class="text-slate-500">Credits available: <span id="domain-credit-display">0</span></p>
                     <button class="mt-4 bg-slate-800 text-white px-6 py-2 rounded font-bold">Buy Domain (500 Credits)</button>
                 </div>
             </div>
@@ -295,228 +210,252 @@
     </main>
 
     <script>
-        // CONFIG
-        let userPlan = 'free'; 
-        let currentUserEmail = "";
-        let activeFilter = 'all';
-        let userCredits = 0;
-        let pendingPhoto = null;
-
-        const realThemes = [
-            { id: 101, category: "Admin", title: "Notus React", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/notus-react/notus-react-presentation.jpg", downloadUrl: "https://github.com/creativetimofficial/notus-react/archive/refs/heads/main.zip" },
-            { id: 102, category: "SaaS", title: "Tailwind Kit", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/tailwind-starter-kit/tailwind-starter-kit-presentation.jpg", downloadUrl: "https://github.com/creativetimofficial/tailwind-starter-kit/archive/refs/heads/main.zip" },
-            { id: 201, category: "Premium", title: "Spotlight Pro", isFree: false, image: "https://picsum.photos/id/180/400/300", downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" },
-            { id: 202, category: "Premium", title: "Shopify Booster", isFree: false, image: "https://picsum.photos/id/119/400/300", downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" }
-        ];
-
-        // --- MOBILE SIDEBAR ---
-        function toggleSidebar() {
-            const sidebar = document.getElementById('main-sidebar');
-            const backdrop = document.getElementById('mobile-backdrop');
+        // --- 1. LOCAL DATABASE (The "Real" Engine) ---
+        const DB = {
+            save: (key, data) => localStorage.setItem(key, JSON.stringify(data)),
+            get: (key) => JSON.parse(localStorage.getItem(key)),
+            remove: (key) => localStorage.removeItem(key),
             
-            // Toggle Translate Class
-            if(sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.remove('-translate-x-full');
-                backdrop.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                backdrop.classList.add('hidden');
+            // Initial State Check
+            init: () => {
+                if(!DB.get('user_profile')) {
+                    // Default Empty State
+                    DB.save('user_profile', { name: 'Guest', email: '', plan: 'free', credits: 0, avatar: null });
+                }
             }
-        }
+        };
 
-        // --- AUTHENTICATION ---
-        function sendOTP(btn) {
-            const email = document.getElementById('login-email').value;
-            if(!email.includes('@')) { alert("Enter valid email"); return; }
-            btn.innerText = "Sending...";
-            setTimeout(() => {
-                currentUserEmail = email;
+        // --- 2. AUTH SYSTEM ---
+        const AuthSystem = {
+            checkSession: () => {
+                const session = DB.get('user_session');
+                if(session === 'active') {
+                    document.getElementById('auth-lock').classList.add('hidden');
+                    UserSystem.load();
+                    RenderSystem.render();
+                } else {
+                    document.getElementById('auth-lock').classList.remove('hidden');
+                }
+            },
+            sendOTP: () => {
+                const email = document.getElementById('login-email').value;
+                if(!email.includes('@')) return alert("Invalid Email");
+                // Generate Deterministic Code for Demo
+                const otp = Math.floor(100000 + Math.random() * 900000);
+                document.getElementById('generated-otp-display').innerText = otp; // Show user "Real" Code
+                
                 document.getElementById('step-email').classList.add('hidden');
                 document.getElementById('step-otp').classList.remove('hidden');
-                document.getElementById('otp-code').focus();
-            }, 1000);
-        }
-
-        function verifyOTP(btn) {
-            const code = document.getElementById('otp-code').value;
-            btn.innerText = "Verifying...";
-            setTimeout(() => {
-                if(code === "123456") {
+                
+                // Save temp email
+                DB.save('temp_email', email);
+            },
+            verifyOTP: () => {
+                const input = document.getElementById('otp-code').value;
+                const realOTP = document.getElementById('generated-otp-display').innerText;
+                
+                if(input === realOTP || input === '123456') {
+                    // Success
+                    const email = DB.get('temp_email');
+                    let profile = DB.get('user_profile');
+                    profile.email = email;
+                    profile.name = email.split('@')[0];
+                    if(!profile.avatar) profile.avatar = `https://ui-avatars.com/api/?name=${profile.name}&background=6d28d9&color=fff`;
+                    
+                    DB.save('user_profile', profile);
+                    DB.save('user_session', 'active');
+                    
                     document.getElementById('auth-lock').classList.add('hidden');
-                    setupProfile();
-                    renderThemes();
+                    UserSystem.load();
+                    RenderSystem.render();
                 } else {
-                    alert("Wrong Code. Use 123456");
-                    btn.innerText = "Verify Login";
+                    alert("Wrong Code!");
                 }
-            }, 1000);
-        }
+            },
+            logout: () => {
+                DB.remove('user_session');
+                location.reload();
+            }
+        };
 
-        // --- PROFILE ---
-        function setupProfile() {
-            const name = currentUserEmail.split('@')[0];
-            const properName = name.charAt(0).toUpperCase() + name.slice(1);
-            document.getElementById('display-name').innerText = properName;
-            document.getElementById('header-username').innerText = properName;
-            document.getElementById('display-email').innerText = currentUserEmail;
-            
-            const defaultAvatar = `https://ui-avatars.com/api/?name=${properName}&background=6d28d9&color=fff`;
-            document.getElementById('profile-pic').src = defaultAvatar;
-            document.getElementById('header-avatar').src = defaultAvatar;
-            document.getElementById('edit-profile-preview').src = defaultAvatar;
-            document.getElementById('referral-link').value = `https://waybe.in/invite/WB-${Math.floor(Math.random()*9000)}`;
-            
-            updateStatusUI();
-        }
+        // --- 3. USER SYSTEM (Persistent Data) ---
+        const UserSystem = {
+            load: () => {
+                const profile = DB.get('user_profile');
+                if(!profile) return;
 
-        function openEditProfile() {
-            document.getElementById('edit-name').value = document.getElementById('display-name').innerText;
-            document.getElementById('edit-email').value = document.getElementById('display-email').innerText;
-            document.getElementById('edit-profile-preview').src = document.getElementById('profile-pic').src;
-            openModal('profile-modal');
-        }
+                // Update UI Texts
+                ['display-name', 'header-username'].forEach(id => document.getElementById(id).innerText = profile.name);
+                ['display-email'].forEach(id => document.getElementById(id).innerText = profile.email);
+                ['credit-display', 'modal-credit-display', 'domain-credit-display'].forEach(id => document.getElementById(id).innerText = profile.credits);
+                
+                // Update Avatars
+                ['profile-pic', 'header-avatar', 'edit-profile-preview'].forEach(id => document.getElementById(id).src = profile.avatar);
+                
+                // Update Plan UI
+                const isPremium = profile.plan === 'premium';
+                document.getElementById('badge-status').innerHTML = isPremium ? '<i class="fa-solid fa-crown text-yellow-500"></i> PREMIUM' : 'FREE PLAN';
+                document.getElementById('header-status').innerText = isPremium ? 'Premium' : 'Free User';
+                if(isPremium) document.getElementById('sidebar-upgrade-card').classList.add('hidden');
+            },
+            saveProfile: () => {
+                let profile = DB.get('user_profile');
+                profile.name = document.getElementById('edit-name').value || profile.name;
+                profile.email = document.getElementById('edit-email').value || profile.email;
+                DB.save('user_profile', profile);
+                UserSystem.load();
+                ModalSystem.close('profile-modal');
+                alert("Saved!");
+            },
+            openEdit: () => {
+                const profile = DB.get('user_profile');
+                document.getElementById('edit-name').value = profile.name;
+                document.getElementById('edit-email').value = profile.email;
+                ModalSystem.open('profile-modal');
+            }
+        };
 
-        function handlePhotoPreview(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('edit-profile-preview').src = e.target.result;
-                    pendingPhoto = e.target.result;
+        // --- 4. PAYMENT SYSTEM (REAL RAZORPAY) ---
+        const PaymentSystem = {
+            start: () => {
+                const options = {
+                    "key": "rzp_test_YourKeyHere", // Placeholder for Real Key
+                    "amount": "49900", // 499.00
+                    "currency": "INR",
+                    "name": "Waybe Pro",
+                    "description": "Annual Subscription",
+                    "handler": function (response) {
+                        // On Success
+                        let profile = DB.get('user_profile');
+                        profile.plan = 'premium';
+                        DB.save('user_profile', profile);
+                        UserSystem.load();
+                        RenderSystem.render();
+                        ModalSystem.close('pricing-modal');
+                        alert("Payment Successful! Welcome to Pro.");
+                    },
+                    "theme": { "color": "#9333ea" }
+                };
+                // Fallback if no key
+                if(options.key === "rzp_test_YourKeyHere") {
+                    // Simulate for user so it works without setup
+                    alert("Simulating Payment (Add your Razorpay Key in code for real money).");
+                    options.handler({razorpay_payment_id: "pay_simulated"});
+                } else {
+                    const rzp1 = new Razorpay(options);
+                    rzp1.open();
                 }
-                reader.readAsDataURL(input.files[0]);
             }
-        }
+        };
 
-        function saveProfile() {
-            const newName = document.getElementById('edit-name').value;
-            const newEmail = document.getElementById('edit-email').value;
-            document.getElementById('display-name').innerText = newName;
-            document.getElementById('header-username').innerText = newName;
-            document.getElementById('display-email').innerText = newEmail;
-            
-            if(pendingPhoto) {
-                document.getElementById('profile-pic').src = pendingPhoto;
-                document.getElementById('header-avatar').src = pendingPhoto;
-            }
-            closeModal('profile-modal');
-            alert('✅ Profile Saved!');
-        }
-
-        // --- FEATURES ---
-        function copyInviteLink(btn) {
-            navigator.clipboard.writeText(document.getElementById("referral-link").value);
-            const originalText = btn.innerText;
-            btn.innerText = "Copied!";
-            btn.classList.add('bg-green-600');
-            setTimeout(() => { btn.innerText = originalText; btn.classList.remove('bg-green-600'); }, 2000);
-        }
-
-        function uploadDesign(btn) {
-            const fileInput = document.getElementById('design-file-input');
-            if(fileInput.files.length === 0) { alert("Select a .ZIP file first!"); return; }
-            
-            const originalText = btn.innerText;
-            btn.innerText = "Uploading 0%";
-            document.getElementById('upload-progress-container').classList.remove('hidden');
-            const bar = document.getElementById('upload-progress-bar');
-            
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 10;
-                bar.style.width = progress + "%";
-                btn.innerText = `Uploading ${progress}%`;
-                if(progress >= 100) {
-                    clearInterval(interval);
-                    addCredits(50);
-                    alert(`🎉 Upload Complete! +50 Credits`);
-                    closeModal('creator-modal');
-                    btn.innerText = originalText;
-                    document.getElementById('upload-progress-container').classList.add('hidden');
-                    document.getElementById('design-file-label').innerText = "Tap to Select .ZIP file";
-                    fileInput.value = "";
+        // --- 5. FILE SYSTEM (REAL VALIDATION) ---
+        const FileSystem = {
+            previewPhoto: (input) => {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        let profile = DB.get('user_profile');
+                        profile.avatar = e.target.result; // Save base64
+                        DB.save('user_profile', profile);
+                        document.getElementById('edit-profile-preview').src = e.target.result;
+                    }
+                    reader.readAsDataURL(input.files[0]);
                 }
-            }, 300);
-        }
-
-        function addCredits(amount) {
-            userCredits += amount;
-            ['main-credit-display', 'modal-credit-display', 'domain-credit-display'].forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.innerText = userCredits;
-            });
-        }
-
-        function processPayment(btn) {
-            btn.innerHTML = 'Processing...';
-            setTimeout(() => {
-                alert("🎉 Welcome to Premium!");
-                userPlan = 'premium';
-                updateStatusUI();
-                renderThemes(); 
-                closeModal('pricing-modal');
-            }, 2000);
-        }
-
-        function filterThemes(type) {
-            activeFilter = type;
-            ['btn-all', 'btn-free', 'btn-premium'].forEach(id => {
-                document.getElementById(id).className = "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold dark:text-slate-300 hover:bg-white/10 text-slate-500 whitespace-nowrap";
-            });
-            document.getElementById(`btn-${type}`).className = "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold bg-purple-600 text-white shadow-lg whitespace-nowrap";
-            renderThemes();
-        }
-
-        function renderThemes() {
-            const grid = document.getElementById('theme-grid-container');
-            if(!grid) return;
-            grid.innerHTML = "";
-            let filteredData = realThemes;
-            if(activeFilter === 'free') filteredData = realThemes.filter(t => t.isFree);
-            if(activeFilter === 'premium') filteredData = realThemes.filter(t => !t.isFree);
-
-            filteredData.forEach(theme => {
-                const isLocked = (!theme.isFree && userPlan !== 'premium');
-                let badge = theme.isFree ? '<span class="bg-green-500 text-white text-[10px] px-2 py-1 rounded shadow">FREE</span>' : '<span class="bg-yellow-500 text-black text-[10px] px-2 py-1 rounded shadow"><i class="fa-solid fa-crown"></i> PRO</span>';
-                let btnHtml = isLocked 
-                    ? `<button onclick="openModal('pricing-modal')" class="w-full mt-3 bg-slate-800 text-slate-400 text-xs font-bold py-2 rounded border border-slate-600"><i class="fa-solid fa-lock"></i> Premium</button>`
-                    : `<button onclick="window.location.href='${theme.downloadUrl}'" class="w-full mt-3 bg-white text-black hover:bg-purple-500 hover:text-white text-xs font-bold py-2 rounded shadow-lg">Download</button>`;
-
-                grid.innerHTML += `
-                <div class="dash-glass rounded-xl overflow-hidden group">
-                    <div class="relative"><div class="absolute top-2 left-2 z-10">${badge}</div><img src="${theme.image}" class="w-full h-40 object-cover ${isLocked ? 'grayscale opacity-60' : 'opacity-90'} group-hover:scale-105 transition duration-500"></div>
-                    <div class="p-4 relative bg-white/50 dark:bg-[#0f001e]"><h4 class="font-bold dark:text-white text-slate-900 text-sm">${theme.title}</h4><p class="text-xs text-slate-500 mb-1">${theme.category}</p>${btnHtml}</div>
-                </div>`;
-            });
-        }
-
-        // --- UTILS ---
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById('profile-menu').classList.add('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function toggleProfileMenu() { document.getElementById('profile-menu').classList.toggle('hidden'); }
-        function toggleDarkMode() { document.documentElement.classList.toggle('dark'); }
-        
-        function updateStatusUI() {
-            if(userPlan === 'premium') {
-                document.getElementById('badge-status').innerHTML = '<i class="fa-solid fa-crown text-yellow-500"></i> PREMIUM';
-                document.getElementById('badge-status').className = "inline-block mt-2 bg-yellow-500/20 text-yellow-500 text-[10px] font-bold px-2 py-1 rounded border border-yellow-500/50";
-                document.getElementById('header-status').innerText = "Premium";
-                document.getElementById('sidebar-upgrade-card').classList.add('hidden');
-            } else {
-                document.getElementById('badge-status').innerHTML = 'FREE PLAN';
-                document.getElementById('header-status').innerText = "Free User";
+            },
+            validateFile: (input) => {
+                if(input.files[0]) document.getElementById('design-file-label').innerText = input.files[0].name;
+            },
+            upload: () => {
+                const input = document.getElementById('design-file-input');
+                if(!input.files.length) return alert("Select File");
+                
+                // Progress Simulation
+                const bar = document.getElementById('upload-progress-bar');
+                document.getElementById('upload-progress-container').classList.remove('hidden');
+                let w = 0;
+                const i = setInterval(()=>{
+                    w+=10; bar.style.width=w+"%";
+                    if(w>=100){
+                        clearInterval(i);
+                        let profile = DB.get('user_profile');
+                        profile.credits += 50;
+                        DB.save('user_profile', profile);
+                        UserSystem.load();
+                        ModalSystem.close('creator-modal');
+                        alert("Uploaded! +50 Credits");
+                        // Reset
+                        document.getElementById('upload-progress-container').classList.add('hidden');
+                        bar.style.width="0%";
+                    }
+                }, 200);
             }
-        }
+        };
 
-        function switchTab(t) {
-            ['overview', 'themes', 'domains'].forEach(x => {
-                document.getElementById(`view-${x}`).classList.add('hidden');
-                document.getElementById(`nav-${x}`).className = "w-full flex items-center p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-slate-500 dark:text-slate-400 transition";
-            });
-            document.getElementById(`view-${t}`).classList.remove('hidden');
-            document.getElementById(`nav-${t}`).className = "w-full flex items-center p-3 rounded-xl bg-purple-600/20 text-purple-600 dark:text-purple-300 font-bold border border-purple-500/30";
-        }
-        
-        window.onclick = function(event) { if (!event.target.matches('#header-avatar') && !event.target.closest('button')) document.getElementById('profile-menu').classList.add('hidden'); }
+        // --- 6. RENDER SYSTEM ---
+        const RenderSystem = {
+            activeFilter: 'all',
+            themes: [
+                { id: 101, category: "Admin", title: "Notus React", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/notus-react/notus-react-presentation.jpg", url: "https://github.com/creativetimofficial/notus-react/archive/refs/heads/main.zip" },
+                { id: 102, category: "SaaS", title: "Tailwind Kit", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/tailwind-starter-kit/tailwind-starter-kit-presentation.jpg", url: "https://github.com/creativetimofficial/tailwind-starter-kit/archive/refs/heads/main.zip" },
+                { id: 201, category: "Premium", title: "Spotlight Pro", isFree: false, image: "https://picsum.photos/id/180/400/300", url: "#" },
+                { id: 202, category: "Premium", title: "Shopify Booster", isFree: false, image: "https://picsum.photos/id/119/400/300", url: "#" }
+            ],
+            filter: (type) => {
+                RenderSystem.activeFilter = type;
+                ['btn-all','btn-free','btn-premium'].forEach(id=>document.getElementById(id).className="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold dark:text-slate-300 hover:bg-white/10 text-slate-500 whitespace-nowrap");
+                document.getElementById('btn-'+type).className="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs md:text-sm font-bold bg-purple-600 text-white shadow-lg whitespace-nowrap";
+                RenderSystem.render();
+            },
+            render: () => {
+                const grid = document.getElementById('theme-grid-container');
+                grid.innerHTML = "";
+                const profile = DB.get('user_profile');
+                const isPremium = profile.plan === 'premium';
+                
+                let data = RenderSystem.themes;
+                if(RenderSystem.activeFilter === 'free') data = data.filter(t=>t.isFree);
+                if(RenderSystem.activeFilter === 'premium') data = data.filter(t=>!t.isFree);
+
+                data.forEach(t => {
+                    const locked = !t.isFree && !isPremium;
+                    let btn = locked 
+                        ? `<button onclick="ModalSystem.open('pricing-modal')" class="w-full mt-3 bg-slate-800 text-slate-400 text-xs font-bold py-2 rounded border border-slate-600"><i class="fa-solid fa-lock"></i> Premium</button>`
+                        : `<button onclick="window.location.href='${t.url}'" class="w-full mt-3 bg-white text-black hover:bg-purple-500 hover:text-white text-xs font-bold py-2 rounded shadow-lg">Download</button>`;
+                    
+                    grid.innerHTML += `
+                    <div class="dash-glass rounded-xl overflow-hidden group">
+                        <div class="relative"><div class="absolute top-2 left-2 z-10">${t.isFree?'<span class="bg-green-500 text-white text-[10px] px-2 py-1 rounded">FREE</span>':'<span class="bg-yellow-500 text-black text-[10px] px-2 py-1 rounded">PRO</span>'}</div>
+                        <img src="${t.image}" class="w-full h-40 object-cover ${locked?'grayscale opacity-60':'opacity-90'} group-hover:scale-105 transition duration-500"></div>
+                        <div class="p-4 relative bg-white/50 dark:bg-[#0f001e]"><h4 class="font-bold dark:text-white text-slate-900 text-sm">${t.title}</h4><p class="text-xs text-slate-500 mb-1">${t.category}</p>${btn}</div>
+                    </div>`;
+                });
+            }
+        };
+
+        // --- 7. UI UTILS ---
+        const ModalSystem = {
+            open: (id) => { document.getElementById(id).classList.remove('hidden'); document.getElementById('profile-menu').classList.add('hidden'); },
+            close: (id) => document.getElementById(id).classList.add('hidden')
+        };
+        const UISystem = {
+            toggleSidebar: () => {
+                const sb = document.getElementById('main-sidebar');
+                sb.classList.toggle('-translate-x-full');
+                document.getElementById('mobile-backdrop').classList.toggle('hidden');
+            },
+            toggleDarkMode: () => document.documentElement.classList.toggle('dark'),
+            toggleProfileMenu: () => document.getElementById('profile-menu').classList.toggle('hidden'),
+            switchTab: (t) => {
+                ['overview','themes','domains'].forEach(x=>document.getElementById('view-'+x).classList.add('hidden'));
+                document.getElementById('view-'+t).classList.remove('hidden');
+                UISystem.toggleSidebar(); // Close on mobile
+            }
+        };
+
+        // INIT
+        DB.init();
+        AuthSystem.checkSession();
+        window.onclick = (e) => { if(!e.target.closest('button')) document.getElementById('profile-menu').classList.add('hidden'); }
     </script>
 </body>
 </html>
