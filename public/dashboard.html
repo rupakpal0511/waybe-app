@@ -13,13 +13,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         body { font-family: 'Outfit', sans-serif; }
         
-        /* --- VISUALS: NEON NEBULA --- */
+        /* --- VISUALS: HIGH SATURATION NEON NEBULA --- */
         .nebula-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -50;
             background: #0f001e;
             background-image: 
-                radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.4) 0%, transparent 50%), 
-                radial-gradient(circle at 80% 30%, rgba(236, 72, 153, 0.35) 0%, transparent 50%);
+                radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.45) 0%, transparent 50%), 
+                radial-gradient(circle at 80% 30%, rgba(236, 72, 153, 0.4) 0%, transparent 50%);
         }
         
         .dash-glass {
@@ -28,12 +28,15 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        /* Login Overlay */
-        .login-overlay {
-            background: rgba(15, 0, 30, 0.98); backdrop-filter: blur(30px); z-index: 100;
-        }
+        /* Overlays */
+        .overlay { background: rgba(10, 0, 20, 0.98); backdrop-filter: blur(30px); z-index: 100; }
+        
+        /* Premium Lock Animation */
+        .lock-btn { transition: all 0.3s; }
+        .lock-btn:hover { background-color: #1e293b; border-color: #fbbf24; color: #fbbf24; }
+        .lock-btn:hover i { animation: shake 0.5s; }
+        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } 100% { transform: rotate(0deg); } }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0f001e; }
         ::-webkit-scrollbar-thumb { background: #9333ea; border-radius: 10px; }
@@ -41,30 +44,56 @@
 </head>
 <body class="text-white overflow-hidden h-screen flex relative">
 
-    <div id="auth-lock" class="login-overlay fixed inset-0 flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-[#0f0520] border border-purple-500/30 p-8 rounded-3xl shadow-2xl relative">
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-purple-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/50">
-                    <i class="fa-solid fa-lock text-2xl text-purple-300"></i>
-                </div>
-                <h2 class="text-3xl font-bold">Member Login</h2>
-                <p class="text-slate-400 text-sm mt-2">Enter email to receive One-Time Password.</p>
+    <div id="auth-lock" class="overlay fixed inset-0 flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-[#0f0520] border border-purple-500/30 p-8 rounded-3xl shadow-2xl relative text-center">
+            <div class="w-16 h-16 bg-purple-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/50">
+                <i class="fa-solid fa-shield-halved text-2xl text-purple-300"></i>
             </div>
+            <h2 class="text-3xl font-bold mb-2">Waybe Console</h2>
+            <p class="text-slate-400 text-sm mb-6">Login to access your digital assets.</p>
 
             <div id="step-email">
-                <input type="email" id="login-email" placeholder="name@example.com" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-purple-500 outline-none text-white transition">
-                <button onclick="sendOTP(this)" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Send Code via Email</button>
+                <input type="email" id="login-email" placeholder="name@example.com" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-purple-500 outline-none text-white text-center transition">
+                <button onclick="sendOTP(this)" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-purple-900/40">Login Securely</button>
             </div>
 
             <div id="step-otp" class="hidden">
-                <p class="text-sm text-center text-green-400 mb-4 animate-pulse">✅ Code sent! Check your inbox.</p>
-                <div class="flex gap-2 justify-center mb-6">
-                    <input type="text" maxlength="6" id="otp-code" class="w-full text-center text-2xl font-bold bg-black/30 border border-white/20 rounded-lg py-2 focus:border-purple-500 outline-none tracking-widest text-white" placeholder="123456">
-                </div>
-                <button onclick="verifyOTP(this)" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Verify & Access</button>
+                <p class="text-green-400 text-sm mb-4 animate-pulse">Code sent! Check your inbox.</p>
+                <input type="text" id="otp-code" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-purple-500 outline-none text-white text-center tracking-[10px] text-2xl font-bold" placeholder="123456" maxlength="6">
+                <button onclick="verifyOTP(this)" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Verify & Enter</button>
             </div>
-            
-            <p class="text-xs text-center text-slate-600 mt-6">Demo Mode: Use code <b>123456</b></p>
+            <p class="text-xs text-slate-600 mt-6">Demo Access Code: <b>123456</b></p>
+        </div>
+    </div>
+
+    <div id="pricing-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-[fadeIn_0.3s]">
+        <div class="w-full max-w-4xl bg-[#0f0520] border border-yellow-500/30 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl shadow-yellow-500/20 transform scale-100 transition-all">
+            <div class="w-full md:w-1/3 bg-gradient-to-br from-yellow-600 to-yellow-800 p-8 flex flex-col justify-between text-black relative">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
+                <div class="relative z-10">
+                    <h3 class="text-4xl font-extrabold mb-2">GO PRO</h3>
+                    <p class="font-bold opacity-80">Unlock the full power of Waybe Ecosystem.</p>
+                </div>
+                <div class="text-8xl relative z-10"><i class="fa-solid fa-crown"></i></div>
+            </div>
+            <div class="w-full md:w-2/3 p-8 relative">
+                <button onclick="closePricing()" class="absolute top-4 right-4 text-slate-500 hover:text-white transition"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                <h2 class="text-2xl font-bold mb-6">Upgrade to Premium</h2>
+                <div class="space-y-4 mb-8">
+                    <div class="flex items-center gap-3"><div class="w-6 h-6 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center"><i class="fa-solid fa-check text-xs"></i></div><p class="text-slate-300">Unlimited Downloads (100+ Themes)</p></div>
+                    <div class="flex items-center gap-3"><div class="w-6 h-6 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center"><i class="fa-solid fa-check text-xs"></i></div><p class="text-slate-300">Commercial License Included</p></div>
+                    <div class="flex items-center gap-3"><div class="w-6 h-6 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center"><i class="fa-solid fa-check text-xs"></i></div><p class="text-slate-300">24/7 Priority Support</p></div>
+                </div>
+                <div class="flex items-center justify-between border-t border-white/10 pt-6">
+                    <div>
+                        <p class="text-slate-400 text-sm">Total Price</p>
+                        <p class="text-3xl font-bold text-white">₹499<span class="text-sm text-slate-500 font-normal">/year</span></p>
+                    </div>
+                    <button onclick="processPayment(this)" class="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-3 rounded-xl transition shadow-lg shadow-yellow-500/20">
+                        Pay & Unlock Now
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -73,14 +102,24 @@
     <aside class="w-64 h-full dash-glass border-r border-white/10 flex flex-col hidden md:flex z-20">
         <div class="p-6 border-b border-white/10">
             <div class="text-2xl font-extrabold flex items-center tracking-tighter text-white">
-                <i class="fa-brands fa-hive text-purple-400 mr-3"></i> waybe.in
+                <i class="fa-brands fa-hive text-purple-400 mr-3 drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]"></i> waybe.in
             </div>
         </div>
         <nav class="flex-1 px-4 space-y-2 mt-4">
-            <button onclick="switchTab('overview')" id="nav-overview" class="w-full flex items-center p-3 rounded-xl bg-purple-600/30 text-purple-200 font-bold border border-purple-500/50"><i class="fa-solid fa-id-card w-6 mr-2"></i> Account</button>
+            <button onclick="switchTab('overview')" id="nav-overview" class="w-full flex items-center p-3 rounded-xl bg-purple-600/30 text-purple-200 font-bold border border-purple-500/50"><i class="fa-solid fa-id-card w-6 mr-2"></i> Overview</button>
             <button onclick="switchTab('themes')" id="nav-themes" class="w-full flex items-center p-3 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition"><i class="fa-solid fa-layer-group w-6 mr-2"></i> Products</button>
             <button onclick="switchTab('domains')" id="nav-domains" class="w-full flex items-center p-3 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition"><i class="fa-solid fa-globe w-6 mr-2"></i> Domains</button>
         </nav>
+        
+        <div class="p-4" id="sidebar-upgrade-card">
+            <div class="bg-gradient-to-br from-yellow-600 to-yellow-800 rounded-xl p-4 text-black text-center shadow-lg shadow-yellow-500/10">
+                <i class="fa-solid fa-crown text-2xl mb-2"></i>
+                <h4 class="font-bold text-sm">Upgrade to Pro</h4>
+                <p class="text-xs opacity-80 mb-3">Unlock all 100+ themes.</p>
+                <button onclick="openPricing()" class="bg-black text-white text-xs font-bold px-4 py-2 rounded-lg w-full hover:bg-slate-900 transition">View Plans</button>
+            </div>
+        </div>
+        
         <div class="p-4 border-t border-white/10">
             <a href="index.html" class="flex items-center text-slate-400 hover:text-red-400 text-sm font-bold"><i class="fa-solid fa-power-off mr-2"></i> Sign Out</a>
         </div>
@@ -92,77 +131,62 @@
             <div class="flex items-center gap-4 ml-auto">
                 <div class="text-right hidden md:block">
                     <h4 class="font-bold text-sm text-white" id="header-username">Guest</h4>
-                    <p class="text-xs text-purple-400">Online <span class="w-2 h-2 bg-green-500 rounded-full inline-block ml-1"></span></p>
+                    <p class="text-xs text-purple-400">Status: <span id="header-status" class="text-slate-400">Free User</span></p>
                 </div>
                 <img id="header-avatar" src="https://ui-avatars.com/api/?name=Guest" class="w-10 h-10 rounded-full border-2 border-purple-500/50">
             </div>
         </header>
 
         <div class="p-6 md:p-10 max-w-6xl mx-auto space-y-8">
-
+            
             <div id="view-overview" class="space-y-8 animate-[fadeIn_0.5s]">
                 <h2 class="text-3xl font-bold mb-6 text-white">Account Overview</h2>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2 dash-glass p-8 rounded-3xl relative overflow-hidden">
-                        <div class="flex flex-col md:flex-row gap-6 items-center md:items-start relative z-10">
-                            <div class="w-24 h-24 rounded-full border-4 border-purple-500 p-1">
-                                <img id="profile-pic" src="https://ui-avatars.com/api/?name=Guest" class="w-full h-full rounded-full object-cover">
-                            </div>
-                            <div class="text-center md:text-left">
-                                <h3 class="text-2xl font-bold text-white" id="display-name">Guest User</h3>
-                                <p class="text-purple-300 mb-2" id="display-email">Waiting for login...</p>
-                                <div class="inline-flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full border border-white/10 text-xs text-slate-400">
-                                    <i class="fa-solid fa-fingerprint"></i> ID: <span class="font-mono text-white">WB-8829-X</span>
-                                </div>
-                            </div>
+                    <div class="lg:col-span-2 dash-glass p-8 rounded-3xl flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
+                        <div class="w-24 h-24 rounded-full border-4 border-purple-500 p-1 relative z-10">
+                            <img id="profile-pic" src="https://ui-avatars.com/api/?name=Guest" class="w-full h-full rounded-full object-cover">
                         </div>
-                        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-white/10 pt-6">
-                            <div><p class="text-slate-500 text-xs uppercase font-bold">Account Type</p><p class="text-white font-bold"><i class="fa-solid fa-briefcase text-purple-500 mr-2"></i> Business</p></div>
-                            <div><p class="text-slate-500 text-xs uppercase font-bold">Location</p><p class="text-white font-bold" id="user-location"><i class="fa-solid fa-satellite-dish text-red-500 mr-2"></i> Detecting...</p></div>
-                            <div><p class="text-slate-500 text-xs uppercase font-bold">Joined On</p><p class="text-white font-bold" id="join-date">...</p></div>
+                        <div class="text-center md:text-left relative z-10">
+                            <h3 class="text-2xl font-bold text-white" id="display-name">Guest User</h3>
+                            <p class="text-purple-300" id="display-email">Waiting for login...</p>
+                            <span id="badge-status" class="inline-block mt-2 bg-slate-700 text-white text-[10px] font-bold px-2 py-1 rounded border border-slate-600">FREE PLAN</span>
                         </div>
+                        <div class="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-purple-500/10 to-transparent"></div>
                     </div>
 
-                    <div class="dash-glass p-6 rounded-3xl flex flex-col justify-between border-t-4 border-yellow-500">
-                        <div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div><p class="text-xs text-yellow-500 font-bold uppercase tracking-wider">Plan</p><h3 class="text-2xl font-bold text-white">Super Premium</h3></div>
-                                <i class="fa-solid fa-crown text-3xl text-yellow-500 drop-shadow-lg"></i>
-                            </div>
-                            <div class="space-y-3 mb-6">
-                                <div class="flex justify-between text-sm"><span class="text-slate-400">Start Date</span><span class="font-mono text-white" id="sub-start">...</span></div>
-                                <div class="flex justify-between text-sm"><span class="text-slate-400">Renews On</span><span class="font-mono text-white" id="sub-end">...</span></div>
-                                <div class="w-full bg-slate-800 h-2 rounded-full mt-2"><div class="bg-yellow-500 h-2 rounded-full w-[2%]"></div></div>
-                                <p class="text-xs text-center text-slate-500 mt-1">364 Days Remaining</p>
+                    <div class="dash-glass p-8 rounded-3xl">
+                        <p class="text-slate-400 text-xs font-bold uppercase mb-4">Security Hub</p>
+                        <div class="flex items-center gap-3">
+                            <i class="fa-brands fa-chrome text-yellow-400 text-2xl"></i>
+                            <div>
+                                <p class="text-sm font-bold text-white" id="browser-info">Detecting...</p>
+                                <p class="text-xs text-green-400">Active Now • <span id="ip-location">Locating...</span></p>
                             </div>
                         </div>
-                        <button class="w-full py-2 rounded-lg border border-white/10 hover:bg-white/5 text-sm font-bold text-white">Manage Billing</button>
                     </div>
                 </div>
-
-                <div class="dash-glass p-8 rounded-3xl">
-                    <h3 class="text-lg font-bold mb-6 text-white"><i class="fa-solid fa-shield-halved mr-2 text-green-400"></i> Security Hub</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase font-bold mb-2">Active Session</p>
-                            <div class="flex items-center gap-2">
-                                <i class="fa-brands fa-chrome text-yellow-400 text-lg"></i>
-                                <div>
-                                    <p class="text-sm font-bold text-white" id="browser-info">Detecting Device...</p>
-                                    <p class="text-xs text-green-400">Active Now • <span id="ip-location">Locating...</span></p>
-                                </div>
-                            </div>
-                        </div>
+                
+                <div class="dash-glass p-6 rounded-3xl border-t-4 border-slate-600" id="sub-card-border">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg">Subscription Details</h3>
+                        <span class="text-xs bg-slate-800 px-2 py-1 rounded" id="sub-status-text">Inactive</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div><span class="text-slate-400 block">Start Date</span> <span class="font-mono" id="sub-start">--</span></div>
+                        <div><span class="text-slate-400 block">Next Billing</span> <span class="font-mono" id="sub-end">--</span></div>
                     </div>
                 </div>
             </div>
 
             <div id="view-themes" class="hidden space-y-6">
                 <div class="flex justify-between items-end">
-                    <h2 class="text-3xl font-bold text-white">Design Library</h2>
+                    <div>
+                        <h2 class="text-3xl font-bold text-white">Design Library</h2>
+                        <p class="text-slate-400 text-sm">Download source code. Premium assets are secured.</p>
+                    </div>
                     <div class="flex gap-2">
-                        <button onclick="renderThemes()" class="bg-purple-600 px-4 py-2 rounded-lg text-sm font-bold text-white">Refresh</button>
+                        <button onclick="renderThemes()" class="bg-purple-600 px-4 py-2 rounded-lg text-sm font-bold text-white shadow-lg shadow-purple-500/20">Refresh</button>
                     </div>
                 </div>
                 <div id="theme-grid-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
@@ -179,24 +203,27 @@
     </main>
 
     <script>
-        // --- 1. DATA (INVENTORY) ---
-        const realThemes = [
-            { id: 101, category: "Admin", title: "Notus React", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/notus-react/notus-react-presentation.jpg", downloadUrl: "https://github.com/creativetimofficial/notus-react/archive/refs/heads/main.zip" },
-            { id: 102, category: "SaaS", title: "Tailwind Kit", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/tailwind-starter-kit/tailwind-starter-kit-presentation.jpg", downloadUrl: "https://github.com/creativetimofficial/tailwind-starter-kit/archive/refs/heads/main.zip" },
-            { id: 201, category: "Premium", title: "Spotlight Pro", isFree: false, image: "https://picsum.photos/id/180/400/300", downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" }
-        ];
-
+        // --- 1. CONFIG: USER STATE & INVENTORY ---
+        let userPlan = 'free'; // Change this to 'premium' only after payment
         let currentUserEmail = "";
 
-        // --- 2. SEND OTP (BYPASS LOGIC) ---
+        const realThemes = [
+            // FREE THEMES
+            { id: 101, category: "Admin", title: "Notus React", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/notus-react/notus-react-presentation.jpg", downloadUrl: "https://github.com/creativetimofficial/notus-react/archive/refs/heads/main.zip" },
+            { id: 102, category: "SaaS", title: "Tailwind Kit", isFree: true, image: "https://raw.githubusercontent.com/creativetimofficial/public-assets/master/tailwind-starter-kit/tailwind-starter-kit-presentation.jpg", downloadUrl: "https://github.com/creativetimofficial/tailwind-starter-kit/archive/refs/heads/main.zip" },
+            
+            // PREMIUM THEMES (Locked)
+            { id: 201, category: "Premium", title: "Spotlight Pro", isFree: false, image: "https://picsum.photos/id/180/400/300", downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" },
+            { id: 202, category: "Premium", title: "Shopify Booster", isFree: false, image: "https://picsum.photos/id/119/400/300", downloadUrl: "https://github.com/cruip/tailwind-landing-page-template/archive/refs/heads/master.zip" },
+            { id: 203, category: "Premium", title: "Crypto Dark", isFree: false, image: "https://picsum.photos/id/2/400/300", downloadUrl: "#" },
+            { id: 204, category: "Premium", title: "AI Startup", isFree: false, image: "https://picsum.photos/id/3/400/300", downloadUrl: "#" }
+        ];
+
+        // --- 2. AUTHENTICATION (BYPASS 123456) ---
         function sendOTP(btn) {
             const email = document.getElementById('login-email').value;
-            if(!email.includes('@')) { alert("Please enter a valid email."); return; }
-            
-            // UI Feedback
+            if(!email.includes('@')) { alert("Enter valid email"); return; }
             btn.innerText = "Sending...";
-            btn.disabled = true;
-
             setTimeout(() => {
                 currentUserEmail = email;
                 document.getElementById('step-email').classList.add('hidden');
@@ -205,88 +232,135 @@
             }, 1000);
         }
 
-        // --- 3. VERIFY OTP (MASTER CODE: 123456) ---
         function verifyOTP(btn) {
             const code = document.getElementById('otp-code').value;
-            btn.innerHTML = 'Verifying...';
-
+            btn.innerText = "Verifying...";
             setTimeout(() => {
-                if (code === "123456") {
+                if(code === "123456") {
                     document.getElementById('auth-lock').classList.add('hidden');
                     setupProfile();
                     renderThemes();
                 } else {
-                    alert("❌ Wrong code. Use 123456");
-                    btn.innerText = "Verify & Access";
+                    alert("Wrong Code. Use 123456");
+                    btn.innerText = "Verify Login";
                 }
-            }, 800);
+            }, 1000);
         }
 
-        // --- 4. PROFILE SETUP ---
+        // --- 3. PROFILE & ENVIRONMENT ---
         function setupProfile() {
-            // Setup Identity
             const name = currentUserEmail.split('@')[0];
             const properName = name.charAt(0).toUpperCase() + name.slice(1);
             
             document.getElementById('display-name').innerText = properName;
             document.getElementById('header-username').innerText = properName;
             document.getElementById('display-email').innerText = currentUserEmail;
-            
-            // Setup Avatar
-            document.getElementById('profile-pic').src = `https://ui-avatars.com/api/?name=${properName}&background=6d28d9&color=fff&size=128`;
+            document.getElementById('profile-pic').src = `https://ui-avatars.com/api/?name=${properName}&background=6d28d9&color=fff`;
             document.getElementById('header-avatar').src = `https://ui-avatars.com/api/?name=${properName}&background=random`;
-
-            // Setup Dates
-            const today = new Date();
-            const nextYear = new Date();
-            nextYear.setFullYear(today.getFullYear() + 1);
             
-            document.getElementById('join-date').innerText = today.toLocaleDateString();
-            document.getElementById('sub-start').innerText = today.toLocaleDateString();
-            document.getElementById('sub-end').innerText = nextYear.toLocaleDateString();
-
-            // Detect Device
             detectEnvironment();
+            updateStatusUI();
         }
 
         async function detectEnvironment() {
             const browser = navigator.userAgent.includes("Chrome") ? "Chrome" : "Browser";
-            const os = navigator.platform;
-            document.getElementById('browser-info').innerText = `${browser} on ${os}`;
-            
+            document.getElementById('browser-info').innerText = `${browser} on ${navigator.platform}`;
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
-                document.getElementById('user-location').innerHTML = `<i class="fa-solid fa-location-dot text-red-500 mr-2"></i> ${data.city}, ${data.country_code}`;
                 document.getElementById('ip-location').innerText = `${data.city}, ${data.country_name}`;
-            } catch(e) {
-                document.getElementById('user-location').innerText = "Location Hidden";
-                document.getElementById('ip-location').innerText = "Unknown Location";
+            } catch(e) { document.getElementById('ip-location').innerText = "Location Hidden"; }
+        }
+
+        function updateStatusUI() {
+            const today = new Date();
+            const nextYear = new Date();
+            nextYear.setFullYear(today.getFullYear() + 1);
+            
+            document.getElementById('sub-start').innerText = today.toLocaleDateString();
+            document.getElementById('sub-end').innerText = nextYear.toLocaleDateString();
+
+            if(userPlan === 'premium') {
+                // UI Updates for Premium
+                document.getElementById('badge-status').innerHTML = '<i class="fa-solid fa-crown text-yellow-500"></i> PREMIUM MEMBER';
+                document.getElementById('badge-status').className = "inline-block mt-2 bg-yellow-500/20 text-yellow-500 text-[10px] font-bold px-2 py-1 rounded border border-yellow-500/50";
+                
+                document.getElementById('header-status').innerText = "Premium";
+                document.getElementById('header-status').className = "text-yellow-400 font-bold";
+                
+                document.getElementById('sidebar-upgrade-card').classList.add('hidden'); // Hide upsell
+                
+                document.getElementById('sub-card-border').className = "dash-glass p-6 rounded-3xl border-t-4 border-yellow-500";
+                document.getElementById('sub-status-text').innerText = "Active • Pro";
+                document.getElementById('sub-status-text').className = "text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded font-bold";
+            } else {
+                // UI for Free
+                document.getElementById('badge-status').innerHTML = 'FREE PLAN';
+                document.getElementById('header-status').innerText = "Free User";
+                document.getElementById('sub-status-text').innerText = "Basic";
             }
         }
 
-        // --- 5. RENDER THEMES ---
+        // --- 4. RENDERER (LOCK ENGINE) ---
         function renderThemes() {
             const grid = document.getElementById('theme-grid-container');
             if(!grid) return;
             grid.innerHTML = "";
+
             realThemes.forEach(theme => {
-                let badge = theme.isFree ? '<span class="bg-green-500 text-white text-[10px] px-2 py-1 rounded">FREE</span>' : '<span class="bg-yellow-500 text-black text-[10px] px-2 py-1 rounded">PRO</span>';
+                // Lock Logic: If theme is NOT free AND user is NOT premium
+                const isLocked = (!theme.isFree && userPlan !== 'premium');
+
+                let badge = theme.isFree 
+                    ? '<span class="bg-green-500 text-white text-[10px] px-2 py-1 rounded shadow">FREE</span>' 
+                    : '<span class="bg-yellow-500 text-black text-[10px] px-2 py-1 rounded shadow"><i class="fa-solid fa-crown"></i> PREMIUM</span>';
+
+                let buttonHTML = "";
+                if (isLocked) {
+                    // LOCKED BUTTON
+                    buttonHTML = `<button onclick="openPricing()" class="lock-btn w-full mt-3 bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs font-bold py-2 rounded transition flex items-center justify-center gap-2 border border-slate-600">
+                        <i class="fa-solid fa-lock"></i> Premium Only
+                    </button>`;
+                } else {
+                    // DOWNLOAD BUTTON
+                    buttonHTML = `<button onclick="window.location.href='${theme.downloadUrl}'" class="w-full mt-3 bg-white text-black hover:bg-purple-500 hover:text-white text-xs font-bold py-2 rounded transition shadow-lg">
+                        Download Now
+                    </button>`;
+                }
+
                 grid.innerHTML += `
-                <div class="dash-glass rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition duration-300">
+                <div class="dash-glass rounded-xl overflow-hidden group">
                     <div class="relative">
                         <div class="absolute top-2 left-2 z-10">${badge}</div>
-                        <img src="${theme.image}" class="w-full h-40 object-cover opacity-80 hover:opacity-100 transition">
+                        <img src="${theme.image}" class="w-full h-40 object-cover ${isLocked ? 'grayscale opacity-60' : 'opacity-90'} group-hover:scale-105 transition duration-500">
+                        ${isLocked ? '<div class="absolute inset-0 flex items-center justify-center"><i class="fa-solid fa-lock text-4xl text-white/50 drop-shadow-lg"></i></div>' : ''}
                     </div>
-                    <div class="p-4">
-                        <h4 class="font-bold text-white">${theme.title}</h4>
-                        <button onclick="window.location.href='${theme.downloadUrl}'" class="w-full mt-3 bg-white/10 hover:bg-purple-600 text-white text-xs font-bold py-2 rounded transition">Download</button>
+                    <div class="p-4 relative bg-[#0f001e]">
+                        <h4 class="font-bold text-white text-sm">${theme.title}</h4>
+                        <p class="text-xs text-slate-500 mb-1">${theme.category}</p>
+                        ${buttonHTML}
                     </div>
                 </div>`;
             });
         }
 
-        // Tab Switcher
+        // --- 5. PAYWALL SYSTEM ---
+        function openPricing() { document.getElementById('pricing-modal').classList.remove('hidden'); }
+        function closePricing() { document.getElementById('pricing-modal').classList.add('hidden'); }
+        
+        function processPayment(btn) {
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+            // Simulate 2 second payment gateway
+            setTimeout(() => {
+                alert("🎉 Payment Successful!\n\nWelcome to Premium. All themes unlocked.");
+                userPlan = 'premium'; // UPGRADE ACCOUNT
+                updateStatusUI();
+                renderThemes(); // RE-RENDER TO UNLOCK
+                closePricing();
+            }, 2000);
+        }
+
+        // --- 6. TABS ---
         function switchTab(t) {
             ['overview', 'themes', 'domains'].forEach(x => {
                 document.getElementById(`view-${x}`).classList.add('hidden');
