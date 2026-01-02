@@ -12,9 +12,9 @@
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-        body { font-family: 'Outfit', sans-serif; background-color: #0f001e; color: white; }
+        body { font-family: 'Outfit', sans-serif; background-color: #0f001e; color: white; overflow: hidden; }
         
-        /* VISUALS */
+        /* --- VISUALS --- */
         .nebula-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -50;
             background: #0f001e;
@@ -22,14 +22,28 @@
         }
         
         .dash-glass { background: rgba(20, 10, 45, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.15); }
+        
+        /* FORCE VISIBILITY ON LOGIN LOCK */
+        #auth-lock { 
+            display: flex; /* Force visible by default */
+            background: rgba(10, 0, 20, 0.98); 
+            backdrop-filter: blur(30px); 
+            z-index: 9999; /* Highest priority */
+        }
+        
         .overlay { background: rgba(10, 0, 20, 0.98); backdrop-filter: blur(30px); z-index: 100; }
         .sidebar-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Animation */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade { animation: fadeIn 0.5s ease-out; }
+
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #9333ea; border-radius: 10px; }
     </style>
 </head>
-<body class="overflow-hidden h-screen flex relative">
+<body class="h-screen flex relative">
 
-    <div id="auth-lock" class="overlay fixed inset-0 flex items-center justify-center p-4">
+    <div id="auth-lock" class="fixed inset-0 items-center justify-center p-4">
         <div class="w-full max-w-md bg-[#0f0520] border border-purple-500/30 p-8 rounded-3xl shadow-2xl relative text-center">
             <div class="w-16 h-16 bg-purple-900/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/50">
                 <i class="fa-solid fa-fingerprint text-3xl text-purple-300"></i>
@@ -150,7 +164,7 @@
         </header>
 
         <div class="p-4 md:p-10 max-w-6xl mx-auto space-y-8 pb-20">
-            <div id="view-overview" class="space-y-6 md:space-y-8 animate-[fadeIn_0.5s]">
+            <div id="view-overview" class="space-y-6 md:space-y-8 animate-fade">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                     <div class="lg:col-span-2 dash-glass p-6 md:p-8 rounded-3xl flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
                         <div class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-purple-500 p-1 relative z-10"><img id="profile-pic" src="" class="w-full h-full rounded-full object-cover"></div>
@@ -194,8 +208,8 @@
     <script>
         // --- 1. LOCAL DATABASE (Persistent) ---
         const DB = {
-            save: (key, data) => localStorage.setItem(key, JSON.stringify(data)),
-            get: (key) => JSON.parse(localStorage.getItem(key)),
+            save: (key, data) => { try { localStorage.setItem(key, JSON.stringify(data)) } catch(e) { console.error('DB Save Error', e) } },
+            get: (key) => { try { return JSON.parse(localStorage.getItem(key)) } catch(e) { return null } },
             remove: (key) => localStorage.removeItem(key),
             init: () => {
                 if(!DB.get('user_profile')) {
@@ -207,14 +221,16 @@
         // --- 2. AUTH SYSTEM ---
         const AuthSystem = {
             checkSession: () => {
-                const session = DB.get('user_session');
-                if(session === 'active') {
-                    document.getElementById('auth-lock').classList.add('hidden');
-                    UserSystem.load();
-                    RenderSystem.render();
-                } else {
-                    document.getElementById('auth-lock').classList.remove('hidden');
-                }
+                try {
+                    const session = DB.get('user_session');
+                    if(session === 'active') {
+                        document.getElementById('auth-lock').style.display = 'none'; // HARD HIDE
+                        UserSystem.load();
+                        RenderSystem.render();
+                    } else {
+                        document.getElementById('auth-lock').style.display = 'flex'; // HARD SHOW
+                    }
+                } catch(e) { console.error("Session Check Failed", e); }
             },
             sendOTP: () => {
                 const email = document.getElementById('login-email').value;
@@ -236,7 +252,7 @@
                     if(!profile.avatar) profile.avatar = `https://ui-avatars.com/api/?name=${profile.name}&background=6d28d9&color=fff`;
                     DB.save('user_profile', profile);
                     DB.save('user_session', 'active');
-                    document.getElementById('auth-lock').classList.add('hidden');
+                    document.getElementById('auth-lock').style.display = 'none';
                     UserSystem.load();
                     RenderSystem.render();
                 } else { alert("Wrong Code!"); }
@@ -247,16 +263,18 @@
         // --- 3. USER SYSTEM ---
         const UserSystem = {
             load: () => {
-                const profile = DB.get('user_profile');
-                if(!profile) return;
-                ['display-name', 'header-username'].forEach(id => document.getElementById(id).innerText = profile.name);
-                ['display-email'].forEach(id => document.getElementById(id).innerText = profile.email);
-                ['credit-display', 'modal-credit-display', 'domain-credit-display'].forEach(id => document.getElementById(id).innerText = profile.credits);
-                ['profile-pic', 'header-avatar', 'edit-profile-preview'].forEach(id => document.getElementById(id).src = profile.avatar);
-                const isPremium = profile.plan === 'premium';
-                document.getElementById('badge-status').innerHTML = isPremium ? '<i class="fa-solid fa-crown text-yellow-500"></i> PREMIUM' : 'FREE PLAN';
-                document.getElementById('header-status').innerText = isPremium ? 'Premium' : 'Free User';
-                if(isPremium) document.getElementById('sidebar-upgrade-card').classList.add('hidden');
+                try {
+                    const profile = DB.get('user_profile');
+                    if(!profile) return;
+                    ['display-name', 'header-username'].forEach(id => document.getElementById(id).innerText = profile.name);
+                    ['display-email'].forEach(id => document.getElementById(id).innerText = profile.email);
+                    ['credit-display', 'modal-credit-display', 'domain-credit-display'].forEach(id => document.getElementById(id).innerText = profile.credits);
+                    ['profile-pic', 'header-avatar', 'edit-profile-preview'].forEach(id => document.getElementById(id).src = profile.avatar);
+                    const isPremium = profile.plan === 'premium';
+                    document.getElementById('badge-status').innerHTML = isPremium ? '<i class="fa-solid fa-crown text-yellow-500"></i> PREMIUM' : 'FREE PLAN';
+                    document.getElementById('header-status').innerText = isPremium ? 'Premium' : 'Free User';
+                    if(isPremium) document.getElementById('sidebar-upgrade-card').classList.add('hidden');
+                } catch(e) { console.error("Profile Load Error", e); }
             },
             saveProfile: () => {
                 let profile = DB.get('user_profile');
@@ -296,8 +314,8 @@
                     "theme": { "color": "#9333ea" }
                 };
                 if(options.key === "rzp_test_YOUR_KEY_HERE") {
-                    // Simulation mode
-                    alert("Simulating Payment (Add your Razorpay Key for real transactions).");
+                    // Simulation mode for testing
+                    alert("Simulating Payment (Add your Razorpay Key in code for real money).");
                     setTimeout(() => options.handler({razorpay_payment_id: "pay_simulated"}), 1500);
                 } else {
                     const rzp1 = new Razorpay(options);
@@ -373,7 +391,7 @@
                     let btn = locked 
                         ? `<button onclick="ModalSystem.open('pricing-modal')" class="w-full mt-3 bg-slate-800 text-slate-400 text-xs font-bold py-2 rounded border border-slate-600"><i class="fa-solid fa-lock"></i> Premium</button>`
                         : `<button onclick="window.location.href='${t.url}'" class="w-full mt-3 bg-white text-black hover:bg-purple-500 hover:text-white text-xs font-bold py-2 rounded shadow-lg">Download</button>`;
-                    grid.innerHTML += `<div class="dash-glass rounded-xl overflow-hidden group"><div class="relative"><div class="absolute top-2 left-2 z-10">${t.isFree?'<span class="bg-green-500 text-white text-[10px] px-2 py-1 rounded">FREE</span>':'<span class="bg-yellow-500 text-black text-[10px] px-2 py-1 rounded">PRO</span>'}</div><img src="${t.image}" class="w-full h-40 object-cover ${locked?'grayscale opacity-60':'opacity-90'} group-hover:scale-105 transition duration-500"></div><div class="p-4 relative bg-white/50 dark:bg-[#0f001e]"><h4 class="font-bold text-white text-sm">${t.title}</h4><p class="text-xs text-slate-500 mb-1">${t.category}</p>${btn}</div></div>`;
+                    grid.innerHTML += `<div class="dash-glass rounded-xl overflow-hidden group"><div class="relative"><div class="absolute top-2 left-2 z-10">${t.isFree?'<span class="bg-green-500 text-white text-[10px] px-2 py-1 rounded">FREE</span>':'<span class="bg-yellow-500 text-black text-[10px] px-2 py-1 rounded">PRO</span>'}</div><img src="${t.image}" class="w-full h-40 object-cover ${locked?'grayscale opacity-60':'opacity-90'} group-hover:scale-105 transition duration-500"></div><div class="p-4 relative bg-[#0f001e]"><h4 class="font-bold text-white text-sm">${t.title}</h4><p class="text-xs text-slate-500 mb-1">${t.category}</p>${btn}</div></div>`;
                 });
             }
         };
@@ -386,8 +404,13 @@
             switchTab: (t) => { ['overview','themes','domains'].forEach(x=>document.getElementById('view-'+x).classList.add('hidden')); document.getElementById('view-'+t).classList.remove('hidden'); UISystem.toggleSidebar(); }
         };
 
-        // SAFE STARTUP
-        document.addEventListener('DOMContentLoaded', () => { DB.init(); AuthSystem.checkSession(); });
+        // SAFE STARTUP (Wait for window load to ensure everything is ready)
+        window.addEventListener('load', () => {
+            DB.init();
+            AuthSystem.checkSession();
+        });
+        
+        window.onclick = (e) => { if(!e.target.closest('button')) document.getElementById('profile-menu').classList.add('hidden'); }
     </script>
 </body>
 </html>
